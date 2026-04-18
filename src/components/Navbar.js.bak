@@ -1,0 +1,72 @@
+import React from "react";
+import { Link } from "react-router-dom";
+import logo from "../assets/logo.png";
+
+export default function Navbar({
+  isAuthed,
+  onLogin,
+  onRegister,
+  onLogout,
+  isAdmin,
+}) {
+  return (
+    <div className="nav">
+      {/* LEFT (empty space like screenshot) */}
+      <div />
+
+      {/* CENTER LOGO */}
+           {/* CENTER LOGO */}
+      <div className="nav-center-logo">
+        <img
+          className="nav-logo"
+          src={logo}
+          alt="Genetic Breeds"
+          style={{ height: "21px", width: "auto", objectFit: "contain" }}
+        />
+      </div>
+      {/* RIGHT BUTTONS */}
+      <div className="nav-right">
+        {!isAuthed ? (
+          <>
+            <button className="nav-text-btn" onClick={onLogin}>
+              Login
+            </button>
+            <button className="nav-btn" onClick={onRegister}>
+              Register
+            </button>
+
+            {/* Admin should be visible only for you: */}
+            {isAdmin && (
+              <Link className="nav-admin" to="/admin">
+                Admin
+              </Link>
+            )}
+          </>
+        ) : (
+          <>
+            {/* After login show normal links */}
+            <Link className="nav-link" to="/browse">
+              Browse Pets
+            </Link>
+            <Link className="nav-link" to="/post">
+              Post Your Pet
+            </Link>
+            <Link className="nav-link" to="/contact">
+              Contact
+            </Link>
+
+            {isAdmin && (
+              <Link className="nav-admin" to="/admin">
+                Admin
+              </Link>
+            )}
+
+            <button className="nav-btn" onClick={onLogout}>
+              Logout
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}

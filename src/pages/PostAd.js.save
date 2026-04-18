@@ -1,0 +1,211 @@
+import React, { useState } from "react";
+import "../style.css";
+
+export default function PostAd() {
+  const [form, setForm] = useState({
+    breed: "",
+    category: "",
+    price: "",
+    certificate: "",
+    location: "",
+    ownerName: "",
+    phone: "",
+    licence: "",
+    description: "",
+    images: []
+  });
+
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+
+    if (name === "images") {
+      setForm({ ...form, images: Array.from(files).slice(0, 4) });
+    } else {
+      setForm({ ...form, [name]: value });
+    }
+  };
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (
+      !form.breed ||
+      !form.category ||
+      !form.price ||
+      !form.location ||
+      !form.ownerName ||
+      !form.phone
+    ) {
+      alert("Please fill all required fields");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("breed", form.breed);
+    formData.append("category", form.category);
+    formData.append("price", form.price);
+    formData.append("certificate", form.certificate);
+    formData.append("location", form.location);
+    formData.append("ownerName", form.ownerName);
+    formData.append("phone", form.phone);
+    formData.append("licence", form.licence);
+    formData.append("description", form.description);
+
+form.images.forEach((image) => {
+  formData.append("images", image);
+});
+
+    try {
+const token = localStorage.getItem("gb_token");
+console.log("TOKEN:", token);
+
+const res = await fetch("http://localhost:10000/api/ads", {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+  body: formData
+});
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Pet posted successfully");
+
+        setForm({
+          breed: "",
+          category: "",
+          price: "",
+          certificate: "",
+          location: "",
+          ownerName: "",
+          phone: "",
+          licence: "",
+          description: "",
+          images: []
+        });
+      } else {
+        alert(data.message || "Failed to post pet");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Server error");
+    }
+  };
+
+  return (
+    <div className="post-container">
+      <h1>Post Your Pet</h1>
+
+      <form className="post-form" onSubmit={handleSubmit}>
+        <div className="post-grid">
+          <input
+            type="text"
+            name="breed"
+            placeholder="Breed Name"
+            value={form.breed}
+            onChange={handleChange}
+          />
+
+          <select
+            name="category"
+            value={form.category}
+            onChange={handleChange}
+          >
+            <option value="">Category</option>
+            <option value="Dogs">Dogs</option>
+            <option value="Cats">Cats</option>
+            <option value="Birds">Birds</option>
+            <option value="Horse">Horse</option>
+            <option value="Cow">Cow</option>
+            <option value="Exotics">Exotics</option>
+            <option value="Others">Others</option>
+          </select>
+
+          <input
+            type="number"
+            name="price"
+            placeholder="Price"
+            value={form.price}
+            onChange={handleChange}
+          />
+
+          <select
+            name="certificate"
+            value={form.certificate}
+            onChange={handleChange}
+          >
+            <option value="">Certificate</option>
+            <option value="With Certificate">With Certificate</option>
+            <option value="Without Certificate">Without Certificate</option>
+          </select>
+
+          <input
+            type="text"
+            name="location"
+            placeholder="Location"
+            value={form.location}
+            onChange={handleChange}
+          />
+
+          <input
+            type="text"
+            name="ownerName"
+            placeholder="Owner Name"
+            value={form.ownerName}
+            onChange={handleChange}
+          />
+
+          <input
+            type="tel"
+            name="phone"
+            placeholder="Owner Phone Number"
+            value={form.phone}
+            onChange={handleChange}
+          />
+
+          <input
+            type="text"
+            name="licence"
+            placeholder="Licence Number"
+            value={form.licence}
+            onChange={handleChange}
+          />
+
+          <textarea
+            name="description"
+            placeholder="Pet Description"
+            value={form.description}
+            onChange={handleChange}
+            rows="4"
+          />
+
+          <input
+            type="file"
+            name="images"
+            multiple
+            accept="image/*"
+            onChange={handleChange}
+          />
+        </div>
+
+        {form.images.length > 0 && (
+          <div className="image-preview">
+            {form.images.map((image, index) => (
+              <img
+                key={index}
+                src={URL.createObjectURL(image)}
+                alt="preview"
+                className="preview-img"
+              />
+            ))}
+          </div>
+        )}
+
+        <button type="submit" className="submit-btn">
+          Post Pet
+        </button>
+      </form>
+    </div>
+  );
+}

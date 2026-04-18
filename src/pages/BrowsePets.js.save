@@ -1,0 +1,137 @@
+import React, { useMemo, useState } from "react";
+
+const demoPets = [
+  { id: 1, type: "Dogs", name: "Golden Retriever", price: 12000, location: "Chennai", img: "🐶" },
+  { id: 2, type: "Cats", name: "Persian Cat", price: 8000, location: "Coimbatore", img: "🐱" },
+  { id: 3, type: "Birds", name: "Parrot", price: 2500, location: "Madurai", img: "🐦" },
+  { id: 4, type: "Dogs", name: "Beagle", price: 10000, location: "Trichy", img: "🐶" },
+  { id: 5, type: "Cats", name: "Siamese Cat", price: 9000, location: "Salem", img: "🐱" },
+];
+
+export default function BrowsePets() {
+  const [q, setQ] = useState("");
+  const [category, setCategory] = useState("All");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+  const [location, setLocation] = useState("");
+  const [sort, setSort] = useState("Latest");
+
+  const filtered = useMemo(() => {
+    let list = [...demoPets];
+
+    if (q.trim()) {
+      const s = q.trim().toLowerCase();
+      list = list.filter(
+        (p) =>
+          (p.name + " " + p.type).toLowerCase().includes(s)
+      );
+    }
+
+    if (category !== "All") {
+      list = list.filter((p) => p.type === category);
+    }
+
+    if (minPrice !== "") {
+      list = list.filter((p) => p.price >= Number(minPrice));
+    }
+
+    if (maxPrice !== "") {
+      list = list.filter((p) => p.price <= Number(maxPrice));
+    }
+
+    if (location.trim()) {
+      const s = location.trim().toLowerCase();
+      list = list.filter((p) => p.location.toLowerCase().includes(s));
+    }
+
+    if (sort === "Price: Low") list.sort((a, b) => a.price - b.price);
+    if (sort === "Price: High") list.sort((a, b) => b.price - a.price);
+
+    return list;
+  }, [q, category, minPrice, maxPrice, location, sort]);
+
+  return (
+    <div className="browse-page">
+      <div className="browse-hero">
+        <h1>Browse Pets</h1>
+        <p>Find your perfect companion from our verified sellers</p>
+      </div>
+
+      <div className="browse-filters-card">
+        <div className="browse-filters-top">
+          <input
+            className="browse-input"
+            placeholder="Search pets..."
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+          />
+
+          <select
+            className="browse-input"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            <option>All</option>
+            <option>Dogs</option>
+            <option>Cats</option>
+            <option>Birds</option>
+          </select>
+
+          <input
+            className="browse-input"
+            type="number"
+            placeholder="Min Price"
+            value={minPrice}
+            onChange={(e) => setMinPrice(e.target.value)}
+          />
+
+          <input
+            className="browse-input"
+            type="number"
+            placeholder="Max Price"
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(e.target.value)}
+          />
+        </div>
+
+        <div className="browse-filters-bottom">
+          <input
+            className="browse-input location-input"
+            placeholder="Location..."
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+          />
+        </div>
+      </div>
+
+      <div className="browse-toolbar">
+        <span>Showing {filtered.length} pets</span>
+
+        <div className="browse-sort">
+          <label>Sort by:</label>
+          <select
+            className="browse-sort-select"
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+          >
+            <option>Latest</option>
+            <option>Price: Low</option>
+            <option>Price: High</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="browse-grid">
+        {filtered.map((pet) => (
+          <div className="pet-card" key={pet.id}>
+            <div className="pet-thumb">{pet.img}</div>
+            <div className="pet-type-tag">{pet.type}</div>
+            <h3>{pet.name}</h3>
+            <p>{pet.location}</p>
+            <span>₹{pet.price.toLocaleString()}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
