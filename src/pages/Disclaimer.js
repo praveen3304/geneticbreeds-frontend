@@ -1,0 +1,1 @@
+import { useEffect } from "react"; import { useNavigate } from "react-router-dom"; export default function Disclaimer() { const navigate = useNavigate(); useEffect(() => navigate("/terms#disclaimer"), []); return null; }

@@ -303,7 +303,7 @@ export default function PetDetails() {
                 <strong>Gender:</strong> {pet.gender}
               </p>
               <p style={{ margin: 0 }}>
-                <strong>Location:</strong> {pet.city || pet.location}
+                <strong>Location:</strong> {[pet.city, pet.state, pet.country].filter(Boolean).join(", ") || pet.location || "N/A"}
               </p>
 <p style={{ margin: 0 }}>
   <strong>Owner:</strong>{" "}

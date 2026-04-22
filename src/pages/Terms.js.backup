@@ -1,0 +1,749 @@
+import React from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+
+// ─── DATA ────────────────────────────────────────────────────────────────────
+const LEGAL_SECTIONS = [
+  {
+    id: "terms",
+    icon: "⚖️",
+    label: "Terms & Conditions",
+    color: "#b91c1c",
+    bg: "#fff1f2",
+    border: "#fecdd3",
+    items: [
+      {
+        title: "1. About Genetic Breeds",
+        content: `Genetic Breeds is an online pet marketplace platform that connects pet sellers, breeders, and buyers across India and internationally. We operate as a classifieds platform only — we do not breed, sell, or own any animals. By using our platform, you agree to these Terms & Conditions in full. These terms apply to all users including sellers, buyers, and visitors.`,
+      },
+      {
+        title: "2. Platform Role & Liability",
+        content: `Genetic Breeds is a neutral intermediary platform. We are not a party to any transaction between buyers and sellers. We do not verify the health, quality, or legal status of any animal listed on the platform. All transactions are solely between the buyer and seller.\n\nGenetic Breeds holds no liability for:\n• The accuracy of any listing or seller information\n• The health, breed, or condition of any animal\n• Any disputes, losses, or damages arising from transactions\n• Any fraudulent activity by users\n• Delivery, transportation, or transfer of animals`,
+      },
+      {
+        title: "3. User Responsibilities",
+        content: `By using Genetic Breeds, you agree to:\n• Provide accurate and truthful information in your listings\n• Comply with all applicable local, state, and national laws\n• Hold all required licences and permits for breeding or selling animals\n• Not post listings for banned, restricted, or illegal breeds or species\n• Not use the platform for fraudulent or deceptive purposes\n• Take full responsibility for any animal you sell or rehome\n• Ensure humane treatment of all animals at all times`,
+      },
+      {
+        title: "4. Banned & Restricted Animals Policy",
+        content: `Genetic Breeds strictly prohibits the listing, sale, or promotion of:\n• Banned dog breeds in India as per the Dog Breeding & Marketing Rules 2017 — including Pitbull, Rottweiler, Dogo Argentino, Wolf Hybrid, Tosa Inu, Fila Brasileiro, Cane Corso, Boerboel, and others\n• Protected wildlife species under the Wildlife Protection Act 1972\n• CITES-listed species that are internationally protected\n• Any animal obtained through poaching, illegal trapping, or wildlife trafficking\n• Animals that are illegal to own or sell in the user's country or state\n\nViolation will result in immediate account suspension and may be reported to the Wildlife Crime Control Bureau (WCCB).`,
+      },
+      {
+        title: "5. Licence Requirements",
+        content: `Sellers are strongly encouraged to hold valid licences as required by law:\n• Breeder Licence from the State Animal Husbandry Department\n• Pet Shop Licence from local Municipal Authority\n• Registration under the Prevention of Cruelty to Animals Act\n\nLicensed sellers receive verified badges and higher trust visibility. Unlicensed sellers are limited to 5 ads within a 5-month period.`,
+      },
+      {
+        title: "6. Payments",
+        content: `All payments for ad posting or membership plans are processed via Razorpay. Payments are non-refundable once processed except in verified technical errors. Membership credits are non-transferable and expire as per plan terms. We are not responsible for payment disputes between buyers and sellers for animal transactions.`,
+      },
+      {
+        title: "7. Content Policy",
+        content: `You must not post content that:\n• Is false, misleading, or fraudulent\n• Promotes animal cruelty or abuse\n• Contains phone numbers in listing titles\n• Violates any third-party intellectual property rights\n• Is offensive, discriminatory, or inappropriate\n\nWe reserve the right to remove any listing or suspend any account that violates this policy without prior notice.`,
+      },
+      {
+        title: "8. Account Termination",
+        content: `We reserve the right to suspend or terminate any account that:\n• Posts banned or illegal animal listings\n• Engages in fraudulent activity\n• Repeatedly violates platform policies\n• Receives multiple verified complaints from other users`,
+      },
+      {
+        title: "9. Governing Law",
+        content: `These Terms are governed by the laws of India. Any disputes shall be subject to the exclusive jurisdiction of courts in India.`,
+      },
+      {
+        title: "10. Contact",
+        content: `For questions about these Terms, contact us at: geneticbreeds@gmail.com`,
+      },
+    ],
+  },
+  {
+    id: "privacy",
+    icon: "🔒",
+    label: "Privacy Policy",
+    color: "#1d4ed8",
+    bg: "#eff6ff",
+    border: "#bfdbfe",
+    items: [
+      {
+        title: "1. Introduction",
+        content: `Genetic Breeds is committed to protecting your privacy. This Privacy Policy explains how we collect, use, store, and protect your personal information when you use our platform at geneticbreeds.com. By using our platform, you agree to the terms of this Privacy Policy.`,
+      },
+      {
+        title: "2. Information We Collect",
+        content: `We collect the following types of information:\n• Account Information: Name, email address, phone number, country, state, city\n• Listing Information: Pet details, photos, price, location details you provide\n• Payment Information: Transaction IDs and payment status (we do not store card details — all payments processed by Razorpay)\n• Communication Data: Messages sent through our chat system\n• Usage Data: Pages visited, features used, device type, browser type\n• Licence Documents: If you voluntarily upload a breeder or pet shop licence for verification`,
+      },
+      {
+        title: "3. How We Use Your Information",
+        content: `We use your information to:\n• Create and manage your account\n• Display your listings to potential buyers\n• Process payments for ad posting and membership plans\n• Send important notifications about your account or listings\n• Verify seller licences and display trust badges\n• Prevent fraud, abuse, and illegal activity on the platform\n• Improve our platform and user experience\n• Comply with legal obligations`,
+      },
+      {
+        title: "4. Data Sharing",
+        content: `We do not sell your personal data to third parties. We may share your data with:\n• Razorpay: For payment processing\n• Cloudinary: For image storage and delivery\n• MongoDB Atlas: For secure database storage\n• Law enforcement or government authorities: If required by law or to prevent illegal activity, including wildlife trafficking or banned breed sales`,
+      },
+      {
+        title: "5. Data Storage & Security",
+        content: `Your data is stored securely on MongoDB Atlas cloud servers. We use:\n• HTTPS encryption for all data transmission\n• JWT token-based authentication\n• Secure password hashing\n• Regular security monitoring\n\nWhile we take all reasonable precautions, no system is 100% secure. We cannot guarantee absolute security of your data.`,
+      },
+      {
+        title: "6. Your Rights",
+        content: `You have the right to:\n• Access the personal data we hold about you\n• Request correction of inaccurate data\n• Request deletion of your account and data\n• Withdraw consent for data processing\n\nTo exercise these rights, contact us at: geneticbreeds@gmail.com`,
+      },
+      {
+        title: "7. Cookies & Local Storage",
+        content: `We use local storage and session tokens to keep you logged in and improve your experience. We do not use third-party advertising cookies.`,
+      },
+      {
+        title: "8. Children's Privacy",
+        content: `Our platform is not intended for users under 18 years of age. We do not knowingly collect personal information from minors.`,
+      },
+      {
+        title: "9. Changes to This Policy",
+        content: `We may update this Privacy Policy from time to time. We will notify users of significant changes via email or platform notification.`,
+      },
+    ],
+  },
+  {
+    id: "disclaimer",
+    icon: "⚠️",
+    label: "Disclaimer",
+    color: "#92400e",
+    bg: "#fffbeb",
+    border: "#fde68a",
+    items: [
+      {
+        title: "1. Platform Disclaimer",
+        content: `Genetic Breeds is an online classified advertisement platform. We act solely as an intermediary between sellers and buyers. We do not own, breed, trade, or physically handle any animals listed on our platform. We are not responsible for the accuracy, completeness, or legality of any listing posted by users.`,
+      },
+      {
+        title: "2. Banned Dog Breeds in India",
+        content: `The following dog breeds are BANNED or RESTRICTED in India and cannot be listed on Genetic Breeds:\n\n🚫 Pitbull / American Pit Bull Terrier\n🚫 Rottweiler\n🚫 Wolf Hybrid / Wolf Dog\n🚫 Dogo Argentino\n🚫 Fila Brasileiro\n🚫 Tosa Inu / Japanese Tosa\n🚫 Presa Canario / Perro de Presa Canario\n🚫 Boerboel\n🚫 Cane Corso\n🚫 Neapolitan Mastiff\n🚫 Bandog\n🚫 Caucasian Shepherd\n🚫 Central Asian Shepherd\n🚫 South Russian Ovcharka\n🚫 Moscow Watchdog\n🚫 Czechoslovakian Wolfdog\n🚫 XL Bully / American XL Bully\n\nThis list is based on the Dog Breeding & Marketing Rules 2017 and various state government notifications. Additional breeds may be banned in specific states. Users must verify local regulations before listing.`,
+      },
+      {
+        title: "3. Banned Breeds — Other Countries",
+        content: `UK (Dangerous Dogs Act 1991):\n🚫 Pitbull Terrier, Japanese Tosa, Dogo Argentino, Fila Brasileiro, XL Bully\n\nUSA (State-level bans):\n🚫 Pitbull, Wolf Hybrid, Dogo Argentino, Fila Brasileiro, Presa Canario\n\nAustralia:\n🚫 Pitbull, Japanese Tosa, Dogo Argentino, Fila Brasileiro, Presa Canario\n\nUAE:\n🚫 Pitbull, Rottweiler, Wolf Dog, Dogo Argentino, Tosa, Presa Canario\n\nUsers must comply with the banned breed laws of their respective country and state.`,
+      },
+      {
+        title: "4. Illegal Wildlife — Protected Species",
+        content: `The following animals are PROTECTED under Indian and international law and CANNOT be listed:\n\n🐯 Big Cats: Tiger, Lion, Leopard, Cheetah, Jaguar, Snow Leopard, Clouded Leopard, Caracal, Serval, Ocelot\n\n🐻 Bears: Sun Bear, Sloth Bear, Polar Bear, Grizzly Bear\n\n🐒 Primates: Monkey, Chimpanzee, Gorilla, Orangutan, Gibbon, Langur, Slow Loris, Macaque, Baboon\n\n🐊 Reptiles: Crocodile, Alligator, Monitor Lizard, Komodo Dragon, King Cobra, Python, Anaconda, Boa Constrictor, Gharial, Viper, Rattlesnake\n\n🦅 Birds: Eagle, Falcon, Hawk, Owl, Vulture, Peacock, Hornbill, Hyacinth Macaw, Toucan, African Grey Parrot, Cockatoo\n\n🐬 Marine: Dolphin, Whale, Sea Turtle, Manatee, Otter\n\n🦏 Others: Pangolin, Wolf, Elephant, Rhinoceros, Hippopotamus, Giraffe, Zebra, Kangaroo, Koala, Bat, Deer, Antelope, Bison\n\nTrading in protected wildlife is a criminal offence under the Wildlife Protection Act 1972 (India) and CITES. Offenders can face up to 7 years imprisonment and heavy fines. We report all suspected illegal wildlife trade to the Wildlife Crime Control Bureau (WCCB).`,
+      },
+      {
+        title: "5. Legal Compliance",
+        content: `All users of Genetic Breeds must comply with:\n• Prevention of Cruelty to Animals Act, 1960\n• Wildlife Protection Act, 1972\n• Dog Breeding & Marketing Rules, 2017\n• CITES (Convention on International Trade in Endangered Species)\n• State-specific animal welfare and breeding regulations\n• Local Municipal Corporation rules for pet shops`,
+      },
+      {
+        title: "6. No Endorsement",
+        content: `Genetic Breeds does not endorse any seller, buyer, or listing on the platform. The presence of a listing on our platform does not imply our approval or verification of the seller's practices, the animal's health, or the legality of the transaction. Users must conduct their own due diligence.`,
+      },
+      {
+        title: "7. Reporting Illegal Listings",
+        content: `If you suspect any listing violates wildlife protection laws or promotes banned breeds, please report it immediately to: geneticbreeds@gmail.com\n\nYou may also report wildlife crime directly to the Wildlife Crime Control Bureau (WCCB) at: wccb.gov.in`,
+      },
+      {
+        title: "8. Limitation of Liability",
+        content: `To the maximum extent permitted by law, Genetic Breeds shall not be liable for any direct, indirect, incidental, or consequential damages arising from:\n• Use of or inability to use the platform\n• Any transaction conducted through the platform\n• Any illegal activity by users\n• Health or condition of any animal purchased through the platform`,
+      },
+    ],
+  },
+  {
+    id: "refund",
+    icon: "💳",
+    label: "Refund Policy",
+    color: "#065f46",
+    bg: "#ecfdf5",
+    border: "#a7f3d0",
+    items: [
+      {
+        title: "1. Overview",
+        content: `This Refund Policy applies to all payments made on Genetic Breeds for ad posting fees, membership plans, and boost credits. Please read this policy carefully before making any payment on our platform.`,
+      },
+      {
+        title: "2. Ad Posting Fees",
+        content: `• Ad posting fees are non-refundable once the ad has been published\n• If your ad is rejected due to policy violations (banned breeds, illegal animals), no refund will be issued\n• If payment was deducted but the ad was not published due to a technical error on our side, a full refund will be processed within 5–7 business days`,
+      },
+      {
+        title: "3. Membership Plans",
+        content: `• Membership plan payments are non-refundable once activated\n• Unused ad credits or boost credits cannot be refunded or transferred\n• Membership plans expire as per the plan duration and cannot be extended or refunded upon expiry\n• If payment was deducted but membership was not activated due to a technical error, a full refund will be processed within 5–7 business days`,
+      },
+      {
+        title: "4. Boost Credits",
+        content: `• Boost credit payments are non-refundable once applied to a listing\n• If boost was not applied due to a technical error on our side, credits will be restored or a refund will be issued`,
+      },
+      {
+        title: "5. Animal Purchase Transactions",
+        content: `Genetic Breeds is a classified advertisement platform only. We are NOT involved in direct animal purchase transactions between buyers and sellers. Therefore:\n• We do not process refunds for animal purchases\n• Any disputes regarding animal quality, health, or delivery must be resolved directly between the buyer and seller\n• Genetic Breeds holds no responsibility for such transactions`,
+      },
+      {
+        title: "6. Eligible Refund Cases",
+        content: `Refunds will only be considered in these cases:\n• Double payment charged due to technical error\n• Payment deducted but service not delivered due to our system error\n• Unauthorized transaction reported within 24 hours`,
+      },
+      {
+        title: "7. How to Request a Refund",
+        content: `To request a refund, email us at geneticbreeds@gmail.com with:\n• Your registered email address\n• Payment transaction ID\n• Date of payment\n• Reason for refund request\n\nWe will review and respond within 3–5 business days.`,
+      },
+      {
+        title: "8. Refund Processing Time",
+        content: `Approved refunds will be processed within 5–7 business days to your original payment method via Razorpay. Processing times may vary depending on your bank or payment provider.`,
+      },
+    ],
+  },
+];
+
+// ─── COMPONENT ────────────────────────────────────────────────────────────────
+export default function LegalPage() {
+  const [activeTab, setActiveTab] = useState("terms");
+  const [openItems, setOpenItems] = useState({});
+  const [scrolled, setScrolled] = useState(false);
+  const contentRef = useRef(null);
+
+  // Auto-open first item of each tab
+  useEffect(() => {
+    const section = LEGAL_SECTIONS.find((s) => s.id === activeTab);
+    if (section && section.items.length > 0) {
+      setOpenItems({ [`${activeTab}-0`]: true });
+    }
+  }, [activeTab]);
+
+  // Handle URL hash — e.g. /terms#privacy
+  useEffect(() => {
+    const hash = window.location.hash.replace("#", "");
+    if (hash && LEGAL_SECTIONS.find((s) => s.id === hash)) {
+      setActiveTab(hash);
+    }
+  }, []);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 60);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const toggleItem = useCallback((key) => {
+    setOpenItems((prev) => ({ ...prev, [key]: !prev[key] }));
+  }, []);
+
+  const activeSection = LEGAL_SECTIONS.find((s) => s.id === activeTab);
+
+  return (
+    <div style={pageStyle}>
+      {/* ── Hero ── */}
+      <div style={heroStyle}>
+        <div style={heroInnerStyle}>
+          <div style={heroBadgeStyle}>📋 LEGAL CENTER</div>
+          <h1 style={heroTitleStyle}>Legal Information</h1>
+          <p style={heroSubStyle}>
+            Everything you need to know about using Genetic Breeds safely and legally.
+          </p>
+          <p style={heroUpdatedStyle}>Last updated: April 2026</p>
+        </div>
+      </div>
+
+      <div style={bodyStyle}>
+        {/* ── Sidebar ── */}
+        <aside style={{ ...sidebarStyle, ...(scrolled ? sidebarStickyStyle : {}) }}>
+          <div style={sidebarInnerStyle}>
+            <div style={sidebarTitleStyle}>Contents</div>
+            {LEGAL_SECTIONS.map((section) => {
+              const isActive = activeTab === section.id;
+              return (
+                <button
+                  key={section.id}
+                  onClick={() => {
+                    setActiveTab(section.id);
+                    window.history.pushState(null, "", `#${section.id}`);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                  style={{
+                    ...sidebarItemStyle,
+                    background: isActive ? section.bg : "transparent",
+                    border: isActive ? `1px solid ${section.border}` : "1px solid transparent",
+                    color: isActive ? section.color : "#374151",
+                  }}
+                >
+                  <span style={sidebarIconStyle}>{section.icon}</span>
+                  <span>{section.label}</span>
+                  {isActive && <span style={{ marginLeft: "auto", fontSize: "10px" }}>◀</span>}
+                </button>
+              );
+            })}
+
+            <div style={sidebarContactStyle}>
+              <div style={sidebarContactTitleStyle}>Need Help?</div>
+              <a href="mailto:geneticbreeds@gmail.com" style={sidebarContactLinkStyle}>
+                geneticbreeds@gmail.com
+              </a>
+            </div>
+          </div>
+        </aside>
+
+        {/* ── Main Content ── */}
+        <main style={mainStyle} ref={contentRef}>
+          {/* Tab Pills — mobile */}
+          <div style={tabRowStyle}>
+            {LEGAL_SECTIONS.map((section) => (
+              <button
+                key={section.id}
+                onClick={() => setActiveTab(section.id)}
+                style={{
+                  ...tabPillStyle,
+                  background: activeTab === section.id ? section.color : "#f3f4f6",
+                  color: activeTab === section.id ? "#fff" : "#374151",
+                }}
+              >
+                {section.icon} {section.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Section Header */}
+          <div
+            style={{
+              ...sectionHeaderStyle,
+              background: activeSection.bg,
+              border: `1px solid ${activeSection.border}`,
+            }}
+          >
+            <span style={sectionHeaderIconStyle}>{activeSection.icon}</span>
+            <div>
+              <div style={{ ...sectionHeaderTitleStyle, color: activeSection.color }}>
+                {activeSection.label}
+              </div>
+              <div style={sectionHeaderSubStyle}>
+                {activeSection.items.length} sections — click to expand
+              </div>
+            </div>
+          </div>
+
+          {/* Accordion */}
+          <div style={accordionWrapStyle}>
+            {activeSection.items.map((item, index) => {
+              const key = `${activeTab}-${index}`;
+              const isOpen = !!openItems[key];
+              return (
+                <AccordionItem
+                  key={key}
+                  title={item.title}
+                  content={item.content}
+                  isOpen={isOpen}
+                  onToggle={() => toggleItem(key)}
+                  color={activeSection.color}
+                  bg={activeSection.bg}
+                  border={activeSection.border}
+                  index={index}
+                />
+              );
+            })}
+          </div>
+
+          {/* Expand All / Collapse All */}
+          <div style={actionRowStyle}>
+            <button
+              onClick={() => {
+                const all = {};
+                activeSection.items.forEach((_, i) => {
+                  all[`${activeTab}-${i}`] = true;
+                });
+                setOpenItems(all);
+              }}
+              style={expandBtnStyle}
+            >
+              Expand All
+            </button>
+            <button
+              onClick={() => setOpenItems({})}
+              style={collapseBtnStyle}
+            >
+              Collapse All
+            </button>
+          </div>
+
+          {/* Footer note */}
+          <div style={footerNoteStyle}>
+            <span style={{ fontSize: "18px" }}>📧</span>
+            <span>
+              Questions about our legal policies? Contact us at{" "}
+              <a href="mailto:geneticbreeds@gmail.com" style={footerLinkStyle}>
+                geneticbreeds@gmail.com
+              </a>
+            </span>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
+
+// ─── ACCORDION ITEM ───────────────────────────────────────────────────────────
+function AccordionItem({ title, content, isOpen, onToggle, color, bg, border, index }) {
+  const bodyRef = useRef(null);
+  const [height, setHeight] = useState(0);
+
+  useEffect(() => {
+    if (bodyRef.current) {
+      setHeight(isOpen ? bodyRef.current.scrollHeight : 0);
+    }
+  }, [isOpen, content]);
+
+  const formattedContent = content.split("\n").map((line, i) => {
+    if (line.startsWith("•") || line.startsWith("🚫") || line.startsWith("🐯") ||
+        line.startsWith("🐻") || line.startsWith("🐒") || line.startsWith("🐊") ||
+        line.startsWith("🦅") || line.startsWith("🐬") || line.startsWith("🦏")) {
+      return (
+        <div key={i} style={bulletLineStyle}>
+          {line}
+        </div>
+      );
+    }
+    if (line === "") return <br key={i} />;
+    return <p key={i} style={contentParaStyle}>{line}</p>;
+  });
+
+  return (
+    <div
+      style={{
+        ...accordionItemStyle,
+        borderColor: isOpen ? border : "#e5e7eb",
+        boxShadow: isOpen ? `0 4px 20px rgba(0,0,0,0.06)` : "none",
+        animationDelay: `${index * 0.04}s`,
+      }}
+    >
+      <button onClick={onToggle} style={accordionHeaderStyle}>
+        <div style={accordionHeaderLeftStyle}>
+          <span
+            style={{
+              ...accordionIndexStyle,
+              background: isOpen ? color : "#f3f4f6",
+              color: isOpen ? "#fff" : "#6b7280",
+            }}
+          >
+            {String(index + 1).padStart(2, "0")}
+          </span>
+          <span style={{ ...accordionTitleStyle, color: isOpen ? color : "#111827" }}>
+            {title}
+          </span>
+        </div>
+        <span
+          style={{
+            ...accordionChevronStyle,
+            transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+            color: isOpen ? color : "#9ca3af",
+          }}
+        >
+          ▼
+        </span>
+      </button>
+
+      <div
+        style={{
+          height: `${height}px`,
+          overflow: "hidden",
+          transition: "height 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
+        }}
+      >
+        <div ref={bodyRef} style={{ ...accordionBodyStyle, background: isOpen ? bg : "#fff" }}>
+          {formattedContent}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── STYLES ───────────────────────────────────────────────────────────────────
+const pageStyle = {
+  minHeight: "100vh",
+  background: "#f8fafc",
+  fontFamily: "'Georgia', 'Times New Roman', serif",
+};
+
+const heroStyle = {
+  background: "linear-gradient(135deg, #7f1d1d 0%, #b91c1c 50%, #dc2626 100%)",
+  padding: "60px 24px 50px",
+  textAlign: "center",
+  position: "relative",
+  overflow: "hidden",
+};
+
+const heroInnerStyle = {
+  maxWidth: "700px",
+  margin: "0 auto",
+  position: "relative",
+  zIndex: 1,
+};
+
+const heroBadgeStyle = {
+  display: "inline-block",
+  background: "rgba(255,255,255,0.15)",
+  border: "1px solid rgba(255,255,255,0.25)",
+  borderRadius: "999px",
+  padding: "6px 16px",
+  fontSize: "11px",
+  fontWeight: "700",
+  letterSpacing: "1px",
+  color: "#fff",
+  marginBottom: "16px",
+};
+
+const heroTitleStyle = {
+  margin: 0,
+  fontSize: "clamp(28px, 5vw, 48px)",
+  fontWeight: "900",
+  color: "#fff",
+  lineHeight: 1.1,
+  fontFamily: "'Georgia', serif",
+};
+
+const heroSubStyle = {
+  margin: "14px 0 0",
+  fontSize: "16px",
+  color: "rgba(255,255,255,0.88)",
+  lineHeight: 1.7,
+};
+
+const heroUpdatedStyle = {
+  margin: "10px 0 0",
+  fontSize: "12px",
+  color: "rgba(255,255,255,0.6)",
+  fontFamily: "monospace",
+};
+
+const bodyStyle = {
+  maxWidth: "1200px",
+  margin: "0 auto",
+  padding: "32px 20px 60px",
+  display: "grid",
+  gridTemplateColumns: "240px 1fr",
+  gap: "28px",
+  alignItems: "start",
+};
+
+const sidebarStyle = {
+  transition: "top 0.3s ease",
+};
+
+const sidebarStickyStyle = {
+  position: "sticky",
+  top: "20px",
+};
+
+const sidebarInnerStyle = {
+  background: "#fff",
+  borderRadius: "18px",
+  border: "1px solid #e5e7eb",
+  boxShadow: "0 4px 20px rgba(0,0,0,0.06)",
+  padding: "18px",
+  display: "flex",
+  flexDirection: "column",
+  gap: "6px",
+};
+
+const sidebarTitleStyle = {
+  fontSize: "10px",
+  fontWeight: "900",
+  color: "#9ca3af",
+  letterSpacing: "1px",
+  padding: "0 4px 8px",
+  borderBottom: "1px solid #f3f4f6",
+  marginBottom: "4px",
+};
+
+const sidebarItemStyle = {
+  display: "flex",
+  alignItems: "center",
+  gap: "10px",
+  width: "100%",
+  textAlign: "left",
+  padding: "10px 12px",
+  borderRadius: "12px",
+  cursor: "pointer",
+  fontSize: "13px",
+  fontWeight: "700",
+  transition: "all 0.2s ease",
+  fontFamily: "sans-serif",
+};
+
+const sidebarIconStyle = { fontSize: "16px", flexShrink: 0 };
+
+const sidebarContactStyle = {
+  marginTop: "12px",
+  paddingTop: "12px",
+  borderTop: "1px solid #f3f4f6",
+};
+
+const sidebarContactTitleStyle = {
+  fontSize: "11px",
+  fontWeight: "800",
+  color: "#6b7280",
+  marginBottom: "6px",
+  fontFamily: "sans-serif",
+};
+
+const sidebarContactLinkStyle = {
+  fontSize: "12px",
+  color: "#b91c1c",
+  fontWeight: "700",
+  textDecoration: "none",
+  wordBreak: "break-all",
+  fontFamily: "sans-serif",
+};
+
+const mainStyle = { display: "flex", flexDirection: "column", gap: "16px" };
+
+const tabRowStyle = {
+  display: "none",
+  gap: "8px",
+  flexWrap: "wrap",
+};
+
+const tabPillStyle = {
+  padding: "8px 14px",
+  borderRadius: "999px",
+  border: "none",
+  cursor: "pointer",
+  fontSize: "12px",
+  fontWeight: "700",
+  fontFamily: "sans-serif",
+  transition: "all 0.2s ease",
+};
+
+const sectionHeaderStyle = {
+  display: "flex",
+  alignItems: "center",
+  gap: "16px",
+  padding: "20px 24px",
+  borderRadius: "16px",
+};
+
+const sectionHeaderIconStyle = { fontSize: "32px", flexShrink: 0 };
+
+const sectionHeaderTitleStyle = {
+  fontSize: "22px",
+  fontWeight: "900",
+  margin: 0,
+  fontFamily: "'Georgia', serif",
+};
+
+const sectionHeaderSubStyle = {
+  fontSize: "13px",
+  color: "#6b7280",
+  marginTop: "4px",
+  fontFamily: "sans-serif",
+};
+
+const accordionWrapStyle = { display: "flex", flexDirection: "column", gap: "10px" };
+
+const accordionItemStyle = {
+  background: "#fff",
+  borderRadius: "14px",
+  border: "1px solid #e5e7eb",
+  overflow: "hidden",
+  transition: "all 0.25s ease",
+  animation: "fadeSlideIn 0.3s ease both",
+};
+
+const accordionHeaderStyle = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  width: "100%",
+  padding: "16px 20px",
+  background: "transparent",
+  border: "none",
+  cursor: "pointer",
+  textAlign: "left",
+  gap: "14px",
+};
+
+const accordionHeaderLeftStyle = {
+  display: "flex",
+  alignItems: "center",
+  gap: "14px",
+  flex: 1,
+  minWidth: 0,
+};
+
+const accordionIndexStyle = {
+  width: "32px",
+  height: "32px",
+  borderRadius: "10px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontSize: "11px",
+  fontWeight: "900",
+  flexShrink: 0,
+  transition: "all 0.25s ease",
+  fontFamily: "monospace",
+};
+
+const accordionTitleStyle = {
+  fontSize: "15px",
+  fontWeight: "800",
+  lineHeight: 1.4,
+  transition: "color 0.2s ease",
+  fontFamily: "sans-serif",
+};
+
+const accordionChevronStyle = {
+  fontSize: "11px",
+  flexShrink: 0,
+  transition: "transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s ease",
+};
+
+const accordionBodyStyle = {
+  padding: "0 20px 20px 66px",
+  transition: "background 0.25s ease",
+};
+
+const contentParaStyle = {
+  margin: "0 0 10px",
+  fontSize: "14px",
+  color: "#374151",
+  lineHeight: 1.8,
+  fontFamily: "sans-serif",
+};
+
+const bulletLineStyle = {
+  fontSize: "14px",
+  color: "#374151",
+  lineHeight: 1.9,
+  paddingLeft: "4px",
+  fontFamily: "sans-serif",
+};
+
+const actionRowStyle = {
+  display: "flex",
+  gap: "10px",
+  justifyContent: "flex-end",
+};
+
+const expandBtnStyle = {
+  padding: "8px 16px",
+  borderRadius: "10px",
+  border: "1px solid #d1d5db",
+  background: "#fff",
+  color: "#374151",
+  fontSize: "12px",
+  fontWeight: "700",
+  cursor: "pointer",
+  fontFamily: "sans-serif",
+};
+
+const collapseBtnStyle = {
+  ...expandBtnStyle,
+  background: "#f3f4f6",
+};
+
+const footerNoteStyle = {
+  display: "flex",
+  alignItems: "center",
+  gap: "12px",
+  background: "#fff",
+  border: "1px solid #e5e7eb",
+  borderRadius: "14px",
+  padding: "16px 20px",
+  fontSize: "14px",
+  color: "#374151",
+  fontFamily: "sans-serif",
+};
+
+const footerLinkStyle = {
+  color: "#b91c1c",
+  fontWeight: "700",
+  textDecoration: "none",
+};

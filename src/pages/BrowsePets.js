@@ -126,7 +126,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
 
   const getAdId = (ad) => ad._id || ad.id;
   const getAdTitle = (ad) => ad.title || ad.breed || "Pet Ad";
-  const getAdLocation = (ad) => ad.city || ad.location || ad.state || "Location";
+  const getAdLocation = (ad) => { const parts = [ad.city, ad.state].filter(Boolean); return parts.length > 0 ? parts.join(", ") : ad.location || "Location"; };
   const getAdImage = (ad) =>
     ad.images && ad.images.length > 0
       ? ad.images[0]
