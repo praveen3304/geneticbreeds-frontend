@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import AdminNav from "../components/AdminNav";
+const API_BASE_URL = "https://genetic-breeds-backend.onrender.com";
 
 export default function AdminLicencesPage() {
   const token = localStorage.getItem("gb_token");
@@ -16,7 +17,7 @@ export default function AdminLicencesPage() {
     try {
       setLoading(true);
 
-      const res = await fetch(`/api/admin/licences?status=${encodeURIComponent(status)}`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/licences?status=${encodeURIComponent(status)}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -25,7 +26,7 @@ export default function AdminLicencesPage() {
       const data = await res.json();
       setLicenceUsers(Array.isArray(data) ? data : []);
     } catch (err) {
-      console.error("fetchLicenceUsers error:", err);
+      console.error(`fetchLicenceUsers error:", err);
       setLicenceUsers([]);
     } finally {
       setLoading(false);
@@ -64,8 +65,8 @@ export default function AdminLicencesPage() {
     try {
       setActionLoading(true);
 
-      const res = await fetch(`/api/admin/licences/${userId}/approve`, {
-        method: "POST",
+      const res = await fetch(`${API_BASE_URL}/api/admin/licences/${userId}/approve`, {
+        method: `POST",
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -99,8 +100,8 @@ export default function AdminLicencesPage() {
 
       setActionLoading(true);
 
-      const res = await fetch(`/api/admin/licences/${userId}/reject`, {
-        method: "POST",
+      const res = await fetch(`${API_BASE_URL}/api/admin/licences/${userId}/reject`, {
+        method: `POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

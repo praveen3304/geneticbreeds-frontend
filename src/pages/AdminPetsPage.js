@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import AdminNav from "../components/AdminNav";
+const API_BASE_URL = "https://genetic-breeds-backend.onrender.com";
 
 const colors = {
   bg: "linear-gradient(180deg, #fff8f8 0%, #ffffff 58%, #fff7f7 100%)",
@@ -105,7 +106,7 @@ export default function AdminPetsPage() {
       setLoading(true);
       setError("");
 
-      const res = await fetch("/api/admin/pets", {
+      const res = await fetch(`${API_BASE_URL}/api/admin/pets`, {
         headers: getHeaders(),
       });
 
@@ -145,8 +146,8 @@ export default function AdminPetsPage() {
       setError("");
       setSuccess("");
 
-      const res = await fetch(`/api/admin/ads/${id}/${action}`, {
-        method: "POST",
+      const res = await fetch(`${API_BASE_URL}/api/admin/ads/${id}/${action}`, {
+        method: `POST",
         headers: getHeaders(true),
       });
 
@@ -172,8 +173,8 @@ export default function AdminPetsPage() {
       setError("");
       setSuccess("");
 
-      const res = await fetch(`/api/admin/ads/${id}/hide`, {
-        method: "POST",
+      const res = await fetch(`${API_BASE_URL}/api/admin/ads/${id}/hide`, {
+        method: `POST",
         headers: getHeaders(true),
       });
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AdminNav from "../components/AdminNav";
+const API_BASE_URL = "https://genetic-breeds-backend.onrender.com";
 
 const colors = {
   bg: "linear-gradient(180deg, #fff8f8 0%, #ffffff 58%, #fff7f7 100%)",
@@ -83,7 +84,7 @@ export default function AdminDashboardPage() {
       setLoading(true);
 
       const qs = buildQueryString();
-      const url = qs ? `/api/admin/dashboard?${qs}` : "/api/admin/dashboard";
+      const url = qs ? `${API_BASE_URL}/api/admin/dashboard?${qs}` : `${API_BASE_URL}/api/admin/dashboard`;
 
       const res = await fetch(url, {
         headers: {
@@ -120,7 +121,7 @@ export default function AdminDashboardPage() {
     setTimeout(() => {
       setLoading(true);
 
-      fetch("/api/admin/dashboard?quick=today", {
+      fetch(`${API_BASE_URL}/api/admin/dashboard?quick=today`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -139,8 +140,8 @@ export default function AdminDashboardPage() {
     try {
       const qs = buildQueryString();
       const url = qs
-        ? `/api/admin/download/admin-excel?${qs}`
-        : "/api/admin/download/admin-excel";
+        ? `${API_BASE_URL}/api/admin/download/admin-excel?${qs}`
+        : `${API_BASE_URL}/api/admin/download/admin-excel`;
 
       const res = await fetch(url, {
         headers: {
@@ -160,7 +161,7 @@ export default function AdminDashboardPage() {
 
   const downloadUsersExcel = async () => {
     try {
-      const res = await fetch("/api/admin/download/users-excel", {
+      const res = await fetch(`${API_BASE_URL}/api/admin/download/users-excel`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

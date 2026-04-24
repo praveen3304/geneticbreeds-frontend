@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import AdminNav from "../components/AdminNav";
+const API_BASE_URL = "https://genetic-breeds-backend.onrender.com";
 
 const cardStyle = {
   border: "1px solid #e5e7eb",
@@ -39,7 +40,7 @@ export default function AdminDailyPostsPage() {
   const fetchDailyPosts = async () => {
     try {
       setLoading(true);
-      const res = await fetch("/api/admin/posts/daily", {
+      const res = await fetch(`${API_BASE_URL}/api/admin/posts/daily`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -64,8 +65,8 @@ export default function AdminDailyPostsPage() {
     try {
       setActionLoading((prev) => ({ ...prev, [id + action]: true }));
 
-      await fetch(`/api/admin/ads/${id}/${action}`, {
-        method: "POST",
+      await fetch(`${API_BASE_URL}/api/admin/ads/${id}/${action}`, {
+        method: `POST",
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -83,8 +84,8 @@ export default function AdminDailyPostsPage() {
     try {
       setActionLoading((prev) => ({ ...prev, [id + "hide"]: true }));
 
-      await fetch(`/api/admin/ads/${id}/hide`, {
-        method: "POST",
+      await fetch(`${API_BASE_URL}/api/admin/ads/${id}/hide`, {
+        method: `POST",
         headers: {
           Authorization: `Bearer ${token}`,
         },

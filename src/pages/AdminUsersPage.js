@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import AdminNav from "../components/AdminNav";
+const API_BASE_URL = "https://genetic-breeds-backend.onrender.com";
 
 const pageBg = "#f8fafc";
 const cardBg = "#ffffff";
@@ -34,7 +35,7 @@ export default function AdminUsersPage() {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch("/api/admin/users", {
+      const res = await fetch(`${API_BASE_URL}/api/admin/users`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -49,7 +50,7 @@ export default function AdminUsersPage() {
 
   const fetchReportSummary = async () => {
     try {
-      const res = await fetch("/api/admin/users/reports/summary", {
+      const res = await fetch(`${API_BASE_URL}/api/admin/users/reports/summary`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -72,14 +73,14 @@ export default function AdminUsersPage() {
       setSearchedUserLoading(true);
       setSearchedUserError("");
 
-      const res = await fetch(`/api/admin/users/${searchUserId.trim()}`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/users/${searchUserId.trim()}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        setSearchedUserError("User not found");
+        setSearchedUserError(`User not found");
         setSearchedUser(null);
         return;
       }
@@ -100,8 +101,8 @@ export default function AdminUsersPage() {
     try {
       setReportLoading(true);
 
-      await fetch(`/api/admin/users/${searchedUser.user._id}/report`, {
-        method: "POST",
+      await fetch(`${API_BASE_URL}/api/admin/users/${searchedUser.user._id}/report`, {
+        method: `POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -422,13 +423,13 @@ export default function AdminUsersPage() {
                       setTimeout(() => {
                         const idToSearch = u.userCode || u._id;
                         if (idToSearch) {
-                          fetch(`/api/admin/users/${idToSearch}`, {
+                          fetch(`${API_BASE_URL}/api/admin/users/${idToSearch}`, {
                             headers: { Authorization: `Bearer ${token}` },
                           })
                             .then((res) => res.json().then((data) => ({ ok: res.ok, data })))
                             .then(({ ok, data }) => {
                               if (!ok) {
-                                setSearchedUserError("User not found");
+                                setSearchedUserError(`User not found");
                                 setSearchedUser(null);
                                 return;
                               }

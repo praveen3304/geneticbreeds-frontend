@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AdminNav from "../components/AdminNav";
+const API_BASE_URL = "https://genetic-breeds-backend.onrender.com";
 
 export default function AdminReferralsPage() {
   const [data, setData] = useState(null);
@@ -9,7 +10,7 @@ export default function AdminReferralsPage() {
 
   const fetchReferrals = async () => {
     try {
-      const res = await fetch("/api/admin/referrals", {
+      const res = await fetch(`${API_BASE_URL}/api/admin/referrals`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
