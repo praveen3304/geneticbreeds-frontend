@@ -90,7 +90,35 @@ const INDIA_SECTIONS = [
         content: `These Terms & Conditions are governed by and construed in accordance with the laws of India. Any disputes arising from the use of this platform shall be subject to the exclusive jurisdiction of the competent courts in India.\n\nIn the event of a dispute, we encourage users to first contact us at geneticbreeds@gmail.com to seek an amicable resolution before pursuing legal action.`,
       },
       {
-        title: "14. Contact",
+        title: "14. Exotic & Rare Animals Policy",
+        content: `Genetic Breeds permits listings for legally owned exotic and rare animals subject to the following strict conditions:\n\n• Users are strictly prohibited from listing any animal that is illegal to own, sell, or trade under applicable national, state, or local wildlife protection laws\n• The sale or listing of exotic pets is strictly subject to local and national wildlife laws and regulations\n• Users are solely responsible for ensuring full legal compliance before listing or purchasing any exotic animal\n• All exotic animal listings must include proof of legal ownership, valid permits, and any required documentation as mandated by law\n• Genetic Breeds reserves the right to remove any exotic animal listing at its sole discretion without prior notice\n• Any user found listing illegally obtained exotic animals will be permanently banned and reported to relevant wildlife authorities\n\nGenetic Breeds does not endorse, facilitate, or encourage the trade of any animal in violation of applicable law. Listing exotic animals is a privilege, not a right, on our platform.`,
+      },
+      {
+        title: "15. Platform Availability & As-Is Disclaimer",
+        content: `Genetic Breeds is provided on an "as-is" and "as-available" basis without any warranties of any kind, either express or implied. We do not warrant that:\n\n• The platform will be uninterrupted, error-free, or completely secure\n• Any defects or errors will be corrected\n• The platform or its servers are free of viruses or harmful components\n• The results obtained from using the platform will be accurate or reliable\n\nTo the fullest extent permitted by applicable law, Genetic Breeds expressly disclaims all warranties, express or implied, including but not limited to implied warranties of merchantability, fitness for a particular purpose, and non-infringement. Your use of the platform is entirely at your own risk.`,
+      },
+      {
+        title: "16. Zero Tolerance — Illegal Wildlife Trade",
+        content: `Genetic Breeds maintains a strict zero-tolerance policy towards the illegal wildlife trade. We are committed to actively combating wildlife trafficking and animal cruelty.\n\n• Any listing suspected of involving illegally obtained, poached, or trafficked animals will be immediately removed\n• User accounts involved in illegal wildlife trade will be permanently suspended without notice or refund\n• All suspected cases of illegal wildlife trade will be proactively reported to relevant law enforcement and wildlife protection authorities\n• Users who knowingly purchase illegally listed animals are equally liable under applicable law\n• Genetic Breeds cooperates fully with law enforcement agencies investigating wildlife crime\n\nIf you encounter any listing that you suspect involves illegal wildlife trade, you are encouraged to report it immediately to geneticbreeds@gmail.com. Your report will be treated with strict confidentiality.`,
+      },
+      {
+        title: "17. Legal Protection & Limitation of Liability",
+        content: `To the maximum extent permitted by applicable law:\n\n• Genetic Breeds shall not be liable for any indirect, incidental, special, consequential, punitive, or exemplary damages arising from your use of or inability to use the platform\n• Our total liability to you for any claim arising from these Terms shall not exceed the amount you paid to us in the 3 months preceding the claim\n• We are not responsible for any loss or damage caused by a distributed denial-of-service attack, viruses, or other technologically harmful material\n• We are not liable for any transactions, disputes, or losses between buyers and sellers\n• We are not responsible for any animal's health, condition, breed accuracy, or legal status\n• We are not liable for any actions taken by government or regulatory authorities against users for violations of applicable law\n\nSome jurisdictions do not allow the exclusion or limitation of liability for consequential or incidental damages, so the above limitations may not apply to you in full.`,
+      },
+      {
+        title: "18. Severability & Waiver",
+        content: `If any provision of these Terms & Conditions is found to be invalid, illegal, or unenforceable by a court of competent jurisdiction, that provision shall be modified to the minimum extent necessary to make it enforceable, and the remaining provisions shall continue in full force and effect.\n\nOur failure to enforce any right or provision of these Terms shall not be considered a waiver of those rights. Any waiver of any provision of these Terms will be effective only if in writing and signed by an authorised representative of Genetic Breeds.`,
+      },
+      {
+        title: "19. Third-Party Links & Services",
+        content: `Our platform may contain links to third-party websites, services, or resources. Genetic Breeds is not responsible for:\n\n• The content, accuracy, or practices of any third-party websites\n• Any damages or losses caused by your use of third-party services\n• The privacy practices of third-party websites\n\nWe encourage you to review the terms and privacy policies of any third-party services you access through our platform. The inclusion of any link does not imply our endorsement of the linked site or service.`,
+      },
+      {
+        title: "20. Entire Agreement & User Acknowledgement",
+        content: `These Terms & Conditions, together with our Privacy Policy, Disclaimer, and Refund Policy, constitute the entire agreement between you and Genetic Breeds with respect to your use of the platform and supersede all prior agreements and understandings.\n\nBy using Genetic Breeds, you expressly acknowledge and agree that:\n• You have read, understood, and accepted these Terms in full\n• You are at least 18 years of age\n• You will comply with all applicable laws in your jurisdiction\n• You take full legal responsibility for all listings and transactions you conduct on the platform\n• You understand that Genetic Breeds is a classified advertisement platform only and is not a party to any transaction`,
+      },
+      {
+        title: "21. Contact",
         content: `For questions about these Terms & Conditions, please contact us at:\n\nEmail: geneticbreeds@gmail.com\n\nWe aim to respond to all enquiries within 3–5 business days.`,
       },
     ],
@@ -180,6 +208,14 @@ const INDIA_SECTIONS = [
       {
         title: "8. Force Majeure",
         content: `Genetic Breeds shall not be held liable for any failure or delay in performance resulting from causes beyond our reasonable control, including but not limited to natural disasters, government actions, internet outages, cyberattacks, or other unforeseen events.`,
+      },
+      {
+        title: "9. Exotic Pets — Special Disclaimer",
+        content: `The sale or listing of exotic pets on Genetic Breeds is strictly subject to local, state, and national wildlife laws and regulations. Users are solely responsible for ensuring full legal compliance before listing or purchasing any exotic animal.\n\n• Users are strictly prohibited from listing any animal that is illegal to own, sell, or trade under applicable wildlife protection laws\n• Genetic Breeds does not verify whether any exotic animal listed is legally owned or permitted\n• We are not responsible for any legal consequences arising from the listing or purchase of exotic animals\n• Buyers are strongly advised to verify the legal status of any exotic animal and request all relevant permits and documentation before completing any transaction\n\nGenetic Breeds reserves the right to remove any exotic animal listing at any time without prior notice or liability.`,
+      },
+      {
+        title: "10. User-Generated Content Disclaimer",
+        content: `All listings, descriptions, photos, and information on Genetic Breeds are user-generated content. Genetic Breeds does not verify, endorse, or take responsibility for any user-generated content.\n\n• We are not responsible for the accuracy, truthfulness, or legality of any listing\n• Photos may not accurately represent the actual animal\n• Prices and availability are subject to change without notice\n• Genetic Breeds reserves the right to remove any content that violates our policies at our sole discretion`,
       },
     ],
   },
@@ -290,7 +326,35 @@ const INTERNATIONAL_SECTIONS = [
         content: `These Terms & Conditions are governed by applicable law. Users are responsible for complying with the laws of their own country when using this platform.\n\nIn the event of a dispute, we encourage users to first contact us at geneticbreeds@gmail.com to seek an amicable resolution. If a resolution cannot be reached, disputes may be referred to binding arbitration or the appropriate legal jurisdiction as agreed upon by both parties.`,
       },
       {
-        title: "14. Contact",
+        title: "14. Exotic & Rare Animals Policy",
+        content: `Genetic Breeds permits listings for legally owned exotic and rare animals subject to the following strict conditions:\n\n• Users are strictly prohibited from listing any animal that is illegal to own, sell, or trade under applicable national, state, or local wildlife protection laws\n• The sale or listing of exotic pets is strictly subject to local, national, and international wildlife laws and regulations including CITES\n• Users are solely responsible for ensuring full legal compliance before listing or purchasing any exotic animal\n• All exotic animal listings must include proof of legal ownership, valid permits, and any required documentation as mandated by law in your country\n• Genetic Breeds reserves the right to remove any exotic animal listing at its sole discretion without prior notice\n• Any user found listing illegally obtained exotic animals will be permanently banned and reported to relevant wildlife authorities\n\nGenetic Breeds does not endorse, facilitate, or encourage the trade of any animal in violation of applicable law. Listing exotic animals is a privilege, not a right, on our platform.`,
+      },
+      {
+        title: "15. Platform Availability & As-Is Disclaimer",
+        content: `Genetic Breeds is provided on an "as-is" and "as-available" basis without any warranties of any kind, either express or implied. We do not warrant that:\n\n• The platform will be uninterrupted, error-free, or completely secure\n• Any defects or errors will be corrected\n• The platform or its servers are free of viruses or harmful components\n• The results obtained from using the platform will be accurate or reliable\n\nTo the fullest extent permitted by applicable law, Genetic Breeds expressly disclaims all warranties, express or implied, including but not limited to implied warranties of merchantability, fitness for a particular purpose, and non-infringement. Your use of the platform is entirely at your own risk.`,
+      },
+      {
+        title: "16. Zero Tolerance — Illegal Wildlife Trade",
+        content: `Genetic Breeds maintains a strict zero-tolerance policy towards the illegal wildlife trade. We are committed to actively combating wildlife trafficking and animal cruelty.\n\n• Any listing suspected of involving illegally obtained, poached, or trafficked animals will be immediately removed\n• User accounts involved in illegal wildlife trade will be permanently suspended without notice or refund\n• All suspected cases of illegal wildlife trade will be proactively reported to relevant national and international law enforcement and wildlife protection authorities\n• Users who knowingly purchase illegally listed animals are equally liable under applicable law\n• Genetic Breeds cooperates fully with law enforcement agencies and international bodies investigating wildlife crime\n\nIf you encounter any listing that you suspect involves illegal wildlife trade, you are encouraged to report it immediately to geneticbreeds@gmail.com. Your report will be treated with strict confidentiality.`,
+      },
+      {
+        title: "17. Legal Protection & Limitation of Liability",
+        content: `To the maximum extent permitted by applicable law:\n\n• Genetic Breeds shall not be liable for any indirect, incidental, special, consequential, punitive, or exemplary damages arising from your use of or inability to use the platform\n• Our total liability to you for any claim arising from these Terms shall not exceed the amount you paid to us in the 3 months preceding the claim\n• We are not responsible for any loss or damage caused by a distributed denial-of-service attack, viruses, or other technologically harmful material\n• We are not liable for any transactions, disputes, or losses between buyers and sellers\n• We are not responsible for any animal's health, condition, breed accuracy, or legal status\n• We are not liable for any actions taken by government or regulatory authorities against users for violations of applicable law in their country\n\nSome jurisdictions do not allow the exclusion or limitation of liability for consequential or incidental damages, so the above limitations may not apply to you in full.`,
+      },
+      {
+        title: "18. Severability & Waiver",
+        content: `If any provision of these Terms & Conditions is found to be invalid, illegal, or unenforceable by a court of competent jurisdiction, that provision shall be modified to the minimum extent necessary to make it enforceable, and the remaining provisions shall continue in full force and effect.\n\nOur failure to enforce any right or provision of these Terms shall not be considered a waiver of those rights. Any waiver of any provision of these Terms will be effective only if in writing and signed by an authorised representative of Genetic Breeds.`,
+      },
+      {
+        title: "19. Third-Party Links & Services",
+        content: `Our platform may contain links to third-party websites, services, or resources. Genetic Breeds is not responsible for:\n\n• The content, accuracy, or practices of any third-party websites\n• Any damages or losses caused by your use of third-party services\n• The privacy practices of third-party websites\n\nWe encourage you to review the terms and privacy policies of any third-party services you access through our platform. The inclusion of any link does not imply our endorsement of the linked site or service.`,
+      },
+      {
+        title: "20. Entire Agreement & User Acknowledgement",
+        content: `These Terms & Conditions, together with our Privacy Policy, Disclaimer, and Refund Policy, constitute the entire agreement between you and Genetic Breeds with respect to your use of the platform and supersede all prior agreements and understandings.\n\nBy using Genetic Breeds, you expressly acknowledge and agree that:\n• You have read, understood, and accepted these Terms in full\n• You are at least 18 years of age or the legal age of majority in your country\n• You will comply with all applicable laws in your jurisdiction\n• You take full legal responsibility for all listings and transactions you conduct on the platform\n• You understand that Genetic Breeds is a classified advertisement platform only and is not a party to any transaction`,
+      },
+      {
+        title: "21. Contact",
         content: `For questions about these Terms & Conditions, please contact us at:\n\nEmail: geneticbreeds@gmail.com\n\nWe aim to respond to all enquiries within 3–5 business days.`,
       },
     ],
@@ -384,6 +448,14 @@ const INTERNATIONAL_SECTIONS = [
       {
         title: "8. Force Majeure",
         content: `Genetic Breeds shall not be held liable for any failure or delay in performance resulting from causes beyond our reasonable control, including but not limited to natural disasters, government actions, internet outages, cyberattacks, or other unforeseen events.`,
+      },
+      {
+        title: "9. Exotic Pets — Special Disclaimer",
+        content: `The sale or listing of exotic pets on Genetic Breeds is strictly subject to local, national, and international wildlife laws and regulations including CITES. Users are solely responsible for ensuring full legal compliance before listing or purchasing any exotic animal.\n\n• Users are strictly prohibited from listing any animal that is illegal to own, sell, or trade under applicable wildlife protection laws in their country\n• Genetic Breeds does not verify whether any exotic animal listed is legally owned or permitted\n• We are not responsible for any legal consequences arising from the listing or purchase of exotic animals\n• Buyers are strongly advised to verify the legal status of any exotic animal and request all relevant permits and documentation before completing any transaction\n\nGenetic Breeds reserves the right to remove any exotic animal listing at any time without prior notice or liability.`,
+      },
+      {
+        title: "10. User-Generated Content Disclaimer",
+        content: `All listings, descriptions, photos, and information on Genetic Breeds are user-generated content. Genetic Breeds does not verify, endorse, or take responsibility for any user-generated content.\n\n• We are not responsible for the accuracy, truthfulness, or legality of any listing\n• Photos may not accurately represent the actual animal\n• Prices and availability are subject to change without notice\n• Genetic Breeds reserves the right to remove any content that violates our policies at our sole discretion`,
       },
     ],
   },
