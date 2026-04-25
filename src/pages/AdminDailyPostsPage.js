@@ -66,7 +66,7 @@ export default function AdminDailyPostsPage() {
       setActionLoading((prev) => ({ ...prev, [id + action]: true }));
 
       await fetch(`${API_BASE_URL}/api/admin/ads/${id}/${action}`, {
-        method: `POST",
+        method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -85,7 +85,7 @@ export default function AdminDailyPostsPage() {
       setActionLoading((prev) => ({ ...prev, [id + "hide"]: true }));
 
       await fetch(`${API_BASE_URL}/api/admin/ads/${id}/hide`, {
-        method: `POST",
+        method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
         },

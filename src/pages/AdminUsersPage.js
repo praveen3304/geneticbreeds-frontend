@@ -80,7 +80,7 @@ export default function AdminUsersPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setSearchedUserError(`User not found");
+        setSearchedUserError("User not found");
         setSearchedUser(null);
         return;
       }
@@ -102,7 +102,7 @@ export default function AdminUsersPage() {
       setReportLoading(true);
 
       await fetch(`${API_BASE_URL}/api/admin/users/${searchedUser.user._id}/report`, {
-        method: `POST",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -429,7 +429,7 @@ export default function AdminUsersPage() {
                             .then((res) => res.json().then((data) => ({ ok: res.ok, data })))
                             .then(({ ok, data }) => {
                               if (!ok) {
-                                setSearchedUserError(`User not found");
+                                setSearchedUserError("User not found");
                                 setSearchedUser(null);
                                 return;
                               }

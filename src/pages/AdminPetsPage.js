@@ -147,7 +147,7 @@ export default function AdminPetsPage() {
       setSuccess("");
 
       const res = await fetch(`${API_BASE_URL}/api/admin/ads/${id}/${action}`, {
-        method: `POST",
+        method: "POST",
         headers: getHeaders(true),
       });
 
@@ -174,7 +174,7 @@ export default function AdminPetsPage() {
       setSuccess("");
 
       const res = await fetch(`${API_BASE_URL}/api/admin/ads/${id}/hide`, {
-        method: `POST",
+        method: "POST",
         headers: getHeaders(true),
       });
 

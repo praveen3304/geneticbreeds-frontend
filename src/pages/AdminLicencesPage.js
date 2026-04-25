@@ -26,7 +26,7 @@ export default function AdminLicencesPage() {
       const data = await res.json();
       setLicenceUsers(Array.isArray(data) ? data : []);
     } catch (err) {
-      console.error(`fetchLicenceUsers error:", err);
+      console.error("fetchLicenceUsers error:", err);
       setLicenceUsers([]);
     } finally {
       setLoading(false);
@@ -66,7 +66,7 @@ export default function AdminLicencesPage() {
       setActionLoading(true);
 
       const res = await fetch(`${API_BASE_URL}/api/admin/licences/${userId}/approve`, {
-        method: `POST",
+        method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -101,7 +101,7 @@ export default function AdminLicencesPage() {
       setActionLoading(true);
 
       const res = await fetch(`${API_BASE_URL}/api/admin/licences/${userId}/reject`, {
-        method: `POST",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
