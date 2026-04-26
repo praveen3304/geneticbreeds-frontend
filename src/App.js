@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate, useNavigate, Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
+import PawAnimation from "./components/PawAnimation";
 import toast from "react-hot-toast";
 
 import PetDetails from "./pages/PetDetails";
@@ -108,6 +109,7 @@ export default function App() {
   return (
     <>
       <Toaster position="top-right" />
+      <PawAnimation />
 
       <Navbar
         isAuthed={isAuthed}
