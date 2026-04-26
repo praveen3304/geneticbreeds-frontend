@@ -42,7 +42,7 @@ export default function PawAnimation() {
       const startY = Math.random() * window.innerHeight;
       const stepDist = 65;
       const stepSide = 22;
-      const numSteps = 6;
+      const numSteps = Math.ceil(Math.max(window.innerWidth, window.innerHeight) / 65) + 4;
       const paws = [];
       for (let i = 0; i < numSteps; i++) {
         (function(step) {
