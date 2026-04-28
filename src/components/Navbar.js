@@ -810,17 +810,17 @@ export default function Navbar({
             </>
           ) : (
             <>
-              <NavLink to="/wishlist" style={({ isActive }) => (isActive ? activeLinkStyle : navLinkStyle)}>
+              <NavLink to="/wishlist" className="nav-wishlist" style={({ isActive }) => (isActive ? activeLinkStyle : navLinkStyle)}>
                 Wishlist ({wishlist.length})
               </NavLink>
               <NavLink to="/browse" style={({ isActive }) => (isActive ? activeLinkStyle : navLinkStyle)}>
                 Home
               </NavLink>
-              <NavLink to="/chats" style={({ isActive }) => (isActive ? activeLinkStyle : navLinkStyle)}>
+              <NavLink to="/chats" className="nav-chats" style={({ isActive }) => (isActive ? activeLinkStyle : navLinkStyle)}>
                 Chats
                 {unreadCount > 0 && <span style={inlineCountBadgeStyle}>{unreadCount}</span>}
               </NavLink>
-              <NavLink to="/my-ads" style={({ isActive }) => (isActive ? activeLinkStyle : navLinkStyle)}>
+              <NavLink to="/my-ads" className="nav-myads" style={({ isActive }) => (isActive ? activeLinkStyle : navLinkStyle)}>
                 My Ads
               </NavLink>
 
@@ -964,7 +964,7 @@ export default function Navbar({
         ) : (
           <div style={drawerContentWrapStyle}>
             {/* Sidebar */}
-            <div style={drawerSidebarStyle}>
+            <div style={{...drawerSidebarStyle, display: typeof window !== "undefined" && window.innerWidth < 768 && activeSection !== "" ? "none" : "flex", flexDirection: "column"}}>
               <div style={userMiniCardStyle}>
                 <div style={userAvatarStyle}>{(user?.name || "U").charAt(0).toUpperCase()}</div>
                 <div>
@@ -992,7 +992,16 @@ export default function Navbar({
             </div>
 
             {/* Main content */}
-            <div style={drawerMainStyle}>
+            <div style={{...drawerMainStyle, gridColumn: typeof window !== "undefined" && window.innerWidth < 768 ? "1" : "auto"}}>
+              {/* Mobile back button */}
+              {typeof window !== "undefined" && window.innerWidth < 768 && activeSection && (
+                <button
+                  onClick={() => setActiveSection("")}
+                  style={{display:"flex",alignItems:"center",gap:"6px",background:"none",border:"none",color:"#b91c1c",fontWeight:"700",fontSize:"14px",cursor:"pointer",padding:"8px 12px",marginBottom:"8px"}}
+                >
+                  ← Back to Menu
+                </button>
+              )}
               {loadingProfile ? (
                 <div style={sectionCardStyle}><p style={infoTextStyle}>Loading profile...</p></div>
               ) : profileError ? (
@@ -1307,11 +1316,11 @@ const navStyle = {
   display: "flex", justifyContent: "space-between", alignItems: "center",
   padding: "12px 18px",
   background: "linear-gradient(135deg, #6b0f1a 0%, #b91327 55%, #d32f2f 100%)",
-  position: "sticky", top: 0, zIndex: 1200,
+  position: "sticky", top: 0, zIndex: 1200, overflow: "visible", minHeight: "64px",
   boxShadow: "0 8px 24px rgba(127, 29, 29, 0.22)",
 };
 const navLeftStyle = { display: "flex", alignItems: "center", gap: "10px" };
-const navRightStyle = { display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" };
+const navRightStyle = { display: "flex", alignItems: "center", gap: "6px", flexWrap: "nowrap" };
 
 const menuButtonStyle = {
   width: "42px", height: "42px", borderRadius: "12px",
@@ -1323,7 +1332,7 @@ const menuLineStyle = { width: "16px", height: "2px", borderRadius: "999px", bac
 
 const navLinkStyle = {
   color: "#fff", textDecoration: "none", fontWeight: "800", fontSize: "13px",
-  padding: "9px 14px", borderRadius: "12px", background: "rgba(255,255,255,0.12)",
+  padding: "7px 10px", borderRadius: "10px", background: "rgba(255,255,255,0.12)",
   border: "1px solid rgba(255,255,255,0.18)", boxShadow: "0 4px 10px rgba(0,0,0,0.08)",
   transition: "all 0.2s ease",
 };
@@ -1331,7 +1340,7 @@ const activeLinkStyle = { ...navLinkStyle, background: "#fff", color: "#991b1b",
 
 const navAdminStyle = {
   color: "#fff", textDecoration: "none", fontWeight: "900", fontSize: "13px",
-  padding: "9px 14px", borderRadius: "12px",
+  padding: "7px 10px", borderRadius: "10px",
   background: "linear-gradient(135deg, #111827 0%, #374151 100%)",
   border: "1px solid rgba(255,255,255,0.12)", boxShadow: "0 6px 14px rgba(17,24,39,0.25)",
   transition: "all 0.2s ease",
@@ -1341,11 +1350,11 @@ const activeAdminStyle = { ...navAdminStyle, background: "linear-gradient(135deg
 const navTextBtnStyle = {
   background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.18)",
   color: "#fff", fontWeight: "800", cursor: "pointer", fontSize: "13px",
-  padding: "9px 14px", borderRadius: "12px",
+  padding: "7px 10px", borderRadius: "10px",
 };
 const navBtnStyle = {
   background: "#fff", color: "#991b1b", border: "none",
-  padding: "9px 14px", borderRadius: "12px", cursor: "pointer",
+  padding: "7px 10px", borderRadius: "10px", cursor: "pointer",
   fontWeight: "900", fontSize: "13px", boxShadow: "0 6px 14px rgba(0,0,0,0.08)",
 };
 
@@ -1442,7 +1451,7 @@ const notificationFooterPrimaryBtnStyle = {
 
 const overlayStyle = { position: "fixed", inset: 0, background: "rgba(15, 23, 42, 0.28)", zIndex: 1290 };
 const drawerStyle = {
-  position: "fixed", top: 0, left: 0, width: "min(720px, 52vw)", height: "100vh",
+  position: "fixed", top: 0, left: 0, width: "min(720px, 96vw)", height: "100vh",
   background: "#fff7f7", zIndex: 1300, transition: "transform 0.32s ease",
   boxShadow: "16px 0 40px rgba(127, 29, 29, 0.18)",
   display: "flex", flexDirection: "column", overflow: "hidden",
@@ -1463,7 +1472,8 @@ const closeBtnStyle = {
 const drawerBodyStyle = { padding: "16px" };
 const emptyCardStyle = { background: "#fff", borderRadius: "16px", border: "1px solid #fecaca", padding: "16px" };
 const emptyTextStyle = { margin: 0, color: "#7f1d1d", fontWeight: "700", fontSize: "13px" };
-const drawerContentWrapStyle = { display: "grid", gridTemplateColumns: "185px 1fr", minHeight: 0, flex: 1 };
+const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+const drawerContentWrapStyle = { display: "grid", gridTemplateColumns: isMobile ? "1fr" : "185px 1fr", minHeight: 0, flex: 1 };
 const drawerSidebarStyle = { background: "#fff", borderRight: "1px solid #fee2e2", padding: "14px", display: "flex", flexDirection: "column", gap: "8px" };
 const userMiniCardStyle = {
   display: "flex", alignItems: "center", gap: "10px", padding: "10px", borderRadius: "14px",
@@ -1502,7 +1512,7 @@ const sectionTitleStyle = { margin: 0, fontSize: "18px", fontWeight: "900", colo
 const sectionDescStyle = { margin: "5px 0 0", fontSize: "12px", color: "#6b7280", lineHeight: 1.5 };
 const statusPillStyle = { padding: "6px 10px", borderRadius: "999px", fontSize: "11px", fontWeight: "800", whiteSpace: "nowrap" };
 
-const fieldGridStyle = { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "10px" };
+const fieldGridStyle = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: "10px" };
 const fieldGridStyleWithTopSpace = { ...fieldGridStyle, marginTop: "12px" };
 const fieldStyle = { display: "flex", flexDirection: "column" };
 const labelStyle = { fontSize: "12px", fontWeight: "800", color: "#374151", marginBottom: "5px" };
@@ -1557,7 +1567,7 @@ const referralCodeBoxStyle = {
 };
 const referralBtnRowStyle = { display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "10px" };
 
-const statsGridStyle = { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "10px", marginTop: "12px" };
+const statsGridStyle = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))", gap: "10px", marginTop: "12px" };
 const miniStatCardStyle = { background: "#fff", border: "1px solid #fee2e2", borderRadius: "14px", padding: "12px" };
 const miniStatLabelStyle = { fontSize: "11px", fontWeight: "800", color: "#6b7280", marginBottom: "5px" };
 const miniStatValueStyle = { fontSize: "18px", fontWeight: "900", color: "#991b1b" };

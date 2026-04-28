@@ -288,7 +288,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
               <input
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                placeholder="Search pets..."
+                placeholder="Search..."
                 style={{
                   border: "none",
                   outline: "none",
@@ -315,7 +315,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
               <input
                 value={breed}
                 onChange={(e) => setBreed(e.target.value)}
-                placeholder="Breed type..."
+                placeholder="Breed..."
                 style={{
                   border: "none",
                   outline: "none",
@@ -384,7 +384,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
               <input
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                placeholder="Location..."
+                placeholder="Location"
                 style={{
                   border: "none",
                   outline: "none",
@@ -410,7 +410,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
               <input
                 value={minPrice}
                 onChange={(e) => setMinPrice(e.target.value)}
-                placeholder="Min Price"
+                placeholder="Min ₹"
                 style={{
                   border: "none",
                   outline: "none",
@@ -436,7 +436,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
               <input
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
-                placeholder="Max Price"
+                placeholder="Max ₹"
                 style={{
                   border: "none",
                   outline: "none",

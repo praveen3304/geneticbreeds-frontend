@@ -769,8 +769,8 @@ const heroTitleStyle = { margin: 0, fontSize: "clamp(28px, 5vw, 48px)", fontWeig
 const heroSubStyle = { margin: "14px 0 0", fontSize: "16px", color: "rgba(255,255,255,0.88)", lineHeight: 1.7 };
 const heroUpdatedStyle = { margin: "10px 0 0", fontSize: "12px", color: "rgba(255,255,255,0.6)", fontFamily: "monospace" };
 const regionNoteStyle = { margin: "10px 0 0", fontSize: "11px", color: "rgba(255,255,255,0.65)", fontFamily: "sans-serif" };
-const bodyStyle = { maxWidth: "1200px", margin: "0 auto", padding: "32px 20px 60px", display: "grid", gridTemplateColumns: "240px 1fr", gap: "28px", alignItems: "start" };
-const sidebarStyle = { transition: "top 0.3s ease" };
+const bodyStyle = { maxWidth: "1200px", margin: "0 auto", padding: "32px 20px 60px", display: "grid", gridTemplateColumns: typeof window !== "undefined" && window.innerWidth < 768 ? "1fr" : "240px 1fr", gap: "28px", alignItems: "start" };
+const sidebarStyle = { transition: "top 0.3s ease", display: typeof window !== "undefined" && window.innerWidth < 768 ? "none" : "block" };
 const sidebarStickyStyle = { position: "sticky", top: "20px" };
 const sidebarInnerStyle = { background: "#fff", borderRadius: "18px", border: "1px solid #e5e7eb", boxShadow: "0 4px 20px rgba(0,0,0,0.06)", padding: "18px", display: "flex", flexDirection: "column", gap: "6px" };
 const sidebarTitleStyle = { fontSize: "10px", fontWeight: "900", color: "#9ca3af", letterSpacing: "1px", padding: "0 4px 8px", borderBottom: "1px solid #f3f4f6", marginBottom: "4px" };
@@ -780,7 +780,7 @@ const sidebarContactStyle = { marginTop: "12px", paddingTop: "12px", borderTop: 
 const sidebarContactTitleStyle = { fontSize: "11px", fontWeight: "800", color: "#6b7280", marginBottom: "6px", fontFamily: "sans-serif" };
 const sidebarContactLinkStyle = { fontSize: "12px", color: "#b91c1c", fontWeight: "700", textDecoration: "none", wordBreak: "break-all", fontFamily: "sans-serif" };
 const mainStyle = { display: "flex", flexDirection: "column", gap: "16px" };
-const tabRowStyle = { display: "none", gap: "8px", flexWrap: "wrap" };
+const tabRowStyle = { display: typeof window !== "undefined" && window.innerWidth < 768 ? "flex" : "none", gap: "8px", flexWrap: "wrap", marginBottom: "8px" };
 const tabPillStyle = { padding: "8px 14px", borderRadius: "999px", border: "none", cursor: "pointer", fontSize: "12px", fontWeight: "700", fontFamily: "sans-serif", transition: "all 0.2s ease" };
 const sectionHeaderStyle = { display: "flex", alignItems: "center", gap: "16px", padding: "20px 24px", borderRadius: "16px" };
 const sectionHeaderIconStyle = { fontSize: "32px", flexShrink: 0 };
