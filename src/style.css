@@ -1389,3 +1389,10 @@ body{
     font-size: 12px !important;
   }
 }
+
+/* Hide Login/Register from navbar on mobile */
+@media (max-width: 768px) {
+  .nav-login-btn, .nav-register-btn {
+    display: none !important;
+  }
+}

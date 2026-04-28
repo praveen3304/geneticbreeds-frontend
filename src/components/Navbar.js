@@ -805,8 +805,8 @@ export default function Navbar({
         <div style={navRightStyle}>
           {!isAuthed ? (
             <>
-              <button style={navTextBtnStyle} onClick={onLogin}>Login</button>
-              <button style={navBtnStyle} onClick={onRegister}>Register</button>
+              <button className="nav-login-btn" style={navTextBtnStyle} onClick={onLogin}>Login</button>
+              <button className="nav-register-btn" style={navBtnStyle} onClick={onRegister}>Register</button>
             </>
           ) : (
             <>
