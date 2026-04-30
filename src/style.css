@@ -1,3 +1,8 @@
+body {
+  margin: 0;
+  overflow-x: hidden;
+}
+
 html, body, #root {
   margin: 0;
   padding: 0;
@@ -1390,9 +1395,17 @@ body{
   }
 }
 
-/* Hide Login/Register from navbar on mobile */
+/* Hide Login/Register from navbar on landing page - handled in page */
+.nav-login-btn, .nav-register-btn {
+  display: flex;
+}
 @media (max-width: 768px) {
   .nav-login-btn, .nav-register-btn {
     display: none !important;
   }
+}
+
+/* Hide scrollbar on landing page */
+body.landing-page {
+  overflow: hidden;
 }

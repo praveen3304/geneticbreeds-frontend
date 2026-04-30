@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, useNavigate, Link } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate, Link, useLocation } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import PawAnimation from "./components/PawAnimation";
@@ -70,6 +70,7 @@ export default function App() {
 
   const isAuthed = !!token;
   const isAdmin = !!user && user.role === "admin";
+  const location = useLocation();
 
   const openLogin = () => {
     setAuthMode("login");
@@ -111,15 +112,16 @@ export default function App() {
       <Toaster position="top-right" />
       <PawAnimation />
 
-      <Navbar
-        isAuthed={isAuthed}
-        wishlist={wishlist}
-        onLogin={openLogin}
-        onRegister={openRegister}
-        onLogout={onLogout}
-        isAdmin={isAdmin}
-      />
-
+{location.pathname !== "/" && (
+        <Navbar
+          isAuthed={isAuthed}
+          wishlist={wishlist}
+          onLogin={openLogin}
+          onRegister={openRegister}
+          onLogout={onLogout}
+          isAdmin={isAdmin}
+        />
+      )}
       {authOpen && (
         <AuthModal
           type={authMode}

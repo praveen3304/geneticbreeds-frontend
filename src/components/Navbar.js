@@ -1,12 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 
-// ─── Constants ───────────────────────────────────────────────────────────────
 const THREADS_KEY = "gb_chat_threads";
-const API_BASE_URL = "https://genetic-breeds-backend.onrender.com";
+const API_BASE_URL = "http://localhost:10000";
 
-// ─── Pure helpers (no hooks) ──────────────────────────────────────────────────
 function getUnreadCount() {
   try {
     const threads = JSON.parse(localStorage.getItem(THREADS_KEY) || "{}");
@@ -66,7 +64,10 @@ function getIndiaLicenceAuthority(state, city) {
     "Arunachal Pradesh": "Arunachal Pradesh Animal Husbandry Department",
   };
 
-  if (mappedAuthorities[cleanState]) return mappedAuthorities[cleanState];
+  if (mappedAuthorities[cleanState]) {
+    return mappedAuthorities[cleanState];
+  }
+
   return cleanCity
     ? `${cleanState} Animal Husbandry Department`
     : `${cleanState} Animal Husbandry Department`;
@@ -74,44 +75,57 @@ function getIndiaLicenceAuthority(state, city) {
 
 function normalizeLicenceStatus(statusValue, hasDocument) {
   const normalized = (statusValue || "").toString().trim().toLowerCase();
+
   if (normalized === "approved") return "approved";
   if (normalized === "pending") return "pending";
   if (normalized === "rejected") return "rejected";
   if (normalized === "none") return hasDocument ? "pending" : "not_uploaded";
   if (normalized === "not uploaded") return "not_uploaded";
   if (normalized === "not_uploaded") return "not_uploaded";
+
   return hasDocument ? "pending" : "not_uploaded";
 }
 
 function formatDisplayDate(dateValue) {
   if (!dateValue) return "-";
+
   const date = new Date(dateValue);
   if (Number.isNaN(date.getTime())) return "-";
+
   return date.toLocaleDateString();
 }
 
 function formatCurrencyValue(amount, currency) {
   const numericAmount = Number(amount || 0);
   const normalizedCurrency = String(currency || "").trim().toUpperCase();
+
   if (normalizedCurrency === "INR") return `₹${numericAmount}`;
   if (normalizedCurrency === "USD") return `$${numericAmount}`;
   if (normalizedCurrency) return `${normalizedCurrency} ${numericAmount}`;
+
   return `${numericAmount}`;
 }
 
 function formatRelativeTime(dateValue) {
   if (!dateValue) return "Just now";
+
   const date = new Date(dateValue);
   if (Number.isNaN(date.getTime())) return "Just now";
+
   const diffMs = Date.now() - date.getTime();
   const diffSeconds = Math.max(0, Math.floor(diffMs / 1000));
+
   if (diffSeconds < 60) return "Just now";
+
   const diffMinutes = Math.floor(diffSeconds / 60);
   if (diffMinutes < 60) return `${diffMinutes}m ago`;
+
   const diffHours = Math.floor(diffMinutes / 60);
   if (diffHours < 24) return `${diffHours}h ago`;
+
   const diffDays = Math.floor(diffHours / 24);
   if (diffDays < 7) return `${diffDays}d ago`;
+
   return date.toLocaleDateString();
 }
 
@@ -120,27 +134,78 @@ function getNotificationMeta(notification) {
     .trim()
     .toLowerCase();
 
-  if (rawType.includes("chat") || rawType.includes("message") || rawType.includes("inbox"))
-    return { icon: "💬", accent: "#2563eb", soft: "#eff6ff", border: "#bfdbfe" };
+  if (
+    rawType.includes("chat") ||
+    rawType.includes("message") ||
+    rawType.includes("inbox")
+  ) {
+    return {
+      icon: "💬",
+      accent: "#2563eb",
+      soft: "#eff6ff",
+      border: "#bfdbfe",
+    };
+  }
 
-  if (rawType.includes("review") || rawType.includes("rating") || rawType.includes("seller"))
-    return { icon: "⭐", accent: "#d97706", soft: "#fffbeb", border: "#fde68a" };
+  if (
+    rawType.includes("review") ||
+    rawType.includes("rating") ||
+    rawType.includes("seller")
+  ) {
+    return {
+      icon: "⭐",
+      accent: "#d97706",
+      soft: "#fffbeb",
+      border: "#fde68a",
+    };
+  }
 
-  if (rawType.includes("payment") || rawType.includes("membership") || rawType.includes("boost"))
-    return { icon: "💳", accent: "#7c3aed", soft: "#f5f3ff", border: "#ddd6fe" };
+  if (
+    rawType.includes("payment") ||
+    rawType.includes("membership") ||
+    rawType.includes("boost")
+  ) {
+    return {
+      icon: "💳",
+      accent: "#7c3aed",
+      soft: "#f5f3ff",
+      border: "#ddd6fe",
+    };
+  }
 
   if (
     rawType.includes("licence") ||
     rawType.includes("license") ||
     rawType.includes("verification") ||
     rawType.includes("approval")
-  )
-    return { icon: "🛡️", accent: "#059669", soft: "#ecfdf5", border: "#a7f3d0" };
+  ) {
+    return {
+      icon: "🛡️",
+      accent: "#059669",
+      soft: "#ecfdf5",
+      border: "#a7f3d0",
+    };
+  }
 
-  if (rawType.includes("warning") || rawType.includes("report") || rawType.includes("reject"))
-    return { icon: "⚠️", accent: "#dc2626", soft: "#fef2f2", border: "#fecaca" };
+  if (
+    rawType.includes("warning") ||
+    rawType.includes("report") ||
+    rawType.includes("reject")
+  ) {
+    return {
+      icon: "⚠️",
+      accent: "#dc2626",
+      soft: "#fef2f2",
+      border: "#fecaca",
+    };
+  }
 
-  return { icon: "🔔", accent: "#b91c1c", soft: "#fff1f2", border: "#fecdd3" };
+  return {
+    icon: "🔔",
+    accent: "#b91c1c",
+    soft: "#fff1f2",
+    border: "#fecdd3",
+  };
 }
 
 function getNotificationTitle(notification) {
@@ -177,11 +242,14 @@ function getNotificationLink(notification) {
   if (notification?.link) return notification.link;
   if (notification?.url) return notification.url;
   if (notification?.path) return notification.path;
+
   const rawType = String(notification?.type || "").toLowerCase();
+
   if (rawType.includes("chat") || rawType.includes("message")) return "/chats";
   if (rawType.includes("review") || rawType.includes("rating")) return "/browse";
   if (rawType.includes("membership") || rawType.includes("payment")) return "/my-ads";
   if (rawType.includes("licence") || rawType.includes("license")) return null;
+
   return null;
 }
 
@@ -189,7 +257,6 @@ function getNotificationId(notification) {
   return notification?._id || notification?.id || notification?.notificationId;
 }
 
-// ─── Component ────────────────────────────────────────────────────────────────
 export default function Navbar({
   isAuthed,
   wishlist = [],
@@ -199,23 +266,19 @@ export default function Navbar({
   isAdmin,
 }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const notificationDropdownRef = useRef(null);
 
-  // ── drawer / section
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("profile");
-
-  // ── user / membership
   const [user, setUser] = useState(null);
   const [membership, setMembership] = useState(null);
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [loadingMembership, setLoadingMembership] = useState(false);
   const [profileError, setProfileError] = useState("");
-
-  // ── chat unread
   const [unreadCount, setUnreadCount] = useState(0);
 
-  // ── notifications
   const [notifications, setNotifications] = useState([]);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [loadingNotifications, setLoadingNotifications] = useState(false);
@@ -224,22 +287,19 @@ export default function Navbar({
   const [markingAllNotifications, setMarkingAllNotifications] = useState(false);
   const [activeNotificationId, setActiveNotificationId] = useState("");
 
-  // ── profile edit
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [savingProfile, setSavingProfile] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);           // ✅ FIXED: moved inside component
+  const [profileSaveStatus, setProfileSaveStatus] = useState("idle");
   const [paymentRegionOverride, setPaymentRegionOverride] = useState("auto");
   const [savingPaymentMode, setSavingPaymentMode] = useState(false);
 
-  // ── licence
   const [licenceType, setLicenceType] = useState("");
   const [licenceNumber, setLicenceNumber] = useState("");
   const [licenceAuthority, setLicenceAuthority] = useState("");
   const [licenceFile, setLicenceFile] = useState(null);
   const [submittingLicence, setSubmittingLicence] = useState(false);
 
-  // ── password reset
   const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
   const [resetStep, setResetStep] = useState(1);
   const [resetTimer, setResetTimer] = useState(0);
@@ -256,14 +316,14 @@ export default function Navbar({
 
   const token = localStorage.getItem("gb_token");
 
-  // ── derived
-  const normalizedCountry = (user?.country || "").trim().toLowerCase();
-  const isIndiaUser =
-    paymentRegionOverride === "india"
-      ? true
-      : paymentRegionOverride === "international"
-      ? false
-      : normalizedCountry === "india";
+const normalizedCountry = (user?.country || "").trim().toLowerCase();
+
+const isIndiaUser =
+  paymentRegionOverride === "india"
+    ? true
+    : paymentRegionOverride === "international"
+    ? false
+    : normalizedCountry === "india";
 
   const hasUploadedLicenceDocument = !!user?.licenceDocument;
 
@@ -278,50 +338,123 @@ export default function Navbar({
   }, [user]);
 
   const usedReferralAdsCount = useMemo(() => {
-    const credits = Array.isArray(user?.referralCredits) ? user.referralCredits : [];
-    return credits.filter((c) => c?.used === true).length;
+    const credits = Array.isArray(user?.referralCredits)
+      ? user.referralCredits
+      : [];
+    return credits.filter((credit) => credit?.used === true).length;
   }, [user]);
 
   const availableReferralAdsCount = useMemo(() => {
-    const credits = Array.isArray(user?.referralCredits) ? user.referralCredits : [];
+    const credits = Array.isArray(user?.referralCredits)
+      ? user.referralCredits
+      : [];
     const now = new Date();
-    return credits.filter((c) => {
-      if (!c || c.used) return false;
-      if (c.expiresAt && new Date(c.expiresAt) <= now) return false;
+
+    return credits.filter((credit) => {
+      if (!credit || credit.used) return false;
+      if (credit.expiresAt && new Date(credit.expiresAt) <= now) return false;
       return true;
     }).length;
   }, [user]);
 
   const nextReferralExpiry = useMemo(() => {
-    const credits = Array.isArray(user?.referralCredits) ? user.referralCredits : [];
+    const credits = Array.isArray(user?.referralCredits)
+      ? user.referralCredits
+      : [];
     const now = new Date();
-    const next = credits
-      .filter((c) => c && !c.used && c.expiresAt && new Date(c.expiresAt) > now)
+
+    const nextValidCredit = credits
+      .filter((credit) => {
+        if (!credit || credit.used) return false;
+        if (!credit.expiresAt) return false;
+        return new Date(credit.expiresAt) > now;
+      })
       .sort((a, b) => new Date(a.expiresAt) - new Date(b.expiresAt))[0];
-    return next?.expiresAt || null;
+
+    return nextValidCredit?.expiresAt || null;
   }, [user]);
 
   const membershipStatusStyles = useMemo(() => {
-    const s = String(membership?.status || "").trim().toLowerCase();
-    if (s === "active") return { color: "#166534", background: "#dcfce7", border: "1px solid #bbf7d0" };
-    if (s === "pending") return { color: "#b45309", background: "#fef3c7", border: "1px solid #fde68a" };
-    if (s === "expired") return { color: "#b91c1c", background: "#fee2e2", border: "1px solid #fecaca" };
-    if (s === "cancelled") return { color: "#374151", background: "#f3f4f6", border: "1px solid #d1d5db" };
-    return { color: "#7f1d1d", background: "#fff1f2", border: "1px solid #fecdd3" };
+    const normalized = String(membership?.status || "")
+      .trim()
+      .toLowerCase();
+
+    if (normalized === "active") {
+      return {
+        color: "#166534",
+        background: "#dcfce7",
+        border: "1px solid #bbf7d0",
+      };
+    }
+
+    if (normalized === "pending") {
+      return {
+        color: "#b45309",
+        background: "#fef3c7",
+        border: "1px solid #fde68a",
+      };
+    }
+
+    if (normalized === "expired") {
+      return {
+        color: "#b91c1c",
+        background: "#fee2e2",
+        border: "1px solid #fecaca",
+      };
+    }
+
+    if (normalized === "cancelled") {
+      return {
+        color: "#374151",
+        background: "#f3f4f6",
+        border: "1px solid #d1d5db",
+      };
+    }
+
+    return {
+      color: "#7f1d1d",
+      background: "#fff1f2",
+      border: "1px solid #fecdd3",
+    };
   }, [membership]);
 
-  const normalizedLicenceStatus = normalizeLicenceStatus(user?.licenceStatus, hasUploadedLicenceDocument);
-  const isLicenceLocked = normalizedLicenceStatus === "pending" || normalizedLicenceStatus === "approved";
-  const isLicenceEditable = normalizedLicenceStatus === "not_uploaded" || normalizedLicenceStatus === "rejected";
+  const normalizedLicenceStatus = normalizeLicenceStatus(
+    user?.licenceStatus,
+    hasUploadedLicenceDocument
+  );
+
+  const isLicenceLocked =
+    normalizedLicenceStatus === "pending" ||
+    normalizedLicenceStatus === "approved";
+
+  const isLicenceEditable =
+    normalizedLicenceStatus === "not_uploaded" ||
+    normalizedLicenceStatus === "rejected";
 
   const licenceStatusStyles =
     normalizedLicenceStatus === "approved"
-      ? { color: "#166534", background: "#dcfce7", border: "1px solid #bbf7d0" }
+      ? {
+          color: "#166534",
+          background: "#dcfce7",
+          border: "1px solid #bbf7d0",
+        }
       : normalizedLicenceStatus === "pending"
-      ? { color: "#b45309", background: "#fef3c7", border: "1px solid #fde68a" }
+      ? {
+          color: "#b45309",
+          background: "#fef3c7",
+          border: "1px solid #fde68a",
+        }
       : normalizedLicenceStatus === "rejected"
-      ? { color: "#b91c1c", background: "#fee2e2", border: "1px solid #fecaca" }
-      : { color: "#7f1d1d", background: "#fff1f2", border: "1px solid #fecdd3" };
+      ? {
+          color: "#b91c1c",
+          background: "#fee2e2",
+          border: "1px solid #fecaca",
+        }
+      : {
+          color: "#7f1d1d",
+          background: "#fff1f2",
+          border: "1px solid #fecdd3",
+        };
 
   const licenceStatusLabel =
     normalizedLicenceStatus === "approved"
@@ -338,22 +471,26 @@ export default function Navbar({
 
   const hasNotifications = visibleNotifications.length > 0;
 
-  // ── effects
-  useEffect(() => {
-    if (!isAuthed || !token) {
-      setUser(null);
-      setMembership(null);
-      setPaymentRegionOverride("auto");
-      return;
-    }
-    fetchProfile();
-    fetchMembership();
-  }, [isAuthed, token]);
+useEffect(() => {
+  if (!isAuthed || !token) {
+    setUser(null);
+    setMembership(null);
+    setPaymentRegionOverride("auto");
+    return;
+  }
+
+  fetchProfile();
+  fetchMembership();
+}, [isAuthed, token]);
 
   useEffect(() => {
-    const updateUnread = () => setUnreadCount(getUnreadCount());
+    const updateUnread = () => {
+      setUnreadCount(getUnreadCount());
+    };
+
     updateUnread();
     const interval = setInterval(updateUnread, 2000);
+
     return () => clearInterval(interval);
   }, []);
 
@@ -364,55 +501,102 @@ export default function Navbar({
       setNotificationsOpen(false);
       return;
     }
+
     fetchNotifications({ showLoader: true });
-    const interval = setInterval(() => fetchNotifications({ silent: true }), 15000);
+
+    const interval = setInterval(() => {
+      fetchNotifications({ silent: true });
+    }, 15000);
+
     return () => clearInterval(interval);
   }, [isAuthed, token]);
 
   useEffect(() => {
     if (!user) return;
-    if (user?.licenceAuthority) { setLicenceAuthority(user.licenceAuthority); return; }
-    if (isIndiaUser && autoMappedIndiaAuthority) { setLicenceAuthority(autoMappedIndiaAuthority); return; }
-    if (!isIndiaUser) setLicenceAuthority("");
+
+    if (user?.licenceAuthority) {
+      setLicenceAuthority(user.licenceAuthority);
+      return;
+    }
+
+    if (isIndiaUser && autoMappedIndiaAuthority) {
+      setLicenceAuthority(autoMappedIndiaAuthority);
+      return;
+    }
+
+    if (!isIndiaUser) {
+      setLicenceAuthority("");
+    }
   }, [user, isIndiaUser, autoMappedIndiaAuthority]);
 
   useEffect(() => {
-    if (activeSection !== "settings" || !showChangePasswordForm || resetTimer <= 0) return;
-    const interval = setInterval(() => setResetTimer((p) => p - 1), 1000);
+    if (activeSection !== "settings" || !showChangePasswordForm) return;
+    if (resetTimer <= 0) return;
+
+    const interval = setInterval(() => {
+      setResetTimer((prev) => prev - 1);
+    }, 1000);
+
     return () => clearInterval(interval);
   }, [activeSection, showChangePasswordForm, resetTimer]);
 
   useEffect(() => {
     if (!notificationsOpen) return;
-    const handleClickOutside = (e) => {
-      if (notificationDropdownRef.current && !notificationDropdownRef.current.contains(e.target))
+
+    const handleClickOutside = (event) => {
+      if (
+        notificationDropdownRef.current &&
+        !notificationDropdownRef.current.contains(event.target)
+      ) {
         setNotificationsOpen(false);
+      }
     };
-    const handleEscape = (e) => { if (e.key === "Escape") setNotificationsOpen(false); };
+
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        setNotificationsOpen(false);
+      }
+    };
+
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("keydown", handleEscape);
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleEscape);
     };
   }, [notificationsOpen]);
 
-  // ── API helpers
   const fetchProfile = async () => {
     try {
       setLoadingProfile(true);
       setProfileError("");
-      if (!token) { setProfileError("Please login first"); setUser(null); return; }
+
+      if (!token) {
+        setProfileError("Please login first");
+        setUser(null);
+        return;
+      }
+
       const res = await fetch(`${API_BASE_URL}/api/auth/me`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+
       const data = await res.json();
-      if (!res.ok) { setProfileError(data.error || "Failed to load profile"); setUser(null); return; }
+
+      if (!res.ok) {
+        setProfileError(data.error || "Failed to load profile");
+        setUser(null);
+        return;
+      }
+
       setUser(data);
       setPhone(data.phone || "");
       setEmail(data.email || "");
-      setPaymentRegionOverride(data.paymentRegionOverride || "auto");
-      setLicenceType(data.licenceType || "");
+      setPaymentRegionOverride(data.paymentRegionOverride || "auto");      
+setLicenceType(data.licenceType || "");
       setLicenceNumber(data.licenceNumber || "");
       setLicenceAuthority(
         data.licenceAuthority ||
@@ -421,7 +605,12 @@ export default function Navbar({
             : "")
       );
       setLicenceFile(null);
-      setResetForm((prev) => ({ ...prev, email: data.email || prev.email || "" }));
+
+      setResetForm((prev) => ({
+        ...prev,
+        email: data.email || prev.email || "",
+      }));
+
       localStorage.setItem("gb_user", JSON.stringify(data));
     } catch (err) {
       console.error("Drawer profile fetch error:", err);
@@ -435,12 +624,25 @@ export default function Navbar({
   const fetchMembership = async () => {
     try {
       setLoadingMembership(true);
-      if (!token) { setMembership(null); return; }
+
+      if (!token) {
+        setMembership(null);
+        return;
+      }
+
       const res = await fetch(`${API_BASE_URL}/api/payments/my-credits`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+
       const data = await res.json();
-      if (!res.ok) { setMembership(null); return; }
+
+      if (!res.ok) {
+        setMembership(null);
+        return;
+      }
+
       setMembership(data);
     } catch (err) {
       console.error("Membership fetch error:", err);
@@ -450,19 +652,36 @@ export default function Navbar({
     }
   };
 
-  const fetchNotifications = async ({ silent = false, showLoader = false } = {}) => {
+  const fetchNotifications = async ({
+    silent = false,
+    showLoader = false,
+  } = {}) => {
     if (!token || !isAuthed) return;
+
     try {
-      if (showLoader && !silent) setLoadingNotifications(true);
-      if (!silent) setNotificationsError("");
+      if (showLoader && !silent) {
+        setLoadingNotifications(true);
+      }
+
+      if (!silent) {
+        setNotificationsError("");
+      }
+
       const listRes = await fetch(`${API_BASE_URL}/api/notifications`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+
       const listData = await listRes.json();
+
       if (!listRes.ok) {
-        if (!silent) setNotificationsError(listData.error || "Failed to load notifications");
+        if (!silent) {
+          setNotificationsError(listData.error || "Failed to load notifications");
+        }
         return;
       }
+
       const list = Array.isArray(listData)
         ? listData
         : Array.isArray(listData.notifications)
@@ -470,15 +689,34 @@ export default function Navbar({
         : Array.isArray(listData.data)
         ? listData.data
         : [];
+
       setNotifications(list);
-      const unreadFromList = list.filter((item) => item?.isRead === false || item?.read === false).length;
+
+      const unreadFromList = list.filter(
+        (item) => item?.isRead === false || item?.read === false
+      ).length;
+
       try {
-        const countRes = await fetch(`${API_BASE_URL}/api/notifications/unread-count`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const countRes = await fetch(
+          `${API_BASE_URL}/api/notifications/unread-count`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
         const countData = await countRes.json();
+
         if (countRes.ok) {
-          const unread = Number(countData?.unreadCount ?? countData?.count ?? countData?.unread ?? unreadFromList) || 0;
+          const unread =
+            Number(
+              countData?.unreadCount ??
+                countData?.count ??
+                countData?.unread ??
+                unreadFromList
+            ) || 0;
+
           setNotificationUnreadCount(unread);
         } else {
           setNotificationUnreadCount(unreadFromList);
@@ -488,73 +726,116 @@ export default function Navbar({
       }
     } catch (err) {
       console.error("Notifications fetch error:", err);
-      if (!silent) setNotificationsError("Failed to load notifications");
+      if (!silent) {
+        setNotificationsError("Failed to load notifications");
+      }
     } finally {
-      if (showLoader && !silent) setLoadingNotifications(false);
+      if (showLoader && !silent) {
+        setLoadingNotifications(false);
+      }
     }
   };
 
   const updateProfileFields = async () => {
     try {
-      if (!phone.trim()) { toast.error("Phone number is required"); return; }
-      setSavingProfile(true);
-      toast.loading("Saving changes...", { id: "profile-save" });
+if (!phone.trim()) {
+  toast.error("Phone number is required");
+  return;
+}
 
-      const previousEmail = user?.email || "";
-      const previousPaymentMode = user?.paymentRegionOverride || "auto";
-      const emailChanged = email !== previousEmail;
-      const paymentModeChanged = paymentRegionOverride !== previousPaymentMode;
+setSavingProfile(true);
+setProfileSaveStatus("saving");
+toast.loading("Saving changes...", { id: "profile-save" });
 
-      // PHONE
-      const phoneRes = await fetch(`${API_BASE_URL}/api/auth/update-phone`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ phone }),
-      });
-      const phoneData = await phoneRes.json();
-      if (!phoneRes.ok) { toast.error(phoneData.error || "Failed to update phone", { id: "profile-save" }); return; }
+const previousEmail = user?.email || "";
+const previousPaymentMode = user?.paymentRegionOverride || "auto";
+const emailChanged = email !== previousEmail;
+const paymentModeChanged = paymentRegionOverride !== previousPaymentMode;
 
-      // EMAIL
-      if (emailChanged) {
-        try {
-          const emailRes = await fetch(`${API_BASE_URL}/api/auth/update-email`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-            body: JSON.stringify({ email }),
-          });
-          const emailData = await emailRes.json();
-          if (!emailRes.ok) toast.error(emailData.error || "Phone updated, but email update API is not ready yet", { id: "profile-save" });
-        } catch (emailErr) {
-          console.error("Email update error:", emailErr);
-          toast.error("Phone updated. Email update failed.", { id: "profile-save" });
-        }
-      }
+const phoneRes = await fetch(`${API_BASE_URL}/api/auth/update-phone`, {
+  method: "PUT",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  },
+  body: JSON.stringify({ phone }),
+});
 
-      // PAYMENT MODE
-      const paymentRes = await fetch(`${API_BASE_URL}/api/auth/update-payment-mode`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ paymentRegionOverride }),
-      });
-      const paymentData = await paymentRes.json().catch(() => ({}));
-      if (!paymentRes.ok) { toast.error(paymentData.error || "Failed to update payment mode", { id: "profile-save" }); return; }
+const phoneData = await phoneRes.json();
 
-      await fetchProfile();
+if (!phoneRes.ok) {
+  toast.error(phoneData.error || "Failed to update phone", {
+    id: "profile-save",
+  });
+  return;
+}
 
-      toast.success(
-        paymentModeChanged
-          ? "Payment mode updated successfully 🌍"
-          : emailChanged
-          ? "Profile updated successfully ✅"
-          : phoneData.message || "Profile updated successfully ✅",
+if (emailChanged) {
+  try {
+    const emailRes = await fetch(`${API_BASE_URL}/api/auth/update-email`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    const emailData = await emailRes.json();
+
+    if (!emailRes.ok) {
+      toast.error(
+        emailData.error || "Phone updated, but email update API is not ready yet",
         { id: "profile-save" }
       );
+    }
+  } catch (emailErr) {
+    console.error("Email update error:", emailErr);
+    toast.error("Phone updated. Email update API is not ready yet.", {
+      id: "profile-save",
+    });
+  }
+}
 
-      setIsSaved(true);
-      setTimeout(() => setIsSaved(false), 2500);
+const paymentModeRes = await fetch(`${API_BASE_URL}/api/auth/update-payment-mode`, {
+  method: "PUT",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  },
+  body: JSON.stringify({
+    paymentRegionOverride,
+  }),
+});
+
+const paymentModeData = await paymentModeRes.json().catch(() => ({}));
+
+if (!paymentModeRes.ok) {
+  toast.error(paymentModeData.error || "Failed to update payment mode", {
+    id: "profile-save",
+  });
+  return;
+}
+
+await fetchProfile();
+
+setProfileSaveStatus("saved");
+setTimeout(() => {
+setProfileSaveStatus("idle");
+}, 2500);
+
+toast.success(
+  paymentModeChanged
+    ? "Payment mode updated successfully 🌍"
+    : emailChanged
+    ? "Profile updated successfully ✅"
+    : phoneData.message || "Profile updated successfully ✅",
+  { id: "profile-save" }
+);
+
     } catch (err) {
       console.error("Profile update error:", err);
-      toast.error("Error updating profile", { id: "profile-save" });
+    toast.error("Error updating profile", { id: "profile-save" });
     } finally {
       setSavingProfile(false);
     }
@@ -562,29 +843,69 @@ export default function Navbar({
 
   const submitLicence = async () => {
     try {
-      if (!isLicenceEditable) { alert("Licence cannot be edited right now"); return; }
-      if (!licenceType.trim()) { alert("Licence type is required"); return; }
-      if (!licenceNumber.trim()) { alert("Licence number is required"); return; }
-      if (isIndiaUser && !licenceAuthority.trim()) { alert("Licence authority is required for India"); return; }
-      if (!licenceFile && normalizedLicenceStatus !== "rejected" && !user?.licenceDocument) {
-        alert("Please upload a licence document"); return;
+      if (!isLicenceEditable) {
+        alert("Licence cannot be edited right now");
+        return;
       }
+
+      if (!licenceType.trim()) {
+        alert("Licence type is required");
+        return;
+      }
+
+      if (!licenceNumber.trim()) {
+        alert("Licence number is required");
+        return;
+      }
+
+      if (isIndiaUser && !licenceAuthority.trim()) {
+        alert("Licence authority is required for India");
+        return;
+      }
+
+      if (
+        !licenceFile &&
+        normalizedLicenceStatus !== "rejected" &&
+        !user?.licenceDocument
+      ) {
+        alert("Please upload a licence document");
+        return;
+      }
+
       if (normalizedLicenceStatus === "rejected" && !licenceFile) {
-        alert("Please re-upload the corrected licence document"); return;
+        alert("Please re-upload the corrected licence document");
+        return;
       }
+
       setSubmittingLicence(true);
+
       const formData = new FormData();
       formData.append("licenceType", licenceType);
       formData.append("licenceNumber", licenceNumber);
-      if (isIndiaUser) formData.append("licenceAuthority", licenceAuthority);
-      if (licenceFile) formData.append("licenceDocument", licenceFile);
+
+      if (isIndiaUser) {
+        formData.append("licenceAuthority", licenceAuthority);
+      }
+
+      if (licenceFile) {
+        formData.append("licenceDocument", licenceFile);
+      }
+
       const res = await fetch(`${API_BASE_URL}/api/auth/upload-licence`, {
         method: "PUT",
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         body: formData,
       });
+
       const data = await res.json();
-      if (!res.ok) { alert(data.error || "Failed to submit licence"); return; }
+
+      if (!res.ok) {
+        alert(data.error || "Failed to submit licence");
+        return;
+      }
+
       alert(data.message || "Licence submitted successfully");
       await fetchProfile();
       setLicenceFile(null);
@@ -598,16 +919,33 @@ export default function Navbar({
 
   const sendOtp = async () => {
     try {
-      setResetError(""); setResetSuccess("");
-      if (!resetForm.email.trim()) { setResetError("Email is required"); return; }
+      setResetError("");
+      setResetSuccess("");
+
+      if (!resetForm.email.trim()) {
+        setResetError("Email is required");
+        return;
+      }
+
       setSendingOtp(true);
+
       const res = await fetch("/api/auth/forgot-password", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: resetForm.email }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: resetForm.email,
+        }),
       });
+
       const data = await res.json();
-      if (!res.ok) { setResetError(data.error || "Failed to send OTP"); return; }
+
+      if (!res.ok) {
+        setResetError(data.error || "Failed to send OTP");
+        return;
+      }
+
       setResetSuccess("OTP sent to your email");
       setResetStep(2);
       setResetTimer(60);
@@ -621,20 +959,50 @@ export default function Navbar({
 
   const resetPasswordInline = async () => {
     try {
-      setResetError(""); setResetSuccess("");
-      if (resetForm.newPassword !== resetForm.confirmPassword) { setResetError("Passwords do not match"); return; }
-      if (!resetForm.otp.trim()) { setResetError("OTP is required"); return; }
+      setResetError("");
+      setResetSuccess("");
+
+      if (resetForm.newPassword !== resetForm.confirmPassword) {
+        setResetError("Passwords do not match");
+        return;
+      }
+
+      if (!resetForm.otp.trim()) {
+        setResetError("OTP is required");
+        return;
+      }
+
       setResettingPassword(true);
+
       const res = await fetch("/api/auth/reset-password", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: resetForm.email, otp: resetForm.otp, newPassword: resetForm.newPassword }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: resetForm.email,
+          otp: resetForm.otp,
+          newPassword: resetForm.newPassword,
+        }),
       });
+
       const data = await res.json();
-      if (!res.ok) { setResetError(data.error || "Password reset failed"); return; }
+
+      if (!res.ok) {
+        setResetError(data.error || "Password reset failed");
+        return;
+      }
+
       setResetSuccess("Password reset successful");
-      setResetStep(1); setResetTimer(0); setShowChangePasswordForm(false);
-      setResetForm({ email: user?.email || "", otp: "", newPassword: "", confirmPassword: "" });
+      setResetStep(1);
+      setResetTimer(0);
+      setShowChangePasswordForm(false);
+      setResetForm({
+        email: user?.email || "",
+        otp: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
     } catch (err) {
       console.error("Reset password error:", err);
       setResetError("Server error");
@@ -645,14 +1013,26 @@ export default function Navbar({
 
   const openInlineChangePassword = () => {
     setShowChangePasswordForm((prev) => !prev);
-    setResetError(""); setResetSuccess(""); setResetStep(1); setResetTimer(0);
-    setResetForm({ email: user?.email || "", otp: "", newPassword: "", confirmPassword: "" });
+    setResetError("");
+    setResetSuccess("");
+    setResetStep(1);
+    setResetTimer(0);
+    setResetForm({
+      email: user?.email || "",
+      otp: "",
+      newPassword: "",
+      confirmPassword: "",
+    });
   };
 
   const copyReferralCode = async () => {
     try {
       const code = user?.referralCode || "";
-      if (!code) { alert("No referral code found"); return; }
+      if (!code) {
+        alert("No referral code found");
+        return;
+      }
+
       await navigator.clipboard.writeText(code);
       alert("Referral code copied");
     } catch (err) {
@@ -661,46 +1041,66 @@ export default function Navbar({
     }
   };
 
-  const shareReferral = async () => {
-    try {
-      if (!user?.referralCode) { alert("No referral code found"); return; }
-      const shareData = { title: "Genetic Breeds Referral", text: referralShareText, url: window.location.origin };
-      if (navigator.share) {
-        await navigator.share(shareData);
-      } else {
-        await navigator.clipboard.writeText(`${referralShareText} - ${window.location.origin}`);
-        alert("Share not supported on this device. Referral message copied instead.");
-      }
-    } catch (err) {
-      console.error("Share referral error:", err);
-    }
-  };
+  const shareReferral = () => { setInviteModalOpen(true); };
 
   const markNotificationAsRead = async (notificationId) => {
     if (!notificationId || !token) return;
+
     try {
       setActiveNotificationId(notificationId);
+
       let success = false;
+
       const attempts = [
-        { url: `${API_BASE_URL}/api/notifications/${notificationId}/read`, method: "PUT" },
-        { url: `${API_BASE_URL}/api/notifications/${notificationId}/read`, method: "PATCH" },
-        { url: `${API_BASE_URL}/api/notifications/read/${notificationId}`, method: "PUT" },
+        {
+          url: `${API_BASE_URL}/api/notifications/${notificationId}/read`,
+          method: "PUT",
+        },
+        {
+          url: `${API_BASE_URL}/api/notifications/${notificationId}/read`,
+          method: "PATCH",
+        },
+        {
+          url: `${API_BASE_URL}/api/notifications/read/${notificationId}`,
+          method: "PUT",
+        },
       ];
+
       for (const attempt of attempts) {
         try {
-          const res = await fetch(attempt.url, { method: attempt.method, headers: { Authorization: `Bearer ${token}` } });
-          if (res.ok) { success = true; break; }
-        } catch { /* try next */ }
+          const res = await fetch(attempt.url, {
+            method: attempt.method,
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (res.ok) {
+            success = true;
+            break;
+          }
+        } catch {
+          // try next pattern
+        }
       }
+
       setNotifications((prev) =>
         prev.map((item) => {
           const id = getNotificationId(item);
           if (String(id) !== String(notificationId)) return item;
-          return { ...item, isRead: true, read: true };
+          return {
+            ...item,
+            isRead: true,
+            read: true,
+          };
         })
       );
+
       setNotificationUnreadCount((prev) => Math.max(0, prev - 1));
-      if (!success) await fetchNotifications({ silent: true });
+
+      if (!success) {
+        await fetchNotifications({ silent: true });
+      }
     } catch (err) {
       console.error("Mark notification read error:", err);
       await fetchNotifications({ silent: true });
@@ -711,23 +1111,57 @@ export default function Navbar({
 
   const markAllNotificationsRead = async () => {
     if (!token) return;
+
     try {
       setMarkingAllNotifications(true);
+
       let success = false;
+
       const attempts = [
-        { url: `${API_BASE_URL}/api/notifications/read-all`, method: "PUT" },
-        { url: `${API_BASE_URL}/api/notifications/mark-all-read`, method: "PUT" },
-        { url: `${API_BASE_URL}/api/notifications/read-all`, method: "PATCH" },
+        {
+          url: `${API_BASE_URL}/api/notifications/read-all`,
+          method: "PUT",
+        },
+        {
+          url: `${API_BASE_URL}/api/notifications/mark-all-read`,
+          method: "PUT",
+        },
+        {
+          url: `${API_BASE_URL}/api/notifications/read-all`,
+          method: "PATCH",
+        },
       ];
+
       for (const attempt of attempts) {
         try {
-          const res = await fetch(attempt.url, { method: attempt.method, headers: { Authorization: `Bearer ${token}` } });
-          if (res.ok) { success = true; break; }
-        } catch { /* try next */ }
+          const res = await fetch(attempt.url, {
+            method: attempt.method,
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (res.ok) {
+            success = true;
+            break;
+          }
+        } catch {
+          // try next pattern
+        }
       }
-      setNotifications((prev) => prev.map((item) => ({ ...item, isRead: true, read: true })));
+
+      setNotifications((prev) =>
+        prev.map((item) => ({
+          ...item,
+          isRead: true,
+          read: true,
+        }))
+      );
       setNotificationUnreadCount(0);
-      if (!success) await fetchNotifications({ silent: true });
+
+      if (!success) {
+        await fetchNotifications({ silent: true });
+      }
     } catch (err) {
       console.error("Mark all notifications read error:", err);
       await fetchNotifications({ silent: true });
@@ -739,20 +1173,33 @@ export default function Navbar({
   const handleNotificationOpen = async (notification) => {
     const notificationId = getNotificationId(notification);
     const targetLink = getNotificationLink(notification);
-    if (notificationId && (notification?.isRead === false || notification?.read === false))
+
+    if (
+      notificationId &&
+      (notification?.isRead === false || notification?.read === false)
+    ) {
       await markNotificationAsRead(notificationId);
+    }
+
     setNotificationsOpen(false);
-    if (targetLink) navigate(targetLink);
+
+    if (targetLink) {
+      navigate(targetLink);
+    }
   };
 
   const toggleNotifications = async () => {
-    const next = !notificationsOpen;
-    setNotificationsOpen(next);
-    if (next) await fetchNotifications({ showLoader: true });
+    const nextOpenState = !notificationsOpen;
+    setNotificationsOpen(nextOpenState);
+
+    if (nextOpenState) {
+      await fetchNotifications({ showLoader: true });
+    }
   };
 
   const logoutCurrentDevice = () => {
-    setDrawerOpen(false); setNotificationsOpen(false);
+    setDrawerOpen(false);
+    setNotificationsOpen(false);
     onLogout();
     navigate("/", { replace: true });
   };
@@ -762,36 +1209,27 @@ export default function Navbar({
   };
 
   const deleteAccount = async () => {
-    const ok = window.confirm("Are you sure you want to delete your account? This action cannot be undone.");
+    const ok = window.confirm(
+      "Are you sure you want to delete your account? This action cannot be undone."
+    );
     if (!ok) return;
+
     alert("Delete account UI is ready. Backend API needs to be connected next.");
   };
 
   const closeDrawer = () => setDrawerOpen(false);
 
-  // ── Save button label/icon
-  const saveButtonContent = savingProfile
-    ? "Saving..."
-    : isSaved
-    ? "Saved ✓"
-    : "Save Profile Changes";
-
-  const saveButtonStyle = {
-    ...primaryActionBtnStyle,
-    ...(isSaved ? savedBtnStyle : {}),
-    ...(savingProfile ? savingBtnStyle : {}),
-  };
-
-  // ────────────────────────────────────── JSX ──────────────────────────────────
   return (
     <>
-      {/* ── Navbar ── */}
       <div style={navStyle}>
         <div style={navLeftStyle}>
           {isAuthed && (
             <button
               type="button"
-              onClick={() => { setDrawerOpen(true); setActiveSection("profile"); }}
+              onClick={() => {
+                setDrawerOpen(true);
+                setActiveSection("profile");
+              }}
               style={menuButtonStyle}
               aria-label="Open menu"
             >
@@ -803,36 +1241,62 @@ export default function Navbar({
         </div>
 
         <div style={navRightStyle}>
-          {!isAuthed ? (
+          {!isAuthed && location.pathname !== "/" ? (
             <>
-              <button className="nav-login-btn" style={navTextBtnStyle} onClick={onLogin}>Login</button>
-              <button className="nav-register-btn" style={navBtnStyle} onClick={onRegister}>Register</button>
+              <button style={navTextBtnStyle} onClick={onLogin}>
+                Login
+              </button>
+
+              <button style={navBtnStyle} onClick={onRegister}>
+                Register
+              </button>
             </>
           ) : (
             <>
-              <NavLink to="/wishlist" className="nav-wishlist" style={({ isActive }) => (isActive ? activeLinkStyle : navLinkStyle)}>
+              <NavLink
+                to="/wishlist"
+                style={({ isActive }) => (isActive ? activeLinkStyle : navLinkStyle)}
+              >
                 Wishlist ({wishlist.length})
               </NavLink>
-              <NavLink to="/browse" style={({ isActive }) => (isActive ? activeLinkStyle : navLinkStyle)}>
+
+              <NavLink
+                to="/browse"
+                style={({ isActive }) => (isActive ? activeLinkStyle : navLinkStyle)}
+              >
                 Home
               </NavLink>
-              <NavLink to="/chats" className="nav-chats" style={({ isActive }) => (isActive ? activeLinkStyle : navLinkStyle)}>
+
+              <NavLink
+                to="/chats"
+                style={({ isActive }) => (isActive ? activeLinkStyle : navLinkStyle)}
+              >
                 Chats
-                {unreadCount > 0 && <span style={inlineCountBadgeStyle}>{unreadCount}</span>}
+                {unreadCount > 0 && (
+                  <span style={inlineCountBadgeStyle}>{unreadCount}</span>
+                )}
               </NavLink>
-              <NavLink to="/my-ads" className="nav-myads" style={({ isActive }) => (isActive ? activeLinkStyle : navLinkStyle)}>
+
+              <NavLink
+                to="/my-ads"
+                style={({ isActive }) => (isActive ? activeLinkStyle : navLinkStyle)}
+              >
                 My Ads
               </NavLink>
 
-              {/* Notifications */}
               <div style={notificationWrapStyle} ref={notificationDropdownRef}>
                 <button
                   type="button"
                   onClick={toggleNotifications}
-                  style={notificationsOpen ? notificationBellButtonActiveStyle : notificationBellButtonStyle}
+                  style={
+                    notificationsOpen
+                      ? notificationBellButtonActiveStyle
+                      : notificationBellButtonStyle
+                  }
                   aria-label="Open notifications"
                 >
                   <span style={notificationBellIconStyle}>🔔</span>
+
                   {notificationUnreadCount > 0 && (
                     <span style={notificationBadgeStyle}>
                       {notificationUnreadCount > 99 ? "99+" : notificationUnreadCount}
@@ -844,73 +1308,143 @@ export default function Navbar({
                   <div style={notificationDropdownStyle}>
                     <div style={notificationDropdownHeaderStyle}>
                       <div>
-                        <div style={notificationDropdownLabelStyle}>NOTIFICATIONS</div>
-                        <div style={notificationDropdownTitleStyle}>Recent Updates</div>
+                        <div style={notificationDropdownLabelStyle}>
+                          NOTIFICATIONS
+                        </div>
+                        <div style={notificationDropdownTitleStyle}>
+                          Recent Updates
+                        </div>
                       </div>
+
                       <button
                         type="button"
                         onClick={markAllNotificationsRead}
                         style={markAllReadBtnStyle}
-                        disabled={markingAllNotifications || notificationUnreadCount === 0}
+                        disabled={
+                          markingAllNotifications || notificationUnreadCount === 0
+                        }
                       >
                         {markingAllNotifications ? "Updating..." : "Mark all read"}
                       </button>
                     </div>
 
                     <div style={notificationSummaryRowStyle}>
-                      <div style={notificationSummaryPillStyle}>Total: {notifications.length}</div>
-                      <div style={notificationSummaryPillUnreadStyle}>Unread: {notificationUnreadCount}</div>
+                      <div style={notificationSummaryPillStyle}>
+                        Total: {notifications.length}
+                      </div>
+                      <div style={notificationSummaryPillUnreadStyle}>
+                        Unread: {notificationUnreadCount}
+                      </div>
                     </div>
 
                     <div style={notificationListStyle}>
                       {loadingNotifications ? (
-                        <div style={notificationStateCardStyle}><p style={infoTextStyle}>Loading notifications...</p></div>
+                        <div style={notificationStateCardStyle}>
+                          <p style={infoTextStyle}>Loading notifications...</p>
+                        </div>
                       ) : notificationsError ? (
-                        <div style={notificationStateCardStyle}><p style={errorTextStyle}>{notificationsError}</p></div>
+                        <div style={notificationStateCardStyle}>
+                          <p style={errorTextStyle}>{notificationsError}</p>
+                        </div>
                       ) : !hasNotifications ? (
                         <div style={notificationStateCardStyle}>
                           <div style={emptyNotificationIconStyle}>🔕</div>
-                          <p style={emptyNotificationTitleStyle}>No notifications yet</p>
+                          <p style={emptyNotificationTitleStyle}>
+                            No notifications yet
+                          </p>
                           <p style={emptyNotificationTextStyle}>
-                            Your latest alerts, chats, reviews and account updates will appear here.
+                            Your latest alerts, chats, reviews and account updates
+                            will appear here.
                           </p>
                         </div>
                       ) : (
                         visibleNotifications.map((notification) => {
                           const meta = getNotificationMeta(notification);
                           const notificationId = getNotificationId(notification);
-                          const isUnread = notification?.isRead === false || notification?.read === false;
+                          const isUnread =
+                            notification?.isRead === false ||
+                            notification?.read === false;
+
                           return (
                             <div
                               key={notificationId || `${getNotificationTitle(notification)}-${getNotificationTimestamp(notification)}`}
-                              style={{ ...notificationItemStyle, background: isUnread ? meta.soft : "#fff", borderColor: isUnread ? meta.border : "#f3d5d8" }}
+                              style={{
+                                ...notificationItemStyle,
+                                background: isUnread ? meta.soft : "#fff",
+                                borderColor: isUnread ? meta.border : "#f3d5d8",
+                              }}
                             >
-                              <button type="button" onClick={() => handleNotificationOpen(notification)} style={notificationItemButtonStyle}>
-                                <div style={{ ...notificationIconWrapStyle, background: meta.soft, border: `1px solid ${meta.border}` }}>
-                                  <span style={notificationIconStyle}>{meta.icon}</span>
+                              <button
+                                type="button"
+                                onClick={() => handleNotificationOpen(notification)}
+                                style={notificationItemButtonStyle}
+                              >
+                                <div
+                                  style={{
+                                    ...notificationIconWrapStyle,
+                                    background: meta.soft,
+                                    border: `1px solid ${meta.border}`,
+                                  }}
+                                >
+                                  <span style={notificationIconStyle}>
+                                    {meta.icon}
+                                  </span>
                                 </div>
+
                                 <div style={notificationContentStyle}>
                                   <div style={notificationTopRowStyle}>
-                                    <div style={{ ...notificationItemTitleStyle, color: meta.accent }}>{getNotificationTitle(notification)}</div>
-                                    <div style={notificationTimeStyle}>{formatRelativeTime(getNotificationTimestamp(notification))}</div>
+                                    <div
+                                      style={{
+                                        ...notificationItemTitleStyle,
+                                        color: meta.accent,
+                                      }}
+                                    >
+                                      {getNotificationTitle(notification)}
+                                    </div>
+
+                                    <div style={notificationTimeStyle}>
+                                      {formatRelativeTime(
+                                        getNotificationTimestamp(notification)
+                                      )}
+                                    </div>
                                   </div>
-                                  <div style={notificationMessageStyle}>{getNotificationMessage(notification)}</div>
+
+                                  <div style={notificationMessageStyle}>
+                                    {getNotificationMessage(notification)}
+                                  </div>
+
                                   <div style={notificationFooterRowStyle}>
-                                    {isUnread
-                                      ? <span style={notificationUnreadPillStyle}>New</span>
-                                      : <span style={notificationReadPillStyle}>Read</span>}
-                                    {getNotificationLink(notification) ? <span style={notificationViewTextStyle}>View →</span> : null}
+                                    {isUnread ? (
+                                      <span style={notificationUnreadPillStyle}>
+                                        New
+                                      </span>
+                                    ) : (
+                                      <span style={notificationReadPillStyle}>
+                                        Read
+                                      </span>
+                                    )}
+
+                                    {getNotificationLink(notification) ? (
+                                      <span style={notificationViewTextStyle}>
+                                        View →
+                                      </span>
+                                    ) : null}
                                   </div>
                                 </div>
                               </button>
+
                               {isUnread && notificationId ? (
                                 <button
                                   type="button"
-                                  onClick={() => markNotificationAsRead(notificationId)}
+                                  onClick={() =>
+                                    markNotificationAsRead(notificationId)
+                                  }
                                   style={notificationMarkBtnStyle}
                                   disabled={activeNotificationId === notificationId}
                                 >
-                                  {activeNotificationId === notificationId ? "..." : "Mark read"}
+                                  {activeNotificationId === notificationId
+                                    ? "..."
+                                    : "Mark read"}
                                 </button>
                               ) : null}
                             </div>
@@ -920,10 +1454,24 @@ export default function Navbar({
                     </div>
 
                     <div style={notificationDropdownFooterStyle}>
-                      <button type="button" onClick={async () => fetchNotifications({ showLoader: true })} style={notificationFooterBtnStyle}>
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          await fetchNotifications({ showLoader: true });
+                        }}
+                        style={notificationFooterBtnStyle}
+                      >
                         Refresh
                       </button>
-                      <button type="button" onClick={() => { setNotificationsOpen(false); navigate("/chats"); }} style={notificationFooterPrimaryBtnStyle}>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNotificationsOpen(false);
+                          navigate("/chats");
+                        }}
+                        style={notificationFooterPrimaryBtnStyle}
+                      >
                         Open Chats
                       </button>
                     </div>
@@ -932,7 +1480,10 @@ export default function Navbar({
               </div>
 
               {isAdmin && (
-                <NavLink to="/admin" style={({ isActive }) => (isActive ? activeAdminStyle : navAdminStyle)}>
+                <NavLink
+                  to="/admin"
+                  style={({ isActive }) => (isActive ? activeAdminStyle : navAdminStyle)}
+                >
                   Admin
                 </NavLink>
               )}
@@ -941,21 +1492,27 @@ export default function Navbar({
         </div>
       </div>
 
-      {/* ── Drawer overlay ── */}
       {drawerOpen && <div style={overlayStyle} onClick={closeDrawer} />}
 
-      {/* ── Drawer ── */}
-      <div style={{ ...drawerStyle, transform: drawerOpen ? "translateX(0)" : "translateX(-100%)" }}>
+      <div
+        style={{
+          ...drawerStyle,
+          transform: drawerOpen ? "translateX(0)" : "translateX(-100%)",
+        }}
+      >
         <div style={drawerHeaderStyle}>
           <div>
             <div style={brandMiniStyle}>GENETIC BREEDS</div>
             <h2 style={drawerTitleStyle}>Account Panel</h2>
             <p style={drawerSubtitleStyle}>Advanced user menu</p>
           </div>
-          <button type="button" onClick={closeDrawer} style={closeBtnStyle}>×</button>
+
+          <button type="button" onClick={closeDrawer} style={closeBtnStyle}>
+            ×
+          </button>
         </div>
 
-        {!isAuthed ? (
+        {!isAuthed && location.pathname !== "/" ? (
           <div style={drawerBodyStyle}>
             <div style={emptyCardStyle}>
               <p style={emptyTextStyle}>Please login to open your account panel.</p>
@@ -963,77 +1520,111 @@ export default function Navbar({
           </div>
         ) : (
           <div style={drawerContentWrapStyle}>
-            {/* Sidebar */}
-            <div style={{...drawerSidebarStyle, display: typeof window !== "undefined" && window.innerWidth < 768 && activeSection !== "" ? "none" : "flex", flexDirection: "column"}}>
+            <div style={drawerSidebarStyle}>
               <div style={userMiniCardStyle}>
-                <div style={userAvatarStyle}>{(user?.name || "U").charAt(0).toUpperCase()}</div>
+                <div style={userAvatarStyle}>
+                  {(user?.name || "U").charAt(0).toUpperCase()}
+                </div>
                 <div>
                   <div style={userMiniNameStyle}>{user?.name || "User"}</div>
                   <div style={userMiniCodeStyle}>{user?.userCode || "No User Code"}</div>
                 </div>
               </div>
-              {[
-                ["profile", "My Profile"],
-                ["licence", "Licence Details"],
-                ["referral", "Referral Details"],
-                ["membership", "Membership Details"],
-                ["settings", "Settings"],
-                ["support", "Help & Support"],
-              ].map(([key, label]) => (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => setActiveSection(key)}
-                  style={activeSection === key ? sideItemActiveStyle : sideItemStyle}
-                >
-                  {label}
-                </button>
-              ))}
+
+              <button
+                type="button"
+                onClick={() => setActiveSection("profile")}
+                style={activeSection === "profile" ? sideItemActiveStyle : sideItemStyle}
+              >
+                My Profile
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveSection("licence")}
+                style={activeSection === "licence" ? sideItemActiveStyle : sideItemStyle}
+              >
+                Licence Details
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveSection("referral")}
+                style={activeSection === "referral" ? sideItemActiveStyle : sideItemStyle}
+              >
+                Referral Details
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveSection("membership")}
+                style={activeSection === "membership" ? sideItemActiveStyle : sideItemStyle}
+              >
+                Membership Details
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveSection("settings")}
+                style={activeSection === "settings" ? sideItemActiveStyle : sideItemStyle}
+              >
+                Settings
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveSection("support")}
+                style={activeSection === "support" ? sideItemActiveStyle : sideItemStyle}
+              >
+                Help & Support
+              </button>
             </div>
 
-            {/* Main content */}
-            <div style={{...drawerMainStyle, gridColumn: typeof window !== "undefined" && window.innerWidth < 768 ? "1" : "auto"}}>
-              {/* Mobile back button */}
-              {typeof window !== "undefined" && window.innerWidth < 768 && activeSection && (
-                <button
-                  onClick={() => setActiveSection("")}
-                  style={{display:"flex",alignItems:"center",gap:"6px",background:"none",border:"none",color:"#b91c1c",fontWeight:"700",fontSize:"14px",cursor:"pointer",padding:"8px 12px",marginBottom:"8px"}}
-                >
-                  ← Back to Menu
-                </button>
-              )}
+            <div style={drawerMainStyle}>
               {loadingProfile ? (
-                <div style={sectionCardStyle}><p style={infoTextStyle}>Loading profile...</p></div>
+                <div style={sectionCardStyle}>
+                  <p style={infoTextStyle}>Loading profile...</p>
+                </div>
               ) : profileError ? (
-                <div style={sectionCardStyle}><p style={errorTextStyle}>{profileError}</p></div>
+                <div style={sectionCardStyle}>
+                  <p style={errorTextStyle}>{profileError}</p>
+                </div>
               ) : !user ? (
-                <div style={sectionCardStyle}><p style={errorTextStyle}>Failed to load profile</p></div>
+                <div style={sectionCardStyle}>
+                  <p style={errorTextStyle}>Failed to load profile</p>
+                </div>
               ) : (
                 <>
-                  {/* ── PROFILE ── */}
                   {activeSection === "profile" && (
                     <div style={sectionCardStyle}>
                       <div style={sectionHeaderRowStyle}>
                         <div>
                           <div style={sectionBadgeStyle}>ACCOUNT</div>
                           <h3 style={sectionTitleStyle}>My Profile</h3>
-                          <p style={sectionDescStyle}>Manage your profile details in one place.</p>
+                          <p style={sectionDescStyle}>
+                            Manage your profile details in one place.
+                          </p>
                         </div>
                       </div>
 
-                      <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "10px" }}>
-                        {[
-                          { label: "User Code", value: user.userCode || "", readOnly: true },
-                          { label: "Name", value: user.name || "", readOnly: true },
-                          { label: "Country", value: user.country || "", readOnly: true },
-                          { label: "State", value: user.state || "", readOnly: true },
-                          { label: "City", value: user.city || "", readOnly: true },
-                        ].map(({ label, value, readOnly }) => (
-                          <div key={label} style={fieldStyle}>
-                            <label style={labelStyle}>{label}</label>
-                            <input value={value} readOnly={readOnly} style={readOnlyInputStyle} />
-                          </div>
-                        ))}
+                      <div style={fieldGridStyle}>
+                        <div style={fieldStyle}>
+                          <label style={labelStyle}>User Code</label>
+                          <input
+                            value={user.userCode || ""}
+                            readOnly
+                            style={readOnlyInputStyle}
+                          />
+                        </div>
+
+                        <div style={fieldStyle}>
+                          <label style={labelStyle}>Name</label>
+                          <input
+                            value={user.name || ""}
+                            readOnly
+                            style={readOnlyInputStyle}
+                          />
+                        </div>
 
                         <div style={fieldStyle}>
                           <label style={labelStyle}>Phone Number</label>
@@ -1055,35 +1646,66 @@ export default function Navbar({
                           />
                         </div>
 
-                        {isAdmin && (
-                          <div style={fieldStyle}>
-                            <label style={labelStyle}>Payment Mode (Admin Only)</label>
-                            <select
-                              value={paymentRegionOverride}
-                              onChange={(e) => setPaymentRegionOverride(e.target.value)}
-                              style={inputStyle}
-                            >
-                              <option value="auto">Auto (Based on Country)</option>
-                              <option value="india">India (Razorpay)</option>
-                              <option value="international">International</option>
-                            </select>
-                          </div>
-                        )}
+                        <div style={fieldStyle}>
+                          <label style={labelStyle}>Country</label>
+                          <input
+                            value={user.country || ""}
+                            readOnly
+                            style={readOnlyInputStyle}
+                          />
+                        </div>
+
+                        <div style={fieldStyle}>
+                          <label style={labelStyle}>State</label>
+                          <input
+                            value={user.state || ""}
+                            readOnly
+                            style={readOnlyInputStyle}
+                          />
+                        </div>
+
+                        <div style={{ ...fieldStyle, gridColumn: "1 / -1" }}>
+                          <label style={labelStyle}>City</label>
+                          <input
+                            value={user.city || ""}
+                            readOnly
+                            style={readOnlyInputStyle}
+                          />
+                        </div>
                       </div>
 
-                      {/* ✅ Premium Stripe-level Save button */}
+
+{isAdmin && (
+  <div style={fieldStyle}>
+    <label style={labelStyle}>Payment Mode (Admin Only)</label>
+
+    <select
+      value={paymentRegionOverride}
+      onChange={(e) => setPaymentRegionOverride(e.target.value)}
+      style={inputStyle}
+    >
+      <option value="auto">Auto (Based on Country)</option>
+      <option value="india">India (Razorpay)</option>
+      <option value="international">International</option>
+    </select>
+  </div>
+)}
                       <button
                         type="button"
                         onClick={updateProfileFields}
-                        style={saveButtonStyle}
+                        style={primaryActionBtnStyle}
                         disabled={savingProfile}
                       >
-                        {saveButtonContent}
+                     savingProfile
+  ? "Saving..."
+  : profileSaveStatus === "saved"
+  ? "Saved ✅"
+  : "Save Profile Changes"
+
                       </button>
                     </div>
                   )}
 
-                  {/* ── LICENCE ── */}
                   {activeSection === "licence" && (
                     <div style={sectionCardStyle}>
                       <div style={sectionHeaderRowStyle}>
@@ -1094,13 +1716,21 @@ export default function Navbar({
                             Upload your licence once. Status will move from pending to approved or rejected.
                           </p>
                         </div>
-                        <div style={{ ...statusPillStyle, ...licenceStatusStyles }}>{licenceStatusLabel}</div>
+
+                        <div style={{ ...statusPillStyle, ...licenceStatusStyles }}>
+                          {licenceStatusLabel}
+                        </div>
                       </div>
 
                       <div style={fieldGridStyle}>
                         <div style={fieldStyle}>
                           <label style={labelStyle}>Licence Type</label>
-                          <select value={licenceType} onChange={(e) => setLicenceType(e.target.value)} style={inputStyle} disabled={isLicenceLocked}>
+                          <select
+                            value={licenceType}
+                            onChange={(e) => setLicenceType(e.target.value)}
+                            style={inputStyle}
+                            disabled={isLicenceLocked}
+                          >
                             <option value="">Select Licence Type</option>
                             <option value="Breeder Licence">Breeder Licence</option>
                             <option value="Pet Shop Licence">Pet Shop Licence</option>
@@ -1110,128 +1740,295 @@ export default function Navbar({
 
                         <div style={fieldStyle}>
                           <label style={labelStyle}>Licence Number</label>
-                          <input value={licenceNumber} onChange={(e) => setLicenceNumber(e.target.value)} style={inputStyle} placeholder="Enter licence number" disabled={isLicenceLocked} />
+                          <input
+                            value={licenceNumber}
+                            onChange={(e) => setLicenceNumber(e.target.value)}
+                            style={inputStyle}
+                            placeholder="Enter licence number"
+                            disabled={isLicenceLocked}
+                          />
                         </div>
 
                         {isIndiaUser && (
                           <div style={{ ...fieldStyle, gridColumn: "1 / -1" }}>
                             <label style={labelStyle}>Licence Authority</label>
-                            <input value={licenceAuthority} readOnly style={readOnlyInputStyle} />
+                            <input
+                              value={licenceAuthority}
+                              readOnly
+                              style={readOnlyInputStyle}
+                            />
                           </div>
                         )}
 
                         {isIndiaUser && (
                           <div style={{ ...fieldStyle, gridColumn: "1 / -1" }}>
                             <label style={labelStyle}>Mapped From Registration State</label>
-                            <input value={`${user.state || "-"}${user.city ? ` / ${user.city}` : ""}`} readOnly style={readOnlyInputStyle} />
+                            <input
+                              value={`${user.state || "-"}${user.city ? ` / ${user.city}` : ""}`}
+                              readOnly
+                              style={readOnlyInputStyle}
+                            />
                           </div>
                         )}
 
                         <div style={{ ...fieldStyle, gridColumn: "1 / -1" }}>
                           <label style={labelStyle}>
-                            {normalizedLicenceStatus === "rejected" ? "Re-Upload Licence Document" : "Licence Document Upload"}
+                            {normalizedLicenceStatus === "rejected"
+                              ? "Re-Upload Licence Document"
+                              : "Licence Document Upload"}
                           </label>
-                          <input type="file" accept=".pdf,image/*" onChange={(e) => setLicenceFile(e.target.files?.[0] || null)} style={fileInputStyle} disabled={isLicenceLocked} />
+                          <input
+                            type="file"
+                            accept=".pdf,image/*"
+                            onChange={(e) => setLicenceFile(e.target.files?.[0] || null)}
+                            style={fileInputStyle}
+                            disabled={isLicenceLocked}
+                          />
                         </div>
                       </div>
 
-                      {licenceFile && <div style={softInfoBoxStyle}>Selected file: <strong>{licenceFile.name}</strong></div>}
-                      {user.licenceDocument
-                        ? <a href={user.licenceDocument} target="_blank" rel="noreferrer" style={licenceLinkStyle}>View Uploaded Licence Document</a>
-                        : <div style={softInfoBoxStyle}>No licence document uploaded yet.</div>}
-                      {normalizedLicenceStatus === "pending" && <div style={pendingBoxStyle}>Your licence is under admin review. Editing is locked until admin action.</div>}
-                      {normalizedLicenceStatus === "approved" && <div style={approvedBoxStyle}>Licence upload success. Your licence has been approved by admin.</div>}
+                      {licenceFile && (
+                        <div style={softInfoBoxStyle}>
+                          Selected file: <strong>{licenceFile.name}</strong>
+                        </div>
+                      )}
+
+                      {user.licenceDocument ? (
+                        <a
+                          href={user.licenceDocument}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={licenceLinkStyle}
+                        >
+                          View Uploaded Licence Document
+                        </a>
+                      ) : (
+                        <div style={softInfoBoxStyle}>No licence document uploaded yet.</div>
+                      )}
+
+                      {normalizedLicenceStatus === "pending" && (
+                        <div style={pendingBoxStyle}>
+                          Your licence is under admin review. Editing is locked until admin action.
+                        </div>
+                      )}
+
+                      {normalizedLicenceStatus === "approved" && (
+                        <div style={approvedBoxStyle}>
+                          Licence upload success. Your licence has been approved by admin.
+                        </div>
+                      )}
+
                       {normalizedLicenceStatus === "rejected" && (
                         <div style={dangerBoxStyle}>
                           <strong>Rejected Reason:</strong>{" "}
-                          {user.licenceRejectedReason || "Please re-upload with correct details and document."}
+                          {user.licenceRejectedReason ||
+                            "Please re-upload with correct details and document."}
                         </div>
                       )}
-                      {normalizedLicenceStatus === "not_uploaded" && <div style={softInfoBoxStyle}>Upload your licence document to send it for admin verification.</div>}
+
+                      {normalizedLicenceStatus === "not_uploaded" && (
+                        <div style={softInfoBoxStyle}>
+                          Upload your licence document to send it for admin verification.
+                        </div>
+                      )}
+
                       {isLicenceEditable && (
-                        <button type="button" onClick={submitLicence} style={primaryActionBtnStyle} disabled={submittingLicence}>
-                          {submittingLicence ? "Submitting..." : normalizedLicenceStatus === "rejected" ? "Re-Upload Licence" : "Upload Licence"}
+                        <button
+                          type="button"
+                          onClick={submitLicence}
+                          style={primaryActionBtnStyle}
+                          disabled={submittingLicence}
+                        >
+                          {submittingLicence
+                            ? "Submitting..."
+                            : normalizedLicenceStatus === "rejected"
+                            ? "Re-Upload Licence"
+                            : "Upload Licence"}
                         </button>
                       )}
                     </div>
                   )}
 
-                  {/* ── REFERRAL ── */}
                   {activeSection === "referral" && (
                     <div style={sectionCardStyle}>
                       <div style={sectionHeaderRowStyle}>
                         <div>
                           <div style={sectionBadgeStyle}>REFERRAL</div>
                           <h3 style={sectionTitleStyle}>Referral Details</h3>
-                          <p style={sectionDescStyle}>Copy or share your unique referral code.</p>
+                          <p style={sectionDescStyle}>
+                            Copy or share your unique referral code.
+                          </p>
                         </div>
                       </div>
+
                       <div style={referralCardStyle}>
                         <div style={referralLabelStyle}>Your Unique Referral Code</div>
-                        <div style={referralCodeBoxStyle}>{user.referralCode || "No referral code"}</div>
+                        <div style={referralCodeBoxStyle}>
+                          {user.referralCode || "No referral code"}
+                        </div>
+
                         <div style={referralBtnRowStyle}>
-                          <button type="button" onClick={copyReferralCode} style={primaryActionBtnStyle}>Copy Code</button>
-                          <button type="button" onClick={shareReferral} style={secondaryActionBtnStyle}>Invite Friends</button>
+
+                          <button
+                            type="button"
+                            onClick={shareReferral}
+                            style={secondaryActionBtnStyle}
+                          >
+                            Invite Friends
+                          </button>
                         </div>
                       </div>
+
                       <div style={statsGridStyle}>
-                        <div style={miniStatCardStyle}><div style={miniStatLabelStyle}>Free Ads</div><div style={miniStatValueStyle}>{user.freePosts || 0}</div></div>
-                        <div style={miniStatCardStyle}><div style={miniStatLabelStyle}>Referral Ads Used</div><div style={miniStatValueStyle}>{usedReferralAdsCount}</div></div>
-                        <div style={miniStatCardStyle}><div style={miniStatLabelStyle}>Referral Credits Left</div><div style={miniStatValueStyle}>{availableReferralAdsCount}</div></div>
-                        <div style={miniStatCardStyle}><div style={miniStatLabelStyle}>Next Referral Expiry</div><div style={miniStatValueStyleSmall}>{formatDisplayDate(nextReferralExpiry)}</div></div>
+                        <div style={miniStatCardStyle}>
+                          <div style={miniStatLabelStyle}>Free Ads</div>
+                          <div style={miniStatValueStyle}>{user.freePosts || 0}</div>
+                        </div>
+
+                        <div style={miniStatCardStyle}>
+                          <div style={miniStatLabelStyle}>Referral Ads Used</div>
+                          <div style={miniStatValueStyle}>{usedReferralAdsCount}</div>
+                        </div>
+
+                        <div style={miniStatCardStyle}>
+                          <div style={miniStatLabelStyle}>Referral Credits Left</div>
+                          <div style={miniStatValueStyle}>{availableReferralAdsCount}</div>
+                        </div>
+
+                        <div style={miniStatCardStyle}>
+                          <div style={miniStatLabelStyle}>Next Referral Expiry</div>
+                          <div style={miniStatValueStyleSmall}>
+                            {formatDisplayDate(nextReferralExpiry)}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   )}
 
-                  {/* ── MEMBERSHIP ── */}
                   {activeSection === "membership" && (
                     <div style={sectionCardStyle}>
                       <div style={sectionHeaderRowStyle}>
                         <div>
                           <div style={sectionBadgeStyle}>MEMBERSHIP</div>
                           <h3 style={sectionTitleStyle}>Membership Details</h3>
-                          <p style={sectionDescStyle}>View your membership plan, credits, status and expiry details.</p>
+                          <p style={sectionDescStyle}>
+                            View your membership plan, credits, status and expiry details.
+                          </p>
                         </div>
-                        <div style={{ ...statusPillStyle, ...membershipStatusStyles }}>{membership?.status || "No Membership"}</div>
+
+                        <div style={{ ...statusPillStyle, ...membershipStatusStyles }}>
+                          {membership?.status || "No Membership"}
+                        </div>
                       </div>
+
                       {loadingMembership ? (
                         <p style={infoTextStyle}>Loading membership...</p>
                       ) : !membership || !membership.hasMembership ? (
-                        <div style={softInfoBoxStyle}>You do not have an active membership right now.</div>
+                        <div style={softInfoBoxStyle}>
+                          You do not have an active membership right now.
+                        </div>
                       ) : (
                         <>
                           <div style={statsGridStyle}>
-                            {[
-                              ["Plan", membership.planName || "-", miniStatValueStyle],
-                              ["Plan Key", membership.planKey || "-", miniStatValueStyleSmall],
-                              ["Posts Remaining", membership.postsRemaining || 0, miniStatValueStyle],
-                              ["Boost Credits", membership.boostsRemaining || 0, miniStatValueStyle],
-                              ["Posts Used", membership.postsUsed || 0, miniStatValueStyle],
-                              ["Boosts Used", membership.boostsUsed || 0, miniStatValueStyle],
-                            ].map(([label, value, valStyle]) => (
-                              <div key={label} style={miniStatCardStyle}>
-                                <div style={miniStatLabelStyle}>{label}</div>
-                                <div style={valStyle}>{value}</div>
-                              </div>
-                            ))}
+                            <div style={miniStatCardStyle}>
+                              <div style={miniStatLabelStyle}>Plan</div>
+                              <div style={miniStatValueStyle}>{membership.planName || "-"}</div>
+                            </div>
+
+                            <div style={miniStatCardStyle}>
+                              <div style={miniStatLabelStyle}>Plan Key</div>
+                              <div style={miniStatValueStyleSmall}>{membership.planKey || "-"}</div>
+                            </div>
+
+                            <div style={miniStatCardStyle}>
+                              <div style={miniStatLabelStyle}>Posts Remaining</div>
+                              <div style={miniStatValueStyle}>{membership.postsRemaining || 0}</div>
+                            </div>
+
+                            <div style={miniStatCardStyle}>
+                              <div style={miniStatLabelStyle}>Boost Credits</div>
+                              <div style={miniStatValueStyle}>{membership.boostsRemaining || 0}</div>
+                            </div>
+
+                            <div style={miniStatCardStyle}>
+                              <div style={miniStatLabelStyle}>Posts Used</div>
+                              <div style={miniStatValueStyle}>{membership.postsUsed || 0}</div>
+                            </div>
+
+                            <div style={miniStatCardStyle}>
+                              <div style={miniStatLabelStyle}>Boosts Used</div>
+                              <div style={miniStatValueStyle}>{membership.boostsUsed || 0}</div>
+                            </div>
                           </div>
+
                           <div style={fieldGridStyleWithTopSpace}>
-                            {[
-                              ["Amount Paid", formatCurrencyValue(membership.amountPaid, membership.currency)],
-                              ["Duration", `${membership.durationDays || 0} Days`],
-                              ["Start Date", formatDisplayDate(membership.startsAt)],
-                              ["Activated Date", formatDisplayDate(membership.activatedAt)],
-                              ["Expiry Date", formatDisplayDate(membership.expiresAt)],
-                              ["Badge", membership.badge || "-"],
-                            ].map(([label, value]) => (
-                              <div key={label} style={fieldStyle}>
-                                <label style={labelStyle}>{label}</label>
-                                <input value={value} readOnly style={readOnlyInputStyle} />
-                              </div>
-                            ))}
+                            <div style={fieldStyle}>
+                              <label style={labelStyle}>Amount Paid</label>
+                              <input
+                                value={formatCurrencyValue(
+                                  membership.amountPaid,
+                                  membership.currency
+                                )}
+                                readOnly
+                                style={readOnlyInputStyle}
+                              />
+                            </div>
+
+                            <div style={fieldStyle}>
+                              <label style={labelStyle}>Duration</label>
+                              <input
+                                value={`${membership.durationDays || 0} Days`}
+                                readOnly
+                                style={readOnlyInputStyle}
+                              />
+                            </div>
+
+                            <div style={fieldStyle}>
+                              <label style={labelStyle}>Start Date</label>
+                              <input
+                                value={formatDisplayDate(membership.startsAt)}
+                                readOnly
+                                style={readOnlyInputStyle}
+                              />
+                            </div>
+
+                            <div style={fieldStyle}>
+                              <label style={labelStyle}>Activated Date</label>
+                              <input
+                                value={formatDisplayDate(membership.activatedAt)}
+                                readOnly
+                                style={readOnlyInputStyle}
+                              />
+                            </div>
+
+                            <div style={fieldStyle}>
+                              <label style={labelStyle}>Expiry Date</label>
+                              <input
+                                value={formatDisplayDate(membership.expiresAt)}
+                                readOnly
+                                style={readOnlyInputStyle}
+                              />
+                            </div>
+
+                            <div style={fieldStyle}>
+                              <label style={labelStyle}>Badge</label>
+                              <input
+                                value={membership.badge || "-"}
+                                readOnly
+                                style={readOnlyInputStyle}
+                              />
+                            </div>
+
                             <div style={{ ...fieldStyle, gridColumn: "1 / -1" }}>
                               <label style={labelStyle}>Description</label>
-                              <textarea value={membership.description || "No membership description available."} readOnly style={readOnlyTextareaStyle} />
+                              <textarea
+                                value={
+                                  membership.description ||
+                                  "No membership description available."
+                                }
+                                readOnly
+                                style={readOnlyTextareaStyle}
+                              />
                             </div>
                           </div>
                         </>
@@ -1239,65 +2036,183 @@ export default function Navbar({
                     </div>
                   )}
 
-                  {/* ── SETTINGS ── */}
                   {activeSection === "settings" && (
                     <div style={sectionCardStyle}>
                       <div style={sectionHeaderRowStyle}>
                         <div>
                           <div style={sectionBadgeStyle}>SECURITY</div>
                           <h3 style={sectionTitleStyle}>Settings</h3>
-                          <p style={sectionDescStyle}>Manage password, sessions and account actions.</p>
+                          <p style={sectionDescStyle}>
+                            Manage password, sessions and account actions.
+                          </p>
                         </div>
                       </div>
+
                       <div style={settingsListStyle}>
-                        <button type="button" onClick={openInlineChangePassword} style={settingsItemStyle}>Change User Password</button>
+                        <button
+                          type="button"
+                          onClick={openInlineChangePassword}
+                          style={settingsItemStyle}
+                        >
+                          Change User Password
+                        </button>
 
                         {showChangePasswordForm && (
                           <div style={inlinePasswordCardStyle}>
                             <div style={inlinePasswordTitleStyle}>Change Password</div>
-                            {resetError ? <p style={inlineErrorTextStyle}>{resetError}</p> : null}
-                            {resetSuccess ? <p style={inlineSuccessTextStyle}>{resetSuccess}</p> : null}
+
+                            {resetError ? (
+                              <p style={inlineErrorTextStyle}>{resetError}</p>
+                            ) : null}
+
+                            {resetSuccess ? (
+                              <p style={inlineSuccessTextStyle}>{resetSuccess}</p>
+                            ) : null}
+
                             {resetStep === 1 && (
                               <div style={inlineFormWrapStyle}>
-                                <input type="email" placeholder="Enter your email" value={resetForm.email} onChange={(e) => setResetForm({ ...resetForm, email: e.target.value })} style={inputStyle} />
-                                <button type="button" onClick={sendOtp} style={primaryActionBtnStyle} disabled={sendingOtp}>{sendingOtp ? "Sending..." : "Send OTP"}</button>
+                                <input
+                                  type="email"
+                                  placeholder="Enter your email"
+                                  value={resetForm.email}
+                                  onChange={(e) =>
+                                    setResetForm({
+                                      ...resetForm,
+                                      email: e.target.value,
+                                    })
+                                  }
+                                  style={inputStyle}
+                                />
+
+                                <button
+                                  type="button"
+                                  onClick={sendOtp}
+                                  style={primaryActionBtnStyle}
+                                  disabled={sendingOtp}
+                                >
+                                  {sendingOtp ? "Sending..." : "Send OTP"}
+                                </button>
                               </div>
                             )}
+
                             {resetStep === 2 && (
                               <div style={inlineFormWrapStyle}>
-                                <input placeholder="Enter OTP" value={resetForm.otp} onChange={(e) => setResetForm({ ...resetForm, otp: e.target.value })} style={inputStyle} />
-                                {resetTimer > 0
-                                  ? <div style={timerTextStyle}>Resend OTP in {resetTimer}s</div>
-                                  : <button type="button" onClick={sendOtp} style={secondaryActionBtnStyle} disabled={sendingOtp}>{sendingOtp ? "Sending..." : "Resend OTP"}</button>}
-                                <input type="password" placeholder="New Password" value={resetForm.newPassword} onChange={(e) => setResetForm({ ...resetForm, newPassword: e.target.value })} style={inputStyle} />
-                                <input type="password" placeholder="Confirm Password" value={resetForm.confirmPassword} onChange={(e) => setResetForm({ ...resetForm, confirmPassword: e.target.value })} style={inputStyle} />
-                                <button type="button" onClick={resetPasswordInline} style={primaryActionBtnStyle} disabled={resettingPassword}>{resettingPassword ? "Updating..." : "Reset Password"}</button>
+                                <input
+                                  placeholder="Enter OTP"
+                                  value={resetForm.otp}
+                                  onChange={(e) =>
+                                    setResetForm({
+                                      ...resetForm,
+                                      otp: e.target.value,
+                                    })
+                                  }
+                                  style={inputStyle}
+                                />
+
+                                {resetTimer > 0 ? (
+                                  <div style={timerTextStyle}>
+                                    Resend OTP in {resetTimer}s
+                                  </div>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    onClick={sendOtp}
+                                    style={secondaryActionBtnStyle}
+                                    disabled={sendingOtp}
+                                  >
+                                    {sendingOtp ? "Sending..." : "Resend OTP"}
+                                  </button>
+                                )}
+
+                                <input
+                                  type="password"
+                                  placeholder="New Password"
+                                  value={resetForm.newPassword}
+                                  onChange={(e) =>
+                                    setResetForm({
+                                      ...resetForm,
+                                      newPassword: e.target.value,
+                                    })
+                                  }
+                                  style={inputStyle}
+                                />
+
+                                <input
+                                  type="password"
+                                  placeholder="Confirm Password"
+                                  value={resetForm.confirmPassword}
+                                  onChange={(e) =>
+                                    setResetForm({
+                                      ...resetForm,
+                                      confirmPassword: e.target.value,
+                                    })
+                                  }
+                                  style={inputStyle}
+                                />
+
+                                <button
+                                  type="button"
+                                  onClick={resetPasswordInline}
+                                  style={primaryActionBtnStyle}
+                                  disabled={resettingPassword}
+                                >
+                                  {resettingPassword ? "Updating..." : "Reset Password"}
+                                </button>
                               </div>
                             )}
                           </div>
                         )}
 
-                        <button type="button" onClick={logoutCurrentDevice} style={settingsItemStyle}>Logout</button>
-                        <button type="button" onClick={logoutAllDevices} style={settingsItemStyle}>Logout From All Devices</button>
-                        <button type="button" onClick={deleteAccount} style={dangerSettingsItemStyle}>Delete Account</button>
+                        <button
+                          type="button"
+                          onClick={logoutCurrentDevice}
+                          style={settingsItemStyle}
+                        >
+                          Logout
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={logoutAllDevices}
+                          style={settingsItemStyle}
+                        >
+                          Logout From All Devices
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={deleteAccount}
+                          style={dangerSettingsItemStyle}
+                        >
+                          Delete Account
+                        </button>
                       </div>
                     </div>
                   )}
 
-                  {/* ── SUPPORT ── */}
                   {activeSection === "support" && (
                     <div style={sectionCardStyle}>
                       <div style={sectionHeaderRowStyle}>
                         <div>
                           <div style={sectionBadgeStyle}>SUPPORT</div>
                           <h3 style={sectionTitleStyle}>Help & Support</h3>
-                          <p style={sectionDescStyle}>Contact Genetic Breeds support team.</p>
+                          <p style={sectionDescStyle}>
+                            Contact Genetic Breeds support team.
+                          </p>
                         </div>
                       </div>
+
                       <div style={supportCardStyle}>
                         <div style={supportTitleStyle}>Email Support</div>
-                        <a href="mailto:geneticbreeds@gmail.com" style={supportLinkStyle}>geneticbreeds@gmail.com</a>
-                        <p style={supportNoteStyle}>Click the email above to open your mail app or Gmail.</p>
+                        <a
+                          href="mailto:geneticbreeds@gmail.com"
+                          style={supportLinkStyle}
+                        >
+                          geneticbreeds@gmail.com
+                        </a>
+                        <p style={supportNoteStyle}>
+                          Click the email above to open your mail app or Gmail.
+                        </p>
                       </div>
                     </div>
                   )}
@@ -1307,299 +2222,962 @@ export default function Navbar({
           </div>
         )}
       </div>
+
+      {inviteModalOpen && (
+        <div onClick={() => setInviteModalOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.5)", backdropFilter: "blur(6px)", zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
+          <div onClick={e => e.stopPropagation()} style={{ background: "#fff", borderRadius: "20px", padding: "24px", maxWidth: "360px", width: "100%", boxShadow: "0 20px 50px rgba(15,23,42,0.2)" }}>
+            <div style={{ textAlign: "center", marginBottom: "16px" }}>
+              <div style={{ fontSize: "32px", marginBottom: "6px" }}>🐾</div>
+              <h3 style={{ margin: "0 0 4px", fontSize: "17px", fontWeight: "900", color: "#111827" }}>Invite Friends</h3>
+            </div>
+            <div style={{ background: "linear-gradient(135deg, #fff1f2, #ffe4e6)", border: "1px solid #fecdd3", borderRadius: "12px", padding: "12px", marginBottom: "14px", textAlign: "center" }}>
+              <div style={{ fontSize: "10px", fontWeight: "800", color: "#991b1b", letterSpacing: "1px", marginBottom: "6px" }}>YOUR REFERRAL CODE</div>
+              <div style={{ background: "#fff", border: "2px dashed #ef4444", borderRadius: "10px", padding: "10px", fontSize: "22px", fontWeight: "900", color: "#111827", letterSpacing: "3px" }}>{user?.referralCode}</div>
+            </div>
+            <div style={{ display: "grid", gap: "8px" }}>
+              <button onClick={() => { navigator.clipboard.writeText("Join Genetic Breeds! Use my referral code " + user?.referralCode + " to get free ad credits. Register at " + window.location.origin); setInviteModalOpen(false); }} style={{ width: "100%", padding: "11px", borderRadius: "10px", border: "none", background: "linear-gradient(135deg, #7a0016, #b3122a)", color: "#fff", fontSize: "13px", fontWeight: "800", cursor: "pointer" }}>Copy Invite Message</button>
+              <button onClick={() => { if(navigator.share) navigator.share({ title: "Join Genetic Breeds", text: "Use my referral code " + user?.referralCode, url: window.location.origin }); }} style={{ width: "100%", padding: "11px", borderRadius: "10px", border: "1.5px solid #b91c1c", background: "#fff", color: "#b91c1c", fontSize: "13px", fontWeight: "800", cursor: "pointer" }}>Share via Apps</button>
+              <button onClick={() => setInviteModalOpen(false)} style={{ width: "100%", padding: "9px", borderRadius: "10px", border: "1px solid #e5e7eb", background: "#f9fafb", color: "#6b7280", fontSize: "13px", fontWeight: "700", cursor: "pointer" }}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
 const navStyle = {
-  display: "flex", justifyContent: "space-between", alignItems: "center",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
   padding: "12px 18px",
   background: "linear-gradient(135deg, #6b0f1a 0%, #b91327 55%, #d32f2f 100%)",
-  position: "sticky", top: 0, zIndex: 1200, overflow: "visible", minHeight: "64px",
+  position: "sticky",
+  top: 0,
+  zIndex: 1200,
   boxShadow: "0 8px 24px rgba(127, 29, 29, 0.22)",
 };
-const navLeftStyle = { display: "flex", alignItems: "center", gap: "10px" };
-const navRightStyle = { display: "flex", alignItems: "center", gap: "6px", flexWrap: "nowrap" };
+
+const navLeftStyle = {
+  display: "flex",
+  alignItems: "center",
+  gap: "10px",
+};
+
+const navRightStyle = {
+  display: "flex",
+  alignItems: "center",
+  gap: "10px",
+  flexWrap: "wrap",
+};
 
 const menuButtonStyle = {
-  width: "42px", height: "42px", borderRadius: "12px",
-  border: "1px solid rgba(255,255,255,0.2)", background: "rgba(255,255,255,0.12)",
-  display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",
-  gap: "4px", cursor: "pointer", backdropFilter: "blur(8px)",
+  width: "42px",
+  height: "42px",
+  borderRadius: "12px",
+  border: "1px solid rgba(255,255,255,0.2)",
+  background: "rgba(255,255,255,0.12)",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  gap: "4px",
+  cursor: "pointer",
+  backdropFilter: "blur(8px)",
 };
-const menuLineStyle = { width: "16px", height: "2px", borderRadius: "999px", background: "#fff" };
+
+const menuLineStyle = {
+  width: "16px",
+  height: "2px",
+  borderRadius: "999px",
+  background: "#fff",
+};
 
 const navLinkStyle = {
-  color: "#fff", textDecoration: "none", fontWeight: "800", fontSize: "13px",
-  padding: "7px 10px", borderRadius: "10px", background: "rgba(255,255,255,0.12)",
-  border: "1px solid rgba(255,255,255,0.18)", boxShadow: "0 4px 10px rgba(0,0,0,0.08)",
+  color: "#fff",
+  textDecoration: "none",
+  fontWeight: "800",
+  fontSize: "13px",
+  padding: "9px 14px",
+  borderRadius: "12px",
+  background: "rgba(255,255,255,0.12)",
+  border: "1px solid rgba(255,255,255,0.18)",
+  boxShadow: "0 4px 10px rgba(0,0,0,0.08)",
   transition: "all 0.2s ease",
 };
-const activeLinkStyle = { ...navLinkStyle, background: "#fff", color: "#991b1b", border: "1px solid rgba(255,255,255,0.28)" };
+
+const activeLinkStyle = {
+  ...navLinkStyle,
+  background: "#fff",
+  color: "#991b1b",
+  border: "1px solid rgba(255,255,255,0.28)",
+};
 
 const navAdminStyle = {
-  color: "#fff", textDecoration: "none", fontWeight: "900", fontSize: "13px",
-  padding: "7px 10px", borderRadius: "10px",
+  color: "#fff",
+  textDecoration: "none",
+  fontWeight: "900",
+  fontSize: "13px",
+  padding: "9px 14px",
+  borderRadius: "12px",
   background: "linear-gradient(135deg, #111827 0%, #374151 100%)",
-  border: "1px solid rgba(255,255,255,0.12)", boxShadow: "0 6px 14px rgba(17,24,39,0.25)",
+  border: "1px solid rgba(255,255,255,0.12)",
+  boxShadow: "0 6px 14px rgba(17,24,39,0.25)",
   transition: "all 0.2s ease",
 };
-const activeAdminStyle = { ...navAdminStyle, background: "linear-gradient(135deg, #000000 0%, #1f2937 100%)" };
+
+const activeAdminStyle = {
+  ...navAdminStyle,
+  background: "linear-gradient(135deg, #000000 0%, #1f2937 100%)",
+};
 
 const navTextBtnStyle = {
-  background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.18)",
-  color: "#fff", fontWeight: "800", cursor: "pointer", fontSize: "13px",
-  padding: "7px 10px", borderRadius: "10px",
+  background: "rgba(255,255,255,0.12)",
+  border: "1px solid rgba(255,255,255,0.18)",
+  color: "#fff",
+  fontWeight: "800",
+  cursor: "pointer",
+  fontSize: "13px",
+  padding: "9px 14px",
+  borderRadius: "12px",
 };
+
 const navBtnStyle = {
-  background: "#fff", color: "#991b1b", border: "none",
-  padding: "7px 10px", borderRadius: "10px", cursor: "pointer",
-  fontWeight: "900", fontSize: "13px", boxShadow: "0 6px 14px rgba(0,0,0,0.08)",
+  background: "#fff",
+  color: "#991b1b",
+  border: "none",
+  padding: "9px 14px",
+  borderRadius: "12px",
+  cursor: "pointer",
+  fontWeight: "900",
+  fontSize: "13px",
+  boxShadow: "0 6px 14px rgba(0,0,0,0.08)",
 };
 
 const inlineCountBadgeStyle = {
-  marginLeft: "6px", background: "#ef4444", color: "#fff",
-  borderRadius: "999px", padding: "2px 6px", fontSize: "11px", fontWeight: "700",
+  marginLeft: "6px",
+  background: "#ef4444",
+  color: "#fff",
+  borderRadius: "999px",
+  padding: "2px 6px",
+  fontSize: "11px",
+  fontWeight: "700",
 };
 
-const notificationWrapStyle = { position: "relative" };
-const notificationBellButtonStyle = {
-  position: "relative", width: "44px", height: "44px", borderRadius: "14px",
-  border: "1px solid rgba(255,255,255,0.2)", background: "rgba(255,255,255,0.14)",
-  boxShadow: "0 6px 16px rgba(0,0,0,0.1)", display: "flex", alignItems: "center",
-  justifyContent: "center", cursor: "pointer", backdropFilter: "blur(8px)",
+const notificationWrapStyle = {
+  position: "relative",
 };
-const notificationBellButtonActiveStyle = { ...notificationBellButtonStyle, background: "#fff", border: "1px solid rgba(255,255,255,0.32)" };
-const notificationBellIconStyle = { fontSize: "18px", lineHeight: 1 };
+
+const notificationBellButtonStyle = {
+  position: "relative",
+  width: "44px",
+  height: "44px",
+  borderRadius: "14px",
+  border: "1px solid rgba(255,255,255,0.2)",
+  background: "rgba(255,255,255,0.14)",
+  boxShadow: "0 6px 16px rgba(0,0,0,0.1)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  cursor: "pointer",
+  backdropFilter: "blur(8px)",
+};
+
+const notificationBellButtonActiveStyle = {
+  ...notificationBellButtonStyle,
+  background: "#fff",
+  border: "1px solid rgba(255,255,255,0.32)",
+};
+
+const notificationBellIconStyle = {
+  fontSize: "18px",
+  lineHeight: 1,
+};
+
 const notificationBadgeStyle = {
-  position: "absolute", top: "-5px", right: "-5px", minWidth: "20px", height: "20px",
-  borderRadius: "999px", background: "linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)",
-  color: "#fff", display: "flex", alignItems: "center", justifyContent: "center",
-  padding: "0 6px", fontSize: "10px", fontWeight: "900",
-  boxShadow: "0 6px 14px rgba(185, 28, 28, 0.35)", border: "2px solid #fff",
+  position: "absolute",
+  top: "-5px",
+  right: "-5px",
+  minWidth: "20px",
+  height: "20px",
+  borderRadius: "999px",
+  background: "linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)",
+  color: "#fff",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: "0 6px",
+  fontSize: "10px",
+  fontWeight: "900",
+  boxShadow: "0 6px 14px rgba(185, 28, 28, 0.35)",
+  border: "2px solid #fff",
 };
 
 const notificationDropdownStyle = {
-  position: "absolute", top: "54px", right: 0,
-  width: "min(420px, calc(100vw - 28px))", background: "#fff",
-  border: "1px solid #fecaca", borderRadius: "20px",
-  boxShadow: "0 24px 60px rgba(15, 23, 42, 0.18)", overflow: "hidden", zIndex: 1400,
-};
-const notificationDropdownHeaderStyle = {
-  display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "10px",
-  padding: "16px 16px 12px",
-  background: "linear-gradient(135deg, #fff1f2 0%, #fff 100%)", borderBottom: "1px solid #ffe4e6",
-};
-const notificationDropdownLabelStyle = { fontSize: "10px", fontWeight: "900", letterSpacing: "0.8px", color: "#991b1b", marginBottom: "5px" };
-const notificationDropdownTitleStyle = { fontSize: "16px", fontWeight: "900", color: "#111827" };
-const markAllReadBtnStyle = {
-  border: "1px solid #fecaca", background: "#fff", color: "#991b1b",
-  borderRadius: "12px", padding: "8px 10px", cursor: "pointer",
-  fontWeight: "800", fontSize: "12px", whiteSpace: "nowrap",
-};
-const notificationSummaryRowStyle = { display: "flex", gap: "8px", padding: "12px 16px 0", flexWrap: "wrap" };
-const notificationSummaryPillStyle = {
-  borderRadius: "999px", background: "#fff5f5", border: "1px solid #fecaca",
-  color: "#7f1d1d", padding: "6px 10px", fontSize: "11px", fontWeight: "800",
-};
-const notificationSummaryPillUnreadStyle = { ...notificationSummaryPillStyle, background: "#fef2f2", color: "#b91c1c" };
-const notificationListStyle = { maxHeight: "430px", overflowY: "auto", padding: "12px 16px 8px", display: "grid", gap: "10px" };
-const notificationStateCardStyle = { border: "1px dashed #fecaca", background: "#fffafa", borderRadius: "16px", padding: "18px 14px", textAlign: "center" };
-const emptyNotificationIconStyle = { fontSize: "24px", marginBottom: "8px" };
-const emptyNotificationTitleStyle = { margin: 0, color: "#111827", fontSize: "14px", fontWeight: "900" };
-const emptyNotificationTextStyle = { margin: "6px 0 0", color: "#6b7280", fontSize: "12px", lineHeight: 1.5 };
-const notificationItemStyle = {
-  position: "relative", display: "flex", gap: "8px", alignItems: "stretch",
-  border: "1px solid #f3d5d8", borderRadius: "16px", padding: "8px", transition: "all 0.2s ease",
-};
-const notificationItemButtonStyle = {
-  flex: 1, minWidth: 0, border: "none", background: "transparent",
-  display: "flex", alignItems: "flex-start", gap: "12px", textAlign: "left", padding: 0, cursor: "pointer",
-};
-const notificationIconWrapStyle = { width: "42px", height: "42px", borderRadius: "14px", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" };
-const notificationIconStyle = { fontSize: "18px", lineHeight: 1 };
-const notificationContentStyle = { flex: 1, minWidth: 0 };
-const notificationTopRowStyle = { display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "10px" };
-const notificationItemTitleStyle = { fontSize: "13px", fontWeight: "900", lineHeight: 1.4 };
-const notificationTimeStyle = { fontSize: "11px", fontWeight: "800", color: "#6b7280", whiteSpace: "nowrap" };
-const notificationMessageStyle = { marginTop: "5px", color: "#4b5563", fontSize: "12px", lineHeight: 1.5, wordBreak: "break-word" };
-const notificationFooterRowStyle = { display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px", marginTop: "8px" };
-const notificationUnreadPillStyle = {
-  display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: "999px",
-  background: "#fee2e2", color: "#b91c1c", border: "1px solid #fecaca",
-  padding: "4px 8px", fontSize: "10px", fontWeight: "900",
-};
-const notificationReadPillStyle = { ...notificationUnreadPillStyle, background: "#f3f4f6", color: "#4b5563", border: "1px solid #d1d5db" };
-const notificationViewTextStyle = { fontSize: "11px", fontWeight: "800", color: "#991b1b" };
-const notificationMarkBtnStyle = {
-  alignSelf: "center", border: "1px solid #fecaca", background: "#fff", color: "#991b1b",
-  borderRadius: "10px", padding: "8px 10px", cursor: "pointer", fontWeight: "800", fontSize: "11px", whiteSpace: "nowrap",
-};
-const notificationDropdownFooterStyle = {
-  display: "flex", gap: "10px", justifyContent: "space-between",
-  padding: "12px 16px 16px", borderTop: "1px solid #ffe4e6", background: "#fffafa",
-};
-const notificationFooterBtnStyle = {
-  flex: 1, border: "1px solid #fecaca", background: "#fff", color: "#991b1b",
-  borderRadius: "12px", padding: "10px 12px", cursor: "pointer", fontWeight: "800", fontSize: "12px",
-};
-const notificationFooterPrimaryBtnStyle = {
-  ...notificationFooterBtnStyle,
-  background: "linear-gradient(135deg, #7f1d1d 0%, #dc2626 100%)", color: "#fff", border: "none",
+  position: "absolute",
+  top: "54px",
+  right: 0,
+  width: "min(420px, calc(100vw - 28px))",
+  background: "#fff",
+  border: "1px solid #fecaca",
+  borderRadius: "20px",
+  boxShadow: "0 24px 60px rgba(15, 23, 42, 0.18)",
+  overflow: "hidden",
+  zIndex: 1400,
 };
 
-const overlayStyle = { position: "fixed", inset: 0, background: "rgba(15, 23, 42, 0.28)", zIndex: 1290 };
-const drawerStyle = {
-  position: "fixed", top: 0, left: 0, width: "min(720px, 96vw)", height: "100vh",
-  background: "#fff7f7", zIndex: 1300, transition: "transform 0.32s ease",
-  boxShadow: "16px 0 40px rgba(127, 29, 29, 0.18)",
-  display: "flex", flexDirection: "column", overflow: "hidden",
+const notificationDropdownHeaderStyle = {
+  display: "flex",
+  alignItems: "flex-start",
+  justifyContent: "space-between",
+  gap: "10px",
+  padding: "16px 16px 12px",
+  background: "linear-gradient(135deg, #fff1f2 0%, #fff 100%)",
+  borderBottom: "1px solid #ffe4e6",
 };
+
+const notificationDropdownLabelStyle = {
+  fontSize: "10px",
+  fontWeight: "900",
+  letterSpacing: "0.8px",
+  color: "#991b1b",
+  marginBottom: "5px",
+};
+
+const notificationDropdownTitleStyle = {
+  fontSize: "16px",
+  fontWeight: "900",
+  color: "#111827",
+};
+
+const markAllReadBtnStyle = {
+  border: "1px solid #fecaca",
+  background: "#fff",
+  color: "#991b1b",
+  borderRadius: "12px",
+  padding: "8px 10px",
+  cursor: "pointer",
+  fontWeight: "800",
+  fontSize: "12px",
+  whiteSpace: "nowrap",
+};
+
+const notificationSummaryRowStyle = {
+  display: "flex",
+  gap: "8px",
+  padding: "12px 16px 0",
+  flexWrap: "wrap",
+};
+
+const notificationSummaryPillStyle = {
+  borderRadius: "999px",
+  background: "#fff5f5",
+  border: "1px solid #fecaca",
+  color: "#7f1d1d",
+  padding: "6px 10px",
+  fontSize: "11px",
+  fontWeight: "800",
+};
+
+const notificationSummaryPillUnreadStyle = {
+  ...notificationSummaryPillStyle,
+  background: "#fef2f2",
+  color: "#b91c1c",
+};
+
+const notificationListStyle = {
+  maxHeight: "430px",
+  overflowY: "auto",
+  padding: "12px 16px 8px",
+  display: "grid",
+  gap: "10px",
+};
+
+const notificationStateCardStyle = {
+  border: "1px dashed #fecaca",
+  background: "#fffafa",
+  borderRadius: "16px",
+  padding: "18px 14px",
+  textAlign: "center",
+};
+
+const emptyNotificationIconStyle = {
+  fontSize: "24px",
+  marginBottom: "8px",
+};
+
+const emptyNotificationTitleStyle = {
+  margin: 0,
+  color: "#111827",
+  fontSize: "14px",
+  fontWeight: "900",
+};
+
+const emptyNotificationTextStyle = {
+  margin: "6px 0 0",
+  color: "#6b7280",
+  fontSize: "12px",
+  lineHeight: 1.5,
+};
+
+const notificationItemStyle = {
+  position: "relative",
+  display: "flex",
+  gap: "8px",
+  alignItems: "stretch",
+  border: "1px solid #f3d5d8",
+  borderRadius: "16px",
+  padding: "8px",
+  transition: "all 0.2s ease",
+};
+
+const notificationItemButtonStyle = {
+  flex: 1,
+  minWidth: 0,
+  border: "none",
+  background: "transparent",
+  display: "flex",
+  alignItems: "flex-start",
+  gap: "12px",
+  textAlign: "left",
+  padding: 0,
+  cursor: "pointer",
+};
+
+const notificationIconWrapStyle = {
+  width: "42px",
+  height: "42px",
+  borderRadius: "14px",
+  flexShrink: 0,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+};
+
+const notificationIconStyle = {
+  fontSize: "18px",
+  lineHeight: 1,
+};
+
+const notificationContentStyle = {
+  flex: 1,
+  minWidth: 0,
+};
+
+const notificationTopRowStyle = {
+  display: "flex",
+  alignItems: "flex-start",
+  justifyContent: "space-between",
+  gap: "10px",
+};
+
+const notificationItemTitleStyle = {
+  fontSize: "13px",
+  fontWeight: "900",
+  lineHeight: 1.4,
+};
+
+const notificationTimeStyle = {
+  fontSize: "11px",
+  fontWeight: "800",
+  color: "#6b7280",
+  whiteSpace: "nowrap",
+};
+
+const notificationMessageStyle = {
+  marginTop: "5px",
+  color: "#4b5563",
+  fontSize: "12px",
+  lineHeight: 1.5,
+  wordBreak: "break-word",
+};
+
+const notificationFooterRowStyle = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  gap: "8px",
+  marginTop: "8px",
+};
+
+const notificationUnreadPillStyle = {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  borderRadius: "999px",
+  background: "#fee2e2",
+  color: "#b91c1c",
+  border: "1px solid #fecaca",
+  padding: "4px 8px",
+  fontSize: "10px",
+  fontWeight: "900",
+};
+
+const notificationReadPillStyle = {
+  ...notificationUnreadPillStyle,
+  background: "#f3f4f6",
+  color: "#4b5563",
+  border: "1px solid #d1d5db",
+};
+
+const notificationViewTextStyle = {
+  fontSize: "11px",
+  fontWeight: "800",
+  color: "#991b1b",
+};
+
+const notificationMarkBtnStyle = {
+  alignSelf: "center",
+  border: "1px solid #fecaca",
+  background: "#fff",
+  color: "#991b1b",
+  borderRadius: "10px",
+  padding: "8px 10px",
+  cursor: "pointer",
+  fontWeight: "800",
+  fontSize: "11px",
+  whiteSpace: "nowrap",
+};
+
+const notificationDropdownFooterStyle = {
+  display: "flex",
+  gap: "10px",
+  justifyContent: "space-between",
+  padding: "12px 16px 16px",
+  borderTop: "1px solid #ffe4e6",
+  background: "#fffafa",
+};
+
+const notificationFooterBtnStyle = {
+  flex: 1,
+  border: "1px solid #fecaca",
+  background: "#fff",
+  color: "#991b1b",
+  borderRadius: "12px",
+  padding: "10px 12px",
+  cursor: "pointer",
+  fontWeight: "800",
+  fontSize: "12px",
+};
+
+const notificationFooterPrimaryBtnStyle = {
+  ...notificationFooterBtnStyle,
+  background: "linear-gradient(135deg, #7f1d1d 0%, #dc2626 100%)",
+  color: "#fff",
+  border: "none",
+};
+
+const overlayStyle = {
+  position: "fixed",
+  inset: 0,
+  background: "rgba(15, 23, 42, 0.28)",
+  zIndex: 1290,
+};
+
+const drawerStyle = {
+  position: "fixed",
+  top: 0,
+  left: 0,
+  width: "min(720px, 52vw)",
+  height: "100vh",
+  background: "#fff7f7",
+  zIndex: 1300,
+  transition: "transform 0.32s ease",
+  boxShadow: "16px 0 40px rgba(127, 29, 29, 0.18)",
+  display: "flex",
+  flexDirection: "column",
+  overflow: "hidden",
+};
+
 const drawerHeaderStyle = {
   background: "linear-gradient(135deg, #7f1d1d 0%, #b91c1c 50%, #ef4444 100%)",
-  color: "#fff", padding: "18px 18px 14px",
-  display: "flex", justifyContent: "space-between", alignItems: "flex-start",
+  color: "#fff",
+  padding: "18px 18px 14px",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "flex-start",
 };
-const brandMiniStyle = { fontSize: "11px", fontWeight: "800", letterSpacing: "1px", opacity: 0.9, marginBottom: "6px" };
-const drawerTitleStyle = { margin: 0, fontSize: "20px", fontWeight: "900" };
-const drawerSubtitleStyle = { margin: "4px 0 0", fontSize: "12px", color: "rgba(255,255,255,0.85)" };
+
+const brandMiniStyle = {
+  fontSize: "11px",
+  fontWeight: "800",
+  letterSpacing: "1px",
+  opacity: 0.9,
+  marginBottom: "6px",
+};
+
+const drawerTitleStyle = {
+  margin: 0,
+  fontSize: "20px",
+  fontWeight: "900",
+};
+
+const drawerSubtitleStyle = {
+  margin: "4px 0 0",
+  fontSize: "12px",
+  color: "rgba(255,255,255,0.85)",
+};
+
 const closeBtnStyle = {
-  width: "38px", height: "38px", borderRadius: "12px",
-  border: "1px solid rgba(255,255,255,0.24)", background: "rgba(255,255,255,0.12)",
-  color: "#fff", fontSize: "24px", lineHeight: 1, cursor: "pointer",
+  width: "38px",
+  height: "38px",
+  borderRadius: "12px",
+  border: "1px solid rgba(255,255,255,0.24)",
+  background: "rgba(255,255,255,0.12)",
+  color: "#fff",
+  fontSize: "24px",
+  lineHeight: 1,
+  cursor: "pointer",
 };
-const drawerBodyStyle = { padding: "16px" };
-const emptyCardStyle = { background: "#fff", borderRadius: "16px", border: "1px solid #fecaca", padding: "16px" };
-const emptyTextStyle = { margin: 0, color: "#7f1d1d", fontWeight: "700", fontSize: "13px" };
-const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-const drawerContentWrapStyle = { display: "grid", gridTemplateColumns: isMobile ? "1fr" : "185px 1fr", minHeight: 0, flex: 1 };
-const drawerSidebarStyle = { background: "#fff", borderRight: "1px solid #fee2e2", padding: "14px", display: "flex", flexDirection: "column", gap: "8px" };
+
+const drawerBodyStyle = {
+  padding: "16px",
+};
+
+const emptyCardStyle = {
+  background: "#fff",
+  borderRadius: "16px",
+  border: "1px solid #fecaca",
+  padding: "16px",
+};
+
+const emptyTextStyle = {
+  margin: 0,
+  color: "#7f1d1d",
+  fontWeight: "700",
+  fontSize: "13px",
+};
+
+const drawerContentWrapStyle = {
+  display: "grid",
+  gridTemplateColumns: "185px 1fr",
+  minHeight: 0,
+  flex: 1,
+};
+
+const drawerSidebarStyle = {
+  background: "#fff",
+  borderRight: "1px solid #fee2e2",
+  padding: "14px",
+  display: "flex",
+  flexDirection: "column",
+  gap: "8px",
+};
+
 const userMiniCardStyle = {
-  display: "flex", alignItems: "center", gap: "10px", padding: "10px", borderRadius: "14px",
-  background: "linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%)", border: "1px solid #fecdd3", marginBottom: "4px",
+  display: "flex",
+  alignItems: "center",
+  gap: "10px",
+  padding: "10px",
+  borderRadius: "14px",
+  background: "linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%)",
+  border: "1px solid #fecdd3",
+  marginBottom: "4px",
 };
+
 const userAvatarStyle = {
-  width: "38px", height: "38px", borderRadius: "12px",
-  background: "linear-gradient(135deg, #991b1b 0%, #ef4444 100%)", color: "#fff",
-  display: "flex", alignItems: "center", justifyContent: "center",
-  fontWeight: "900", fontSize: "17px", flexShrink: 0,
+  width: "38px",
+  height: "38px",
+  borderRadius: "12px",
+  background: "linear-gradient(135deg, #991b1b 0%, #ef4444 100%)",
+  color: "#fff",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontWeight: "900",
+  fontSize: "17px",
+  flexShrink: 0,
 };
-const userMiniNameStyle = { fontSize: "14px", fontWeight: "800", color: "#111827" };
-const userMiniCodeStyle = { marginTop: "3px", fontSize: "11px", fontWeight: "700", color: "#991b1b" };
+
+const userMiniNameStyle = {
+  fontSize: "14px",
+  fontWeight: "800",
+  color: "#111827",
+};
+
+const userMiniCodeStyle = {
+  marginTop: "3px",
+  fontSize: "11px",
+  fontWeight: "700",
+  color: "#991b1b",
+};
+
 const sideItemStyle = {
-  width: "100%", textAlign: "left", padding: "10px 12px", borderRadius: "12px",
-  border: "1px solid transparent", background: "transparent",
-  color: "#374151", fontWeight: "800", fontSize: "13px", cursor: "pointer",
+  width: "100%",
+  textAlign: "left",
+  padding: "10px 12px",
+  borderRadius: "12px",
+  border: "1px solid transparent",
+  background: "transparent",
+  color: "#374151",
+  fontWeight: "800",
+  fontSize: "13px",
+  cursor: "pointer",
 };
+
 const sideItemActiveStyle = {
   ...sideItemStyle,
   background: "linear-gradient(135deg, #7f1d1d 0%, #dc2626 100%)",
-  color: "#fff", boxShadow: "0 8px 18px rgba(127, 29, 29, 0.2)",
+  color: "#fff",
+  boxShadow: "0 8px 18px rgba(127, 29, 29, 0.2)",
 };
-const drawerMainStyle = { padding: "14px", overflowY: "auto" };
-const sectionCardStyle = {
-  background: "#fff", borderRadius: "18px", border: "1px solid #fee2e2",
-  boxShadow: "0 10px 24px rgba(15, 23, 42, 0.05)", padding: "14px",
-};
-const sectionHeaderRowStyle = { display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "10px", marginBottom: "14px" };
-const sectionBadgeStyle = {
-  display: "inline-block", background: "#fff1f2", color: "#991b1b",
-  border: "1px solid #fecdd3", borderRadius: "999px",
-  padding: "4px 9px", fontSize: "10px", fontWeight: "900", letterSpacing: "0.4px", marginBottom: "7px",
-};
-const sectionTitleStyle = { margin: 0, fontSize: "18px", fontWeight: "900", color: "#111827" };
-const sectionDescStyle = { margin: "5px 0 0", fontSize: "12px", color: "#6b7280", lineHeight: 1.5 };
-const statusPillStyle = { padding: "6px 10px", borderRadius: "999px", fontSize: "11px", fontWeight: "800", whiteSpace: "nowrap" };
 
-const fieldGridStyle = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: "10px" };
-const fieldGridStyleWithTopSpace = { ...fieldGridStyle, marginTop: "12px" };
-const fieldStyle = { display: "flex", flexDirection: "column" };
-const labelStyle = { fontSize: "12px", fontWeight: "800", color: "#374151", marginBottom: "5px" };
+const drawerMainStyle = {
+  padding: "14px",
+  overflowY: "auto",
+};
+
+const sectionCardStyle = {
+  background: "#fff",
+  borderRadius: "18px",
+  border: "1px solid #fee2e2",
+  boxShadow: "0 10px 24px rgba(15, 23, 42, 0.05)",
+  padding: "14px",
+};
+
+const sectionHeaderRowStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "flex-start",
+  gap: "10px",
+  marginBottom: "14px",
+};
+
+const sectionBadgeStyle = {
+  display: "inline-block",
+  background: "#fff1f2",
+  color: "#991b1b",
+  border: "1px solid #fecdd3",
+  borderRadius: "999px",
+  padding: "4px 9px",
+  fontSize: "10px",
+  fontWeight: "900",
+  letterSpacing: "0.4px",
+  marginBottom: "7px",
+};
+
+const sectionTitleStyle = {
+  margin: 0,
+  fontSize: "18px",
+  fontWeight: "900",
+  color: "#111827",
+};
+
+const sectionDescStyle = {
+  margin: "5px 0 0",
+  fontSize: "12px",
+  color: "#6b7280",
+  lineHeight: 1.5,
+};
+
+const statusPillStyle = {
+  padding: "6px 10px",
+  borderRadius: "999px",
+  fontSize: "11px",
+  fontWeight: "800",
+  whiteSpace: "nowrap",
+};
+
+const fieldGridStyle = {
+  display: "grid",
+  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+  gap: "10px",
+};
+
+const fieldGridStyleWithTopSpace = {
+  ...fieldGridStyle,
+  marginTop: "12px",
+};
+
+const fieldStyle = {
+  display: "flex",
+  flexDirection: "column",
+};
+
+const labelStyle = {
+  fontSize: "12px",
+  fontWeight: "800",
+  color: "#374151",
+  marginBottom: "5px",
+};
 
 const inputStyle = {
-  width: "100%", padding: "10px", borderRadius: "10px",
-  border: "1px solid #d1d5db", background: "#fff", color: "#111827", fontSize: "14px",
+  width: "100%",
+  padding: "8px 10px",
+  border: "1px solid #fca5a5",
+  borderRadius: "10px",
+  background: "#fff",
+  boxSizing: "border-box",
+  fontSize: "13px",
+  outline: "none",
 };
-const fileInputStyle = {
-  width: "100%", padding: "8px 10px", border: "1px solid #fca5a5",
-  borderRadius: "10px", background: "#fff", boxSizing: "border-box", fontSize: "12px",
-};
-const readOnlyInputStyle = {
-  ...inputStyle, background: "#f9fafb", color: "#6b7280", border: "1px solid #e5e7eb",
-};
-const readOnlyTextareaStyle = { ...readOnlyInputStyle, minHeight: "86px", resize: "vertical", fontFamily: "inherit" };
 
-// ✅ Premium Stripe-level Save button with Saved state
+const fileInputStyle = {
+  width: "100%",
+  padding: "8px 10px",
+  border: "1px solid #fca5a5",
+  borderRadius: "10px",
+  background: "#fff",
+  boxSizing: "border-box",
+  fontSize: "12px",
+};
+
+const readOnlyInputStyle = {
+  ...inputStyle,
+  background: "#fff5f5",
+  color: "#374151",
+};
+
+const readOnlyTextareaStyle = {
+  ...readOnlyInputStyle,
+  minHeight: "86px",
+  resize: "vertical",
+  fontFamily: "inherit",
+};
+
 const primaryActionBtnStyle = {
   marginTop: "12px",
   background: "linear-gradient(135deg, #7f1d1d 0%, #dc2626 100%)",
-  color: "#fff", border: "none", padding: "10px 16px", borderRadius: "10px",
-  cursor: "pointer", fontWeight: "800", fontSize: "13px",
-  boxShadow: "0 4px 14px rgba(185,28,28,0.35)",
-  transition: "all 0.25s ease",
-  letterSpacing: "0.3px",
-};
-const savingBtnStyle = {
-  background: "linear-gradient(135deg, #4b0f0f 0%, #991b1b 100%)",
-  boxShadow: "none", opacity: 0.8, cursor: "not-allowed",
-};
-const savedBtnStyle = {
-  background: "linear-gradient(135deg, #14532d 0%, #16a34a 100%)",
-  boxShadow: "0 4px 14px rgba(22,163,74,0.35)",
+  color: "#fff",
+  border: "none",
+  padding: "8px 12px",
+  borderRadius: "10px",
+  cursor: "pointer",
+  fontWeight: "800",
+  fontSize: "12px",
 };
 
 const secondaryActionBtnStyle = {
   ...primaryActionBtnStyle,
-  background: "#fff", color: "#991b1b", border: "1px solid #fca5a5",
-  boxShadow: "0 2px 8px rgba(185,28,28,0.1)",
+  background: "#fff",
+  color: "#991b1b",
+  border: "1px solid #fca5a5",
 };
 
 const referralCardStyle = {
   background: "linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%)",
-  border: "1px solid #fecdd3", borderRadius: "16px", padding: "14px",
+  border: "1px solid #fecdd3",
+  borderRadius: "16px",
+  padding: "14px",
 };
-const referralLabelStyle = { fontSize: "12px", fontWeight: "800", color: "#991b1b", marginBottom: "7px" };
+
+const referralLabelStyle = {
+  fontSize: "12px",
+  fontWeight: "800",
+  color: "#991b1b",
+  marginBottom: "7px",
+};
+
 const referralCodeBoxStyle = {
-  background: "#fff", border: "1px dashed #ef4444", borderRadius: "12px",
-  padding: "10px", fontSize: "16px", fontWeight: "900", color: "#111827",
-  textAlign: "center", letterSpacing: "0.7px",
+  background: "#fff",
+  border: "1px dashed #ef4444",
+  borderRadius: "12px",
+  padding: "10px",
+  fontSize: "16px",
+  fontWeight: "900",
+  color: "#111827",
+  textAlign: "center",
+  letterSpacing: "0.7px",
 };
-const referralBtnRowStyle = { display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "10px" };
 
-const statsGridStyle = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))", gap: "10px", marginTop: "12px" };
-const miniStatCardStyle = { background: "#fff", border: "1px solid #fee2e2", borderRadius: "14px", padding: "12px" };
-const miniStatLabelStyle = { fontSize: "11px", fontWeight: "800", color: "#6b7280", marginBottom: "5px" };
-const miniStatValueStyle = { fontSize: "18px", fontWeight: "900", color: "#991b1b" };
-const miniStatValueStyleSmall = { fontSize: "15px", fontWeight: "900", color: "#991b1b", lineHeight: 1.4 };
+const referralBtnRowStyle = {
+  display: "flex",
+  gap: "8px",
+  flexWrap: "wrap",
+  marginTop: "10px",
+};
 
-const settingsListStyle = { display: "grid", gap: "8px" };
+const statsGridStyle = {
+  display: "grid",
+  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+  gap: "10px",
+  marginTop: "12px",
+};
+
+const miniStatCardStyle = {
+  background: "#fff",
+  border: "1px solid #fee2e2",
+  borderRadius: "14px",
+  padding: "12px",
+};
+
+const miniStatLabelStyle = {
+  fontSize: "11px",
+  fontWeight: "800",
+  color: "#6b7280",
+  marginBottom: "5px",
+};
+
+const miniStatValueStyle = {
+  fontSize: "18px",
+  fontWeight: "900",
+  color: "#991b1b",
+};
+
+const miniStatValueStyleSmall = {
+  fontSize: "15px",
+  fontWeight: "900",
+  color: "#991b1b",
+  lineHeight: 1.4,
+};
+
+const settingsListStyle = {
+  display: "grid",
+  gap: "8px",
+};
+
 const settingsItemStyle = {
-  width: "100%", textAlign: "left", padding: "11px 12px", borderRadius: "12px",
-  border: "1px solid #fecaca", background: "#fff5f5",
-  color: "#111827", fontWeight: "800", fontSize: "13px", cursor: "pointer",
+  width: "100%",
+  textAlign: "left",
+  padding: "11px 12px",
+  borderRadius: "12px",
+  border: "1px solid #fecaca",
+  background: "#fff5f5",
+  color: "#111827",
+  fontWeight: "800",
+  fontSize: "13px",
+  cursor: "pointer",
 };
-const dangerSettingsItemStyle = { ...settingsItemStyle, background: "#fef2f2", color: "#b91c1c", border: "1px solid #fca5a5" };
 
-const inlinePasswordCardStyle = { marginTop: "6px", border: "1px solid #fecaca", background: "#fffafa", borderRadius: "14px", padding: "12px" };
-const inlinePasswordTitleStyle = { fontSize: "13px", fontWeight: "900", color: "#991b1b", marginBottom: "10px" };
-const inlineFormWrapStyle = { display: "grid", gap: "8px" };
-const inlineErrorTextStyle = { margin: "0 0 8px", color: "#b91c1c", fontSize: "12px", fontWeight: "700" };
-const inlineSuccessTextStyle = { margin: "0 0 8px", color: "#166534", fontSize: "12px", fontWeight: "700" };
-const timerTextStyle = { fontSize: "12px", fontWeight: "700", color: "#92400e" };
+const dangerSettingsItemStyle = {
+  ...settingsItemStyle,
+  background: "#fef2f2",
+  color: "#b91c1c",
+  border: "1px solid #fca5a5",
+};
+
+const inlinePasswordCardStyle = {
+  marginTop: "6px",
+  border: "1px solid #fecaca",
+  background: "#fffafa",
+  borderRadius: "14px",
+  padding: "12px",
+};
+
+const inlinePasswordTitleStyle = {
+  fontSize: "13px",
+  fontWeight: "900",
+  color: "#991b1b",
+  marginBottom: "10px",
+};
+
+const inlineFormWrapStyle = {
+  display: "grid",
+  gap: "8px",
+};
+
+const inlineErrorTextStyle = {
+  margin: "0 0 8px",
+  color: "#b91c1c",
+  fontSize: "12px",
+  fontWeight: "700",
+};
+
+const inlineSuccessTextStyle = {
+  margin: "0 0 8px",
+  color: "#166534",
+  fontSize: "12px",
+  fontWeight: "700",
+};
+
+const timerTextStyle = {
+  fontSize: "12px",
+  fontWeight: "700",
+  color: "#92400e",
+};
 
 const supportCardStyle = {
   background: "linear-gradient(135deg, #fff1f2 0%, #fff 100%)",
-  border: "1px solid #fecdd3", borderRadius: "16px", padding: "16px",
+  border: "1px solid #fecdd3",
+  borderRadius: "16px",
+  padding: "16px",
 };
-const supportTitleStyle = { fontSize: "14px", fontWeight: "900", color: "#111827", marginBottom: "8px" };
-const supportLinkStyle = { color: "#b91c1c", fontWeight: "900", fontSize: "14px", textDecoration: "none", wordBreak: "break-word" };
-const supportNoteStyle = { margin: "8px 0 0", color: "#6b7280", fontSize: "12px", lineHeight: 1.5 };
 
-const licenceLinkStyle = { display: "inline-block", marginTop: "12px", color: "#b91c1c", fontWeight: "800", textDecoration: "none", fontSize: "12px" };
-const softInfoBoxStyle = { marginTop: "12px", padding: "10px 12px", borderRadius: "10px", background: "#fff5f5", border: "1px solid #fecaca", color: "#7f1d1d", fontWeight: "700", fontSize: "12px" };
-const pendingBoxStyle = { marginTop: "12px", background: "#fef3c7", border: "1px solid #fde68a", color: "#92400e", padding: "10px 12px", borderRadius: "10px", fontSize: "12px", lineHeight: 1.5 };
-const approvedBoxStyle = { marginTop: "12px", background: "#dcfce7", border: "1px solid #bbf7d0", color: "#166534", padding: "10px 12px", borderRadius: "10px", fontSize: "12px", lineHeight: 1.5 };
-const dangerBoxStyle = { marginTop: "12px", background: "#fee2e2", border: "1px solid #fecaca", color: "#991b1b", padding: "10px 12px", borderRadius: "10px", fontSize: "12px", lineHeight: 1.5 };
-const infoTextStyle = { margin: 0, color: "#6b7280", fontWeight: "700", fontSize: "13px" };
-const errorTextStyle = { margin: 0, color: "#b91c1c", fontWeight: "700", fontSize: "13px" };
+const supportTitleStyle = {
+  fontSize: "14px",
+  fontWeight: "900",
+  color: "#111827",
+  marginBottom: "8px",
+};
+
+const supportLinkStyle = {
+  color: "#b91c1c",
+  fontWeight: "900",
+  fontSize: "14px",
+  textDecoration: "none",
+  wordBreak: "break-word",
+};
+
+const supportNoteStyle = {
+  margin: "8px 0 0",
+  color: "#6b7280",
+  fontSize: "12px",
+  lineHeight: 1.5,
+};
+
+const licenceLinkStyle = {
+  display: "inline-block",
+  marginTop: "12px",
+  color: "#b91c1c",
+  fontWeight: "800",
+  textDecoration: "none",
+  fontSize: "12px",
+};
+
+const softInfoBoxStyle = {
+  marginTop: "12px",
+  padding: "10px 12px",
+  borderRadius: "10px",
+  background: "#fff5f5",
+  border: "1px solid #fecaca",
+  color: "#7f1d1d",
+  fontWeight: "700",
+  fontSize: "12px",
+};
+
+const pendingBoxStyle = {
+  marginTop: "12px",
+  background: "#fef3c7",
+  border: "1px solid #fde68a",
+  color: "#92400e",
+  padding: "10px 12px",
+  borderRadius: "10px",
+  fontSize: "12px",
+  lineHeight: 1.5,
+};
+
+const approvedBoxStyle = {
+  marginTop: "12px",
+  background: "#dcfce7",
+  border: "1px solid #bbf7d0",
+  color: "#166534",
+  padding: "10px 12px",
+  borderRadius: "10px",
+  fontSize: "12px",
+  lineHeight: 1.5,
+};
+
+const dangerBoxStyle = {
+  marginTop: "12px",
+  background: "#fee2e2",
+  border: "1px solid #fecaca",
+  color: "#991b1b",
+  padding: "10px 12px",
+  borderRadius: "10px",
+  fontSize: "12px",
+  lineHeight: 1.5,
+};
+
+const infoTextStyle = {
+  margin: 0,
+  color: "#6b7280",
+  fontWeight: "700",
+  fontSize: "13px",
+};
+
+const errorTextStyle = {
+  margin: 0,
+  color: "#b91c1c",
+  fontWeight: "700",
+  fontSize: "13px",
+};

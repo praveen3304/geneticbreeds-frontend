@@ -83,6 +83,14 @@ const MEMBERSHIP_PLANS = {
 };
 
 export default function PostAd() {
+
+const [isMobile, setIsMobile] = React.useState(window.innerWidth < 768);
+React.useEffect(() => {
+  const handler = () => setIsMobile(window.innerWidth < 768);
+  window.addEventListener("resize", handler);
+  return () => window.removeEventListener("resize", handler);
+}, []);
+
   const navigate = useNavigate();
   const submitLock = useRef(false);
 
@@ -738,7 +746,7 @@ if (options?.error) {
     maxWidth: "1180px",
     margin: "0 auto",
     display: "grid",
-    gridTemplateColumns: "1.4fr 0.8fr",
+    gridTemplateColumns: isMobile ? "1fr" : "1.4fr 0.8fr",
     gap: "24px",
     alignItems: "start",
   };
@@ -780,7 +788,7 @@ if (options?.error) {
 
   const gridStyle = {
     display: "grid",
-    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+    gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))",
     gap: "18px",
   };
 
@@ -807,7 +815,7 @@ if (options?.error) {
   const sideCardStyle = {
     ...cardStyle,
     padding: "24px",
-    position: "sticky",
+    position: isMobile ? "relative" : "sticky",
     top: "24px",
   };
 
@@ -875,7 +883,7 @@ if (options?.error) {
 
   const checkoutWrapStyle = {
     display: "grid",
-    gridTemplateColumns: "1.06fr 0.94fr",
+    gridTemplateColumns: isMobile ? "1fr" : "1.06fr 0.94fr",
     gap: "16px",
     padding: "16px",
     alignItems: "start",
