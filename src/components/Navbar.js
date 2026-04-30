@@ -2678,7 +2678,7 @@ const drawerStyle = {
   position: "fixed",
   top: 0,
   left: 0,
-  width: "min(720px, 52vw)",
+  width: "min(720px, 96vw)",
   height: "100vh",
   background: "#fff7f7",
   zIndex: 1300,
