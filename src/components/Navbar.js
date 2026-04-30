@@ -1252,6 +1252,7 @@ toast.success(
               </button>
             </>
           ) : (
+            <div style={navLinksStyle}>
             <>
               <NavLink
                 to="/wishlist"
@@ -1487,7 +1488,7 @@ toast.success(
                   Admin
                 </NavLink>
               )}
-            </>
+            </div>
           )}
         </div>
       </div>
@@ -1520,7 +1521,7 @@ toast.success(
           </div>
         ) : (
           <div style={drawerContentWrapStyle}>
-            <div style={drawerSidebarStyle}>
+            <div style={{ ...drawerSidebarStyle, display: isMobile && activeSection ? "none" : "flex", flexDirection: "column" }}>
               <div style={userMiniCardStyle}>
                 <div style={userAvatarStyle}>
                   {(user?.name || "U").charAt(0).toUpperCase()}
@@ -1696,11 +1697,12 @@ toast.success(
                         style={primaryActionBtnStyle}
                         disabled={savingProfile}
                       >
-                     savingProfile
-  ? "Saving..."
-  : profileSaveStatus === "saved"
-  ? "Saved ✅"
-  : "Save Profile Changes"
+                     {savingProfile ? "Saving..." : profileSaveStatus === "saved" ? "Saved ✅" : "Save Profile Changes"}
+
+
+
+
+
 
                       </button>
                     </div>
@@ -2267,8 +2269,8 @@ const navLeftStyle = {
 const navRightStyle = {
   display: "flex",
   alignItems: "center",
-  gap: "10px",
-  flexWrap: "wrap",
+  gap: "8px",
+  flexWrap: "nowrap",
 };
 
 const menuButtonStyle = {
@@ -2750,7 +2752,7 @@ const emptyTextStyle = {
 
 const drawerContentWrapStyle = {
   display: "grid",
-  gridTemplateColumns: "185px 1fr",
+  gridTemplateColumns: isMobile ? "1fr" : "185px 1fr",
   minHeight: 0,
   flex: 1,
 };
