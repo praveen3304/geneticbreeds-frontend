@@ -1253,7 +1253,6 @@ toast.success(
             </>
           ) : (
             <div style={navLinksStyle}>
-            <>
               <NavLink
                 to="/wishlist"
                 style={({ isActive }) => (isActive ? activeLinkStyle : navLinkStyle)}
