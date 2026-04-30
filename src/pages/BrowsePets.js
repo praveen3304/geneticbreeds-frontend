@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 
 export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} }) {
   const [ads, setAds] = useState([]);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  useEffect(() => { const h = () => setIsMobile(window.innerWidth < 768); window.addEventListener("resize", h); return () => window.removeEventListener("resize", h); }, []);
   const [loading, setLoading] = useState(true);
 
   const [q, setQ] = useState("");
@@ -267,7 +269,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
             className="filters-top"
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+              gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))",
               gap: "10px",
               marginBottom: "10px",
             }}
@@ -364,7 +366,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
             className="filters-bottom"
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+              gridTemplateColumns: isMobile ? "1fr" : "repeat(4, minmax(0, 1fr))",
               gap: "10px",
             }}
           >
