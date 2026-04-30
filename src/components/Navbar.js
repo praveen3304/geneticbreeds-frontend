@@ -1542,7 +1542,7 @@ toast.success(
           </div>
         ) : (
           <div style={drawerContentWrapStyle}>
-            <div style={drawerSidebarStyle}>
+            <div style={{ ...drawerSidebarStyle, display: window.innerWidth < 768 && activeSection ? "none" : "flex", flexDirection: "column" }}>
               <div style={userMiniCardStyle}>
                 <div style={userAvatarStyle}>
                   {(user?.name || "U").charAt(0).toUpperCase()}
@@ -2277,7 +2277,7 @@ const navRightStyle = {
   display: "flex",
   alignItems: "center",
   gap: "10px",
-  flexWrap: "wrap",
+  flexWrap: "nowrap",
 };
 
 const menuButtonStyle = {
@@ -2759,7 +2759,7 @@ const emptyTextStyle = {
 
 const drawerContentWrapStyle = {
   display: "grid",
-  gridTemplateColumns: "185px 1fr",
+  gridTemplateColumns: window.innerWidth < 768 ? "1fr" : "185px 1fr",
   minHeight: 0,
   flex: 1,
 };
