@@ -1,3 +1,4 @@
+import logo from "../assets/new-logo.png";
 import React, { useEffect, useState } from "react";
 
 export default function Landing({ onLogin, onRegister }) {
@@ -18,8 +19,8 @@ export default function Landing({ onLogin, onRegister }) {
       <div style={{ flex: 1, background: "#ffffff", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: isMobile ? "40px 24px" : "60px 40px", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", fontSize: "220px", opacity: 0.04, bottom: "-30px", left: "-20px", userSelect: "none" }}>🐾</div>
         <p style={{ margin: "0 0 20px", fontSize: isMobile ? "13px" : "16px", fontWeight: "850", letterSpacing: "2px", textTransform: "uppercase", background: "linear-gradient(135deg, #b91c1c 0%, #7c3aed 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", fontFamily: "Georgia, serif", textAlign: "center" }}>The World's Most Trusted Pet Marketplace.</p>
-        <img src="/final-logo.png" alt="Logo" style={{ width: isMobile ? "160px" : "260px", height: "auto", marginBottom: "10px" }} />
-        <img src="/logo-text.png" alt="Genetic Breeds" style={{ width: isMobile ? "220px" : "340px", height: "auto", marginBottom: "24px" }} />
+        
+        <img src={logo} alt="Genetic Breeds" style={{ width: "min(360px, 70vw)", height: "auto", marginBottom: "8px", filter: "drop-shadow(0 12px 32px rgba(185,28,28,0.15)) contrast(1.04) saturate(1.1)" }} />
         <p style={{ color: "#383847", fontSize: isMobile ? "13px" : "15px", fontWeight: "600", textAlign: "center", lineHeight: 1.7, maxWidth: "380px", fontFamily: "serif", margin: "0 0 28px" }}>Connecting Pet Lovers with Verified Breeders for Rare, Exotic & Purebreed Animals Across the Globe.</p>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", justifyContent: "center" }}>
           {["✦ Verified Sellers", "✦ Trusted Listings", "✦ Global Reach"].map((label, i) => (
