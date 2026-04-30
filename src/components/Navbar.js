@@ -3,7 +3,7 @@ import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const THREADS_KEY = "gb_chat_threads";
-const API_BASE_URL = "http://localhost:10000";
+const API_BASE_URL = "https://genetic-breeds-backend.onrender.com";
 
 function getUnreadCount() {
   try {
