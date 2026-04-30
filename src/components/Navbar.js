@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const THREADS_KEY = "gb_chat_threads";
@@ -266,14 +266,9 @@ export default function Navbar({
   isAdmin,
 }) {
   const navigate = useNavigate();
-  const location = useLocation();
-  const navLinksStyle = { display: isMobile ? "none" : "flex", alignItems: "center", gap: "8px" };
   const notificationDropdownRef = useRef(null);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  useEffect(() => { const h = () => setIsMobile(window.innerWidth < 768); window.addEventListener("resize", h); return () => window.removeEventListener("resize", h); }, []);
-  const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("profile");
   const [user, setUser] = useState(null);
   const [membership, setMembership] = useState(null);
@@ -1044,7 +1039,31 @@ toast.success(
     }
   };
 
-  const shareReferral = () => { setInviteModalOpen(true); };
+  const shareReferral = async () => {
+    try {
+      if (!user?.referralCode) {
+        alert("No referral code found");
+        return;
+      }
+
+      const shareData = {
+        title: "Genetic Breeds Referral",
+        text: referralShareText,
+        url: window.location.origin,
+      };
+
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(
+          `${referralShareText} - ${window.location.origin}`
+        );
+        alert("Share not supported on this device. Referral message copied instead.");
+      }
+    } catch (err) {
+      console.error("Share referral error:", err);
+    }
+  };
 
   const markNotificationAsRead = async (notificationId) => {
     if (!notificationId || !token) return;
@@ -1244,7 +1263,7 @@ toast.success(
         </div>
 
         <div style={navRightStyle}>
-          {!isAuthed && location.pathname !== "/" ? (
+          {!isAuthed ? (
             <>
               <button style={navTextBtnStyle} onClick={onLogin}>
                 Login
@@ -1255,7 +1274,7 @@ toast.success(
               </button>
             </>
           ) : (
-            <div style={navLinksStyle}>
+            <>
               <NavLink
                 to="/wishlist"
                 style={({ isActive }) => (isActive ? activeLinkStyle : navLinkStyle)}
@@ -1490,7 +1509,7 @@ toast.success(
                   Admin
                 </NavLink>
               )}
-            </div>
+            </>
           )}
         </div>
       </div>
@@ -1515,7 +1534,7 @@ toast.success(
           </button>
         </div>
 
-        {!isAuthed && location.pathname !== "/" ? (
+        {!isAuthed ? (
           <div style={drawerBodyStyle}>
             <div style={emptyCardStyle}>
               <p style={emptyTextStyle}>Please login to open your account panel.</p>
@@ -1523,7 +1542,7 @@ toast.success(
           </div>
         ) : (
           <div style={drawerContentWrapStyle}>
-            <div style={{ ...drawerSidebarStyle, display: isMobile && activeSection ? "none" : "flex", flexDirection: "column" }}>
+            <div style={drawerSidebarStyle}>
               <div style={userMiniCardStyle}>
                 <div style={userAvatarStyle}>
                   {(user?.name || "U").charAt(0).toUpperCase()}
@@ -1699,12 +1718,11 @@ toast.success(
                         style={primaryActionBtnStyle}
                         disabled={savingProfile}
                       >
-                     {savingProfile ? "Saving..." : profileSaveStatus === "saved" ? "Saved ✅" : "Save Profile Changes"}
-
-
-
-
-
+                     savingProfile
+  ? "Saving..."
+  : profileSaveStatus === "saved"
+  ? "Saved ✅"
+  : "Save Profile Changes"
 
                       </button>
                     </div>
@@ -1872,6 +1890,13 @@ toast.success(
                         </div>
 
                         <div style={referralBtnRowStyle}>
+                          <button
+                            type="button"
+                            onClick={copyReferralCode}
+                            style={primaryActionBtnStyle}
+                          >
+                            Copy Code
+                          </button>
 
                           <button
                             type="button"
@@ -2226,26 +2251,6 @@ toast.success(
           </div>
         )}
       </div>
-
-      {inviteModalOpen && (
-        <div onClick={() => setInviteModalOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.5)", backdropFilter: "blur(6px)", zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
-          <div onClick={e => e.stopPropagation()} style={{ background: "#fff", borderRadius: "20px", padding: "24px", maxWidth: "360px", width: "100%", boxShadow: "0 20px 50px rgba(15,23,42,0.2)" }}>
-            <div style={{ textAlign: "center", marginBottom: "16px" }}>
-              <div style={{ fontSize: "32px", marginBottom: "6px" }}>🐾</div>
-              <h3 style={{ margin: "0 0 4px", fontSize: "17px", fontWeight: "900", color: "#111827" }}>Invite Friends</h3>
-            </div>
-            <div style={{ background: "linear-gradient(135deg, #fff1f2, #ffe4e6)", border: "1px solid #fecdd3", borderRadius: "12px", padding: "12px", marginBottom: "14px", textAlign: "center" }}>
-              <div style={{ fontSize: "10px", fontWeight: "800", color: "#991b1b", letterSpacing: "1px", marginBottom: "6px" }}>YOUR REFERRAL CODE</div>
-              <div style={{ background: "#fff", border: "2px dashed #ef4444", borderRadius: "10px", padding: "10px", fontSize: "22px", fontWeight: "900", color: "#111827", letterSpacing: "3px" }}>{user?.referralCode}</div>
-            </div>
-            <div style={{ display: "grid", gap: "8px" }}>
-              <button onClick={() => { navigator.clipboard.writeText("Join Genetic Breeds! Use my referral code " + user?.referralCode + " to get free ad credits. Register at " + window.location.origin); setInviteModalOpen(false); }} style={{ width: "100%", padding: "11px", borderRadius: "10px", border: "none", background: "linear-gradient(135deg, #7a0016, #b3122a)", color: "#fff", fontSize: "13px", fontWeight: "800", cursor: "pointer" }}>Copy Invite Message</button>
-              <button onClick={() => { if(navigator.share) navigator.share({ title: "Join Genetic Breeds", text: "Use my referral code " + user?.referralCode, url: window.location.origin }); }} style={{ width: "100%", padding: "11px", borderRadius: "10px", border: "1.5px solid #b91c1c", background: "#fff", color: "#b91c1c", fontSize: "13px", fontWeight: "800", cursor: "pointer" }}>Share via Apps</button>
-              <button onClick={() => setInviteModalOpen(false)} style={{ width: "100%", padding: "9px", borderRadius: "10px", border: "1px solid #e5e7eb", background: "#f9fafb", color: "#6b7280", fontSize: "13px", fontWeight: "700", cursor: "pointer" }}>Close</button>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 }
@@ -2271,8 +2276,8 @@ const navLeftStyle = {
 const navRightStyle = {
   display: "flex",
   alignItems: "center",
-  gap: "8px",
-  flexWrap: "nowrap",
+  gap: "10px",
+  flexWrap: "wrap",
 };
 
 const menuButtonStyle = {
@@ -2682,7 +2687,7 @@ const drawerStyle = {
   position: "fixed",
   top: 0,
   left: 0,
-  width: "min(720px, 96vw)",
+  width: "min(720px, 52vw)",
   height: "100vh",
   background: "#fff7f7",
   zIndex: 1300,
@@ -2754,7 +2759,7 @@ const emptyTextStyle = {
 
 const drawerContentWrapStyle = {
   display: "grid",
-  gridTemplateColumns: window.innerWidth < 768 ? "1fr" : "140px 1fr",
+  gridTemplateColumns: "185px 1fr",
   minHeight: 0,
   flex: 1,
 };
