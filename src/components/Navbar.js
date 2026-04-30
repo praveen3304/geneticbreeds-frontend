@@ -267,9 +267,12 @@ export default function Navbar({
 }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const navLinksStyle = { display: isMobile ? "none" : "flex", alignItems: "center", gap: "8px" };
   const notificationDropdownRef = useRef(null);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  useEffect(() => { const h = () => setIsMobile(window.innerWidth < 768); window.addEventListener("resize", h); return () => window.removeEventListener("resize", h); }, []);
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("profile");
   const [user, setUser] = useState(null);
@@ -2751,7 +2754,7 @@ const emptyTextStyle = {
 
 const drawerContentWrapStyle = {
   display: "grid",
-  gridTemplateColumns: isMobile ? "1fr" : "140px 1fr",
+  gridTemplateColumns: window.innerWidth < 768 ? "1fr" : "140px 1fr",
   minHeight: 0,
   flex: 1,
 };
