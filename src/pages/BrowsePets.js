@@ -752,13 +752,14 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                 <div style={{ position: "relative" }}>
                   <img
                     className="card-img"
+                    onClick={(e) => { e.stopPropagation(); setGalleryAd(p); setGalleryIndex(0); }}
                     src={getAdImage(p)}
                     alt={getAdTitle(p)}
                     style={{
                       opacity: p.status === "Sold" ? 0.72 : 1,
-                      height: isMobile ? "160px" : "220px",
+                      height: isMobile ? "200px" : "220px",
                       width: "100%",
-                      objectFit: "contain",
+                      objectFit: "cover",
                       background: "#eef2f7",
                       display: "block",
                       transition: "transform 0.3s ease",
@@ -1122,7 +1123,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
         <div onClick={() => setGalleryAd(null)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.92)", zIndex: 3000, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
           <button onClick={() => setGalleryAd(null)} style={{ position: "absolute", top: "16px", right: "16px", background: "rgba(255,255,255,0.15)", border: "none", color: "#fff", fontSize: "28px", width: "44px", height: "44px", borderRadius: "999px", cursor: "pointer" }}>×</button>
           <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.6)", marginBottom: "12px" }}>{galleryIndex + 1} / {(galleryAd.images || []).length}</div>
-          <img src={(galleryAd.images || [])[galleryIndex]} alt="" onClick={e => e.stopPropagation()} style={{ maxHeight: "70vh", maxWidth: "92vw", objectFit: "contain", borderRadius: "12px" }} />
+          <img src={(galleryAd.images || [])[galleryIndex]} alt="" onClick={e => e.stopPropagation()} style={{ maxHeight: "70vh", maxWidth: "92vw", objectFit: "cover", borderRadius: "12px" }} />
           <div style={{ display: "flex", gap: "10px", marginTop: "16px", flexWrap: "wrap", justifyContent: "center", padding: "0 12px" }}>
             {(galleryAd.images || []).map((img, i) => (
               <img key={i} src={img} alt="" onClick={e => { e.stopPropagation(); setGalleryIndex(i); }} style={{ width: "60px", height: "60px", objectFit: "cover", borderRadius: "8px", border: i === galleryIndex ? "2px solid #fff" : "2px solid transparent", cursor: "pointer", opacity: i === galleryIndex ? 1 : 0.6 }} />
