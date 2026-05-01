@@ -15,6 +15,8 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
   const [maxPrice, setMaxPrice] = useState("");
   const [sort, setSort] = useState("Latest");
 
+  const [galleryAd, setGalleryAd] = useState(null);
+  const [galleryIndex, setGalleryIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [activeShareId, setActiveShareId] = useState(null);
   const [copiedId, setCopiedId] = useState(null);
