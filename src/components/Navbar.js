@@ -2713,8 +2713,10 @@ const drawerStyle = {
   left: 0,
 
   // 👇 FULL SCREEN FIX
-  width: "100vw",
-  height: "100vh",
+width: "min(720px, 52vw)",
+maxWidth: "90vw",
+height: "100vh",
+overflow: "auto",
 
   background: "#fff7f7",
   zIndex: 1300,
@@ -2723,7 +2725,6 @@ const drawerStyle = {
   flexDirection: "column",
 
   // 👇 IMPORTANT: allow scrolling inside panel
-  overflowY: "auto",
 };
 
 const drawerHeaderStyle = {
