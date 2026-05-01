@@ -543,7 +543,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
             className="grid"
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(250px, 270px))",
+              gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(250px, 270px))",
               gap: "18px",
               justifyContent: "start",
             }}
