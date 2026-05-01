@@ -1514,13 +1514,16 @@ toast.success(
         </div>
       </div>
 
-      {drawerOpen && <div style={overlayStyle} onClick={closeDrawer} />}
+<>
+  {drawerOpen && (
+    <div style={overlayStyle} onClick={closeDrawer} />
+  )}
 
-      <div
-        style={{
-          ...drawerStyle,
-          transform: drawerOpen ? "translateX(0)" : "translateX(-100%)",
-        }}
+  <div
+    style={{
+      ...drawerStyle,
+      transform: drawerOpen ? "translateX(0)" : "translateX(-100%)",
+    }}
       >
         <div style={drawerHeaderStyle}>
           <div>
@@ -2708,15 +2711,19 @@ const drawerStyle = {
   position: "fixed",
   top: 0,
   left: 0,
-  width: "min(720px, 52vw)",
+
+  // 👇 FULL SCREEN FIX
+  width: "100vw",
   height: "100vh",
+
   background: "#fff7f7",
   zIndex: 1300,
-  transition: "transform 0.32s ease",
-  boxShadow: "16px 0 40px rgba(127, 29, 29, 0.18)",
+
   display: "flex",
   flexDirection: "column",
-  overflow: "hidden",
+
+  // 👇 IMPORTANT: allow scrolling inside panel
+  overflowY: "auto",
 };
 
 const drawerHeaderStyle = {
