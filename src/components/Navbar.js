@@ -269,7 +269,7 @@ export default function Navbar({
   const notificationDropdownRef = useRef(null);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("profile");
+  const [activeSection, setActiveSection] = useState(window.innerWidth < 768 ? "" : "profile");
   const [user, setUser] = useState(null);
   const [membership, setMembership] = useState(null);
   const [loadingProfile, setLoadingProfile] = useState(false);
@@ -1542,7 +1542,7 @@ toast.success(
           </div>
         ) : (
           <div style={drawerContentWrapStyle}>
-            <div style={{ ...drawerSidebarStyle, display: window.innerWidth < 768 && activeSection ? "none" : "flex", flexDirection: "column" }}>
+            <div style={{ ...drawerSidebarStyle, display: window.innerWidth < 768 && activeSection && activeSection !== "" ? "none" : "flex", flexDirection: "column" }}>
               <div style={userMiniCardStyle}>
                 <div style={userAvatarStyle}>
                   {(user?.name || "U").charAt(0).toUpperCase()}
