@@ -269,7 +269,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
             className="filters-top"
             style={{
               display: "grid",
-              gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(3, minmax(0, 1fr))",
+              gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(3, minmax(0, 1fr))", gridTemplateRows: "auto",
               gap: "10px",
               marginBottom: "10px",
             }}
@@ -338,6 +338,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                 display: "flex",
                 alignItems: "center",
                 boxShadow: "0 3px 8px rgba(0,0,0,0.04)",
+                gridColumn: isMobile ? "1 / -1" : "auto",
               }}
             >
               <select
