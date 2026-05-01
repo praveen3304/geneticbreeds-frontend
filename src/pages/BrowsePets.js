@@ -327,40 +327,6 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                 }}
               />
             </div>
-
-            <div
-              className="field"
-              style={{
-                background: "#fff",
-                borderRadius: "12px",
-                minHeight: "44px",
-                padding: "0 12px",
-                display: "flex",
-                alignItems: "center",
-                boxShadow: "0 3px 8px rgba(0,0,0,0.04)",
-                gridColumn: isMobile ? "1 / -1" : "auto",
-              }}
-            >
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                style={{
-                  border: "none",
-                  outline: "none",
-                  width: "100%",
-                  fontSize: "14px",
-                  background: "transparent",
-                }}
-              >
-                <option value="All">Category</option>
-                <option value="Dogs">Dogs</option>
-                <option value="Cats">Cats</option>
-                <option value="Birds">Birds</option>
-                <option value="Horse">Horse</option>
-                <option value="Cow">Cow</option>
-                <option value="Exotics">Exotics</option>
-              </select>
-            </div>
           </div>
 
           <div
@@ -371,6 +337,17 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
               gap: "10px",
             }}
           >
+            <div className="field" style={{ background: "#fff", borderRadius: "12px", minHeight: "44px", padding: "0 12px", display: "flex", alignItems: "center", boxShadow: "0 3px 8px rgba(0,0,0,0.04)" }}>
+              <select value={category} onChange={(e) => setCategory(e.target.value)} style={{ border: "none", outline: "none", width: "100%", fontSize: "14px", background: "transparent" }}>
+                <option value="All">Category</option>
+                <option value="Dogs">Dogs</option>
+                <option value="Cats">Cats</option>
+                <option value="Birds">Birds</option>
+                <option value="Horse">Horse</option>
+                <option value="Cow">Cow</option>
+                <option value="Exotics">Exotics</option>
+              </select>
+            </div>
             <div
               className="field"
               style={{
@@ -462,7 +439,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                 fontSize: "14px",
                 cursor: "pointer",
                 boxShadow: "0 8px 18px rgba(122,0,22,0.16)",
-                gridColumn: isMobile ? "1 / -1" : "auto",
+                gridColumn: "1 / -1",
               }}
             >
               Reset Filters
