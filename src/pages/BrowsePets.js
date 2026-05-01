@@ -754,7 +754,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                     alt={getAdTitle(p)}
                     style={{
                       opacity: p.status === "Sold" ? 0.72 : 1,
-                      height: "220px",
+                      height: isMobile ? "160px" : "220px",
                       width: "100%",
                       objectFit: "cover",
                       background: "#eef2f7",
