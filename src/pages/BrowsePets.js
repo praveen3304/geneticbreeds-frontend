@@ -366,7 +366,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
             className="filters-bottom"
             style={{
               display: "grid",
-              gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, minmax(0, 1fr))",
+              gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, minmax(0, 1fr))", gridTemplateRows: "auto",
               gap: "10px",
             }}
           >
@@ -461,6 +461,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                 fontSize: "14px",
                 cursor: "pointer",
                 boxShadow: "0 8px 18px rgba(122,0,22,0.16)",
+                gridColumn: isMobile ? "1 / -1" : "auto",
               }}
             >
               Reset Filters

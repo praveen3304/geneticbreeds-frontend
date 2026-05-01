@@ -1602,7 +1602,28 @@ toast.success(
               </button>
             </div>
 
-            <div style={drawerMainStyle}>
+            <div style={{...drawerMainStyle, padding: window.innerWidth < 768 ? "12px" : ""}}>
+              {/* Mobile back button */}
+              {window.innerWidth < 768 && activeSection && (
+                <button
+                  onClick={() => setActiveSection("")}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    background: "none",
+                    border: "none",
+                    color: "#b91c1c",
+                    fontWeight: "700",
+                    fontSize: "14px",
+                    cursor: "pointer",
+                    padding: "8px 0",
+                    marginBottom: "12px",
+                  }}
+                >
+                  ← Back
+                </button>
+              )}
               {loadingProfile ? (
                 <div style={sectionCardStyle}>
                   <p style={infoTextStyle}>Loading profile...</p>
