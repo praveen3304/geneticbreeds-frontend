@@ -1250,7 +1250,7 @@ toast.success(
               type="button"
               onClick={() => {
                 setDrawerOpen(true);
-                setActiveSection("profile");
+                if(window.innerWidth >= 768) setActiveSection("profile");
               }}
               style={menuButtonStyle}
               aria-label="Open menu"
