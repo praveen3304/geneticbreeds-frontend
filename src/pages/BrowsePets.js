@@ -590,8 +590,6 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                   background: "#fff",
                   borderRadius: "22px",
                   overflow: "hidden",
-                  display: isMobile ? "flex" : "block",
-                  flexDirection: isMobile ? "row" : "column",
                   boxShadow: p.isFeatured
                     ? "0 18px 40px rgba(245,158,11,0.20)"
                     : "0 12px 30px rgba(15,23,42,0.08)",
@@ -777,7 +775,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                     alt={getAdTitle(p)}
                     style={{
                       opacity: p.status === "Sold" ? 0.72 : 1,
-                      height: "220px",
+                      height: isMobile ? "180px" : "220px",
                       width: "100%",
                       objectFit: "cover",
                       background: "#eef2f7",
