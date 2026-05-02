@@ -1542,7 +1542,7 @@ toast.success(
           </div>
         ) : (
           <div className="gb-drawer-content" style={drawerContentWrapStyle}>
-            <div style={{ ...drawerSidebarStyle, display: window.innerWidth < 768 && activeSection && activeSection !== "" ? "none" : "flex", flexDirection: "column" }}>
+            <div style={{ ...drawerSidebarStyle, display: "flex", flexDirection: "column" }}>
               <div style={userMiniCardStyle}>
                 <div style={userAvatarStyle}>
                   {(user?.name || "U").charAt(0).toUpperCase()}
@@ -1555,7 +1555,7 @@ toast.success(
 
               <button
                 type="button"
-                onClick={() => setActiveSection("profile")}
+                onClick={() => setActiveSection(activeSection === "profile" ? "" : "profile")}
                 className={`side-item-btn ${activeSection === "profile" ? "side-item-btn-active" : ""}`} style={activeSection === "profile" ? sideItemActiveStyle : sideItemStyle}
               >
                 My Profile
@@ -1563,7 +1563,7 @@ toast.success(
 
               <button
                 type="button"
-                onClick={() => setActiveSection("licence")}
+                onClick={() => setActiveSection(activeSection === "licence" ? "" : "licence")}
                 className={`side-item-btn ${activeSection === "licence" ? "side-item-btn-active" : ""}`} style={activeSection === "licence" ? sideItemActiveStyle : sideItemStyle}
               >
                 Licence Details
@@ -1571,7 +1571,7 @@ toast.success(
 
               <button
                 type="button"
-                onClick={() => setActiveSection("referral")}
+                onClick={() => setActiveSection(activeSection === "referral" ? "" : "referral")}
                 className={`side-item-btn ${activeSection === "referral" ? "side-item-btn-active" : ""}`} style={activeSection === "referral" ? sideItemActiveStyle : sideItemStyle}
               >
                 Referral Details
@@ -1579,7 +1579,7 @@ toast.success(
 
               <button
                 type="button"
-                onClick={() => setActiveSection("membership")}
+                onClick={() => setActiveSection(activeSection === "membership" ? "" : "membership")}
                 className={`side-item-btn ${activeSection === "membership" ? "side-item-btn-active" : ""}`} style={activeSection === "membership" ? sideItemActiveStyle : sideItemStyle}
               >
                 Membership Details
@@ -1587,7 +1587,7 @@ toast.success(
 
               <button
                 type="button"
-                onClick={() => setActiveSection("settings")}
+                onClick={() => setActiveSection(activeSection === "settings" ? "" : "settings")}
                 className={`side-item-btn ${activeSection === "settings" ? "side-item-btn-active" : ""}`} style={activeSection === "settings" ? sideItemActiveStyle : sideItemStyle}
               >
                 Settings
@@ -1595,7 +1595,7 @@ toast.success(
 
               <button
                 type="button"
-                onClick={() => setActiveSection("support")}
+                onClick={() => setActiveSection(activeSection === "support" ? "" : "support")}
                 className={`side-item-btn ${activeSection === "support" ? "side-item-btn-active" : ""}`} style={activeSection === "support" ? sideItemActiveStyle : sideItemStyle}
               >
                 Help & Support
@@ -1603,11 +1603,7 @@ toast.success(
             </div>
 
             <div style={drawerMainStyle}>
-              {window.innerWidth < 768 && activeSection && (
-                <button onClick={() => setActiveSection("")} style={{ display: "flex", alignItems: "center", gap: "6px", background: "none", border: "none", color: "#b91c1c", fontWeight: "800", fontSize: "14px", cursor: "pointer", marginBottom: "12px", padding: "4px 0" }}>
-                  ← Back
-                </button>
-              )}
+              
               {loadingProfile ? (
                 <div style={sectionCardStyle}>
                   <p style={infoTextStyle}>Loading profile...</p>

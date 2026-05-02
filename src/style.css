@@ -1482,3 +1482,10 @@ body.landing-page {
     padding: 0 12px 12px !important;
   }
 }
+
+/* Show drawer main below sidebar on mobile */
+@media (max-width: 768px) {
+  .gb-drawer-content {
+    flex-direction: column !important;
+  }
+}
