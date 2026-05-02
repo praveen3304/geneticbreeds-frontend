@@ -275,31 +275,6 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
               marginBottom: "10px",
             }}
           >
-            <div
-              className="field"
-              style={{
-                background: "#fff",
-                borderRadius: "12px",
-                display: "flex",
-                alignItems: "center",
-                padding: "0 12px",
-                minHeight: "44px",
-                boxShadow: "0 3px 8px rgba(0,0,0,0.04)",
-              }}
-            >
-              <span className="icon" style={{ marginRight: "8px" }}>🔍</span>
-              <input
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                placeholder="Search..."
-                style={{
-                  border: "none",
-                  outline: "none",
-                  width: "100%",
-                  fontSize: "14px",
-                  background: "transparent",
-                }}
-              />
             </div>
 
             <div
@@ -465,7 +440,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                 boxShadow: "0 8px 18px rgba(122,0,22,0.16)",
               }}
             >
-              Reset Filters
+              🔍 Search
             </button>
           </div>
         </div>
@@ -773,6 +748,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                 <div style={{ position: "relative" }}>
                   <img
                     className="card-img"
+                    onClick={(e) => { e.stopPropagation(); if(p.images && p.images.length > 0) { setGalleryAd(p); setGalleryIndex(0); } }}
                     src={getAdImage(p)}
                     alt={getAdTitle(p)}
                     style={{
@@ -784,6 +760,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                       background: "#eef2f7",
                       display: "block",
                       transition: "transform 0.3s ease",
+                      cursor: "pointer",
                     }}
                     onError={(e) => {
                       e.currentTarget.src = "https://placehold.co/600x400?text=No+Image";
@@ -1141,6 +1118,34 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
           © 2026 Genetic Breeds Pet Marketplace. All rights reserved.
         </div>
       </footer>
+      {galleryAd && (
+        <div onClick={() => setGalleryAd(null)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.95)", zIndex: 3000, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "0" }}>
+          {/* Header */}
+          <div style={{ position: "absolute", top: 0, left: 0, right: 0, display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px", background: "linear-gradient(to bottom, rgba(0,0,0,0.7), transparent)", zIndex: 2 }}>
+            <div style={{ color: "#fff", fontSize: "14px", fontWeight: "700" }}>{galleryAd.title || "Photos"}</div>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <span style={{ color: "rgba(255,255,255,0.7)", fontSize: "13px" }}>{galleryIndex + 1} / {(galleryAd.images || []).length}</span>
+              <button onClick={() => setGalleryAd(null)} style={{ background: "rgba(255,255,255,0.15)", border: "none", color: "#fff", fontSize: "22px", width: "40px", height: "40px", borderRadius: "999px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
+            </div>
+          </div>
+          {/* Main Image */}
+          <div onClick={e => e.stopPropagation()} style={{ width: "100%", flex: 1, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
+            <img src={(galleryAd.images || [])[galleryIndex]} alt="" style={{ maxHeight: "75vh", maxWidth: "100vw", objectFit: "contain", userSelect: "none" }} />
+            {(galleryAd.images || []).length > 1 && (
+              <>
+                <button onClick={e => { e.stopPropagation(); setGalleryIndex(i => Math.max(0, i-1)); }} style={{ position: "absolute", left: "12px", background: "rgba(255,255,255,0.2)", border: "none", color: "#fff", fontSize: "28px", width: "48px", height: "48px", borderRadius: "999px", cursor: "pointer", display: galleryIndex === 0 ? "none" : "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(4px)" }}>‹</button>
+                <button onClick={e => { e.stopPropagation(); setGalleryIndex(i => Math.min((galleryAd.images||[]).length-1, i+1)); }} style={{ position: "absolute", right: "12px", background: "rgba(255,255,255,0.2)", border: "none", color: "#fff", fontSize: "28px", width: "48px", height: "48px", borderRadius: "999px", cursor: "pointer", display: galleryIndex === (galleryAd.images||[]).length-1 ? "none" : "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(4px)" }}>›</button>
+              </>
+            )}
+          </div>
+          {/* Thumbnails */}
+          <div onClick={e => e.stopPropagation()} style={{ width: "100%", background: "rgba(0,0,0,0.6)", padding: "12px 16px", display: "flex", gap: "8px", overflowX: "auto", justifyContent: "center" }}>
+            {(galleryAd.images || []).map((img, i) => (
+              <img key={i} src={img} alt="" onClick={() => setGalleryIndex(i)} style={{ width: "56px", height: "56px", objectFit: "cover", borderRadius: "8px", border: i === galleryIndex ? "2.5px solid #fff" : "2px solid rgba(255,255,255,0.2)", cursor: "pointer", opacity: i === galleryIndex ? 1 : 0.55, flexShrink: 0, transition: "all 0.2s" }} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
