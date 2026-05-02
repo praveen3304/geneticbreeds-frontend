@@ -1556,7 +1556,7 @@ toast.success(
               <button
                 type="button"
                 onClick={() => setActiveSection("profile")}
-                style={activeSection === "profile" ? sideItemActiveStyle : sideItemStyle}
+                className={`side-item-btn ${activeSection === "profile" ? "side-item-btn-active" : ""}`} style={activeSection === "profile" ? sideItemActiveStyle : sideItemStyle}
               >
                 My Profile
               </button>
@@ -1564,7 +1564,7 @@ toast.success(
               <button
                 type="button"
                 onClick={() => setActiveSection("licence")}
-                style={activeSection === "licence" ? sideItemActiveStyle : sideItemStyle}
+                className={`side-item-btn ${activeSection === "licence" ? "side-item-btn-active" : ""}`} style={activeSection === "licence" ? sideItemActiveStyle : sideItemStyle}
               >
                 Licence Details
               </button>
@@ -1572,7 +1572,7 @@ toast.success(
               <button
                 type="button"
                 onClick={() => setActiveSection("referral")}
-                style={activeSection === "referral" ? sideItemActiveStyle : sideItemStyle}
+                className={`side-item-btn ${activeSection === "referral" ? "side-item-btn-active" : ""}`} style={activeSection === "referral" ? sideItemActiveStyle : sideItemStyle}
               >
                 Referral Details
               </button>
@@ -1580,7 +1580,7 @@ toast.success(
               <button
                 type="button"
                 onClick={() => setActiveSection("membership")}
-                style={activeSection === "membership" ? sideItemActiveStyle : sideItemStyle}
+                className={`side-item-btn ${activeSection === "membership" ? "side-item-btn-active" : ""}`} style={activeSection === "membership" ? sideItemActiveStyle : sideItemStyle}
               >
                 Membership Details
               </button>
@@ -1588,7 +1588,7 @@ toast.success(
               <button
                 type="button"
                 onClick={() => setActiveSection("settings")}
-                style={activeSection === "settings" ? sideItemActiveStyle : sideItemStyle}
+                className={`side-item-btn ${activeSection === "settings" ? "side-item-btn-active" : ""}`} style={activeSection === "settings" ? sideItemActiveStyle : sideItemStyle}
               >
                 Settings
               </button>
@@ -1596,7 +1596,7 @@ toast.success(
               <button
                 type="button"
                 onClick={() => setActiveSection("support")}
-                style={activeSection === "support" ? sideItemActiveStyle : sideItemStyle}
+                className={`side-item-btn ${activeSection === "support" ? "side-item-btn-active" : ""}`} style={activeSection === "support" ? sideItemActiveStyle : sideItemStyle}
               >
                 Help & Support
               </button>
