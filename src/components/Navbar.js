@@ -1718,11 +1718,12 @@ toast.success(
                         style={primaryActionBtnStyle}
                         disabled={savingProfile}
                       >
-                     savingProfile
-  ? "Saving..."
-  : profileSaveStatus === "saved"
-  ? "Saved ✅"
-  : "Save Profile Changes"
+                     {savingProfile ? "Saving..." : profileSaveStatus === "saved" ? "Saved ✅" : "Save Profile Changes"}
+
+
+
+
+
 
                       </button>
                     </div>
@@ -2687,7 +2688,7 @@ const drawerStyle = {
   position: "fixed",
   top: 0,
   left: 0,
-  width: "min(720px, 52vw)",
+  width: window.innerWidth < 768 ? "100vw" : "min(720px, 52vw)",
   height: "100vh",
   background: "#fff7f7",
   zIndex: 1300,

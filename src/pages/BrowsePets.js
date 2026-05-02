@@ -564,7 +564,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
             className="grid"
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(250px, 270px))",
+              gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(250px, 270px))",
               gap: "18px",
               justifyContent: "start",
             }}
@@ -590,6 +590,8 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                   background: "#fff",
                   borderRadius: "22px",
                   overflow: "hidden",
+                  display: isMobile ? "flex" : "block",
+                  flexDirection: isMobile ? "row" : "column",
                   boxShadow: p.isFeatured
                     ? "0 18px 40px rgba(245,158,11,0.20)"
                     : "0 12px 30px rgba(15,23,42,0.08)",
