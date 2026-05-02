@@ -15,8 +15,6 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
   const [maxPrice, setMaxPrice] = useState("");
   const [sort, setSort] = useState("Latest");
 
-  const [galleryAd, setGalleryAd] = useState(null);
-  const [galleryIndex, setGalleryIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [activeShareId, setActiveShareId] = useState(null);
   const [copiedId, setCopiedId] = useState(null);
@@ -271,7 +269,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
             className="filters-top"
             style={{
               display: "grid",
-              gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(3, minmax(0, 1fr))", gridTemplateRows: "auto",
+              gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(3, minmax(0, 1fr))",
               gap: "10px",
               marginBottom: "10px",
             }}
@@ -329,18 +327,30 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                 }}
               />
             </div>
-          </div>
 
-          <div
-            className="filters-bottom"
-            style={{
-              display: "grid",
-              gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, minmax(0, 1fr))", gridTemplateRows: "auto",
-              gap: "10px",
-            }}
-          >
-            <div className="field" style={{ background: "#fff", borderRadius: "12px", minHeight: "44px", padding: "0 12px", display: "flex", alignItems: "center", boxShadow: "0 3px 8px rgba(0,0,0,0.04)" }}>
-              <select value={category} onChange={(e) => setCategory(e.target.value)} style={{ border: "none", outline: "none", width: "100%", fontSize: "14px", background: "transparent" }}>
+            <div
+              className="field"
+              style={{
+                background: "#fff",
+                borderRadius: "12px",
+                minHeight: "44px",
+                padding: "0 12px",
+                display: "flex",
+                alignItems: "center",
+                boxShadow: "0 3px 8px rgba(0,0,0,0.04)",
+              }}
+            >
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                style={{
+                  border: "none",
+                  outline: "none",
+                  width: "100%",
+                  fontSize: "14px",
+                  background: "transparent",
+                }}
+              >
                 <option value="All">Category</option>
                 <option value="Dogs">Dogs</option>
                 <option value="Cats">Cats</option>
@@ -350,6 +360,16 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                 <option value="Exotics">Exotics</option>
               </select>
             </div>
+          </div>
+
+          <div
+            className="filters-bottom"
+            style={{
+              display: "grid",
+              gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, minmax(0, 1fr))",
+              gap: "10px",
+            }}
+          >
             <div
               className="field"
               style={{
@@ -441,7 +461,6 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                 fontSize: "14px",
                 cursor: "pointer",
                 boxShadow: "0 8px 18px rgba(122,0,22,0.16)",
-                gridColumn: "1 / -1",
               }}
             >
               Reset Filters
@@ -545,7 +564,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
             className="grid"
             style={{
               display: "grid",
-              gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(250px, 270px))",
+              gridTemplateColumns: "repeat(auto-fill, minmax(250px, 270px))",
               gap: "18px",
               justifyContent: "start",
             }}
@@ -752,15 +771,14 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                 <div style={{ position: "relative" }}>
                   <img
                     className="card-img"
-                    onClick={(e) => { e.stopPropagation(); setGalleryAd(p); setGalleryIndex(0); }}
                     src={getAdImage(p)}
                     alt={getAdTitle(p)}
                     style={{
                       opacity: p.status === "Sold" ? 0.72 : 1,
-                      height: isMobile ? "200px" : "220px",
+                      height: "220px",
                       width: "100%",
-                      objectFit: "contain",
-                      background: "#1a1a2e",
+                      objectFit: "cover",
+                      background: "#eef2f7",
                       display: "block",
                       transition: "transform 0.3s ease",
                     }}
@@ -1119,24 +1137,6 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
         <div style={{ fontSize: "14px", opacity: 0.9 }}>
           © 2026 Genetic Breeds Pet Marketplace. All rights reserved.
         </div>
-      {galleryAd && (
-        <div onClick={() => setGalleryAd(null)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.92)", zIndex: 3000, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-          <button onClick={() => setGalleryAd(null)} style={{ position: "absolute", top: "16px", right: "16px", background: "rgba(255,255,255,0.15)", border: "none", color: "#fff", fontSize: "28px", width: "44px", height: "44px", borderRadius: "999px", cursor: "pointer" }}>×</button>
-          <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.6)", marginBottom: "12px" }}>{galleryIndex + 1} / {(galleryAd.images || []).length}</div>
-          <img src={(galleryAd.images || [])[galleryIndex]} alt="" onClick={e => e.stopPropagation()} style={{ maxHeight: "70vh", maxWidth: "92vw", objectFit: "cover", borderRadius: "12px" }} />
-          <div style={{ display: "flex", gap: "10px", marginTop: "16px", flexWrap: "wrap", justifyContent: "center", padding: "0 12px" }}>
-            {(galleryAd.images || []).map((img, i) => (
-              <img key={i} src={img} alt="" onClick={e => { e.stopPropagation(); setGalleryIndex(i); }} style={{ width: "60px", height: "60px", objectFit: "cover", borderRadius: "8px", border: i === galleryIndex ? "2px solid #fff" : "2px solid transparent", cursor: "pointer", opacity: i === galleryIndex ? 1 : 0.6 }} />
-            ))}
-          </div>
-          {(galleryAd.images || []).length > 1 && (
-            <>
-              <button onClick={e => { e.stopPropagation(); setGalleryIndex(i => Math.max(0, i-1)); }} style={{ position: "absolute", left: "16px", top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.15)", border: "none", color: "#fff", fontSize: "24px", width: "44px", height: "44px", borderRadius: "999px", cursor: "pointer" }}>‹</button>
-              <button onClick={e => { e.stopPropagation(); setGalleryIndex(i => Math.min((galleryAd.images||[]).length-1, i+1)); }} style={{ position: "absolute", right: "16px", top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.15)", border: "none", color: "#fff", fontSize: "24px", width: "44px", height: "44px", borderRadius: "999px", cursor: "pointer" }}>›</button>
-            </>
-          )}
-        </div>
-      )}
       </footer>
     </div>
   );

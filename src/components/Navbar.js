@@ -1514,16 +1514,13 @@ toast.success(
         </div>
       </div>
 
-<>
-  {drawerOpen && (
-    <div style={overlayStyle} onClick={closeDrawer} />
-  )}
+      {drawerOpen && <div style={overlayStyle} onClick={closeDrawer} />}
 
-  <div
-    style={{
-      ...drawerStyle,
-      transform: drawerOpen ? "translateX(0)" : "translateX(-100%)",
-    }}
+      <div
+        style={{
+          ...drawerStyle,
+          transform: drawerOpen ? "translateX(0)" : "translateX(-100%)",
+        }}
       >
         <div style={drawerHeaderStyle}>
           <div>
@@ -1605,28 +1602,7 @@ toast.success(
               </button>
             </div>
 
-            <div style={{...drawerMainStyle, padding: window.innerWidth < 768 ? "12px" : ""}}>
-              {/* Mobile back button */}
-              {window.innerWidth < 768 && activeSection && (
-                <button
-                  onClick={() => setActiveSection("")}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    background: "none",
-                    border: "none",
-                    color: "#b91c1c",
-                    fontWeight: "700",
-                    fontSize: "14px",
-                    cursor: "pointer",
-                    padding: "8px 0",
-                    marginBottom: "12px",
-                  }}
-                >
-                  ← Back
-                </button>
-              )}
+            <div style={drawerMainStyle}>
               {loadingProfile ? (
                 <div style={sectionCardStyle}>
                   <p style={infoTextStyle}>Loading profile...</p>
@@ -2711,20 +2687,15 @@ const drawerStyle = {
   position: "fixed",
   top: 0,
   left: 0,
-
-  // 👇 FULL SCREEN FIX
-width: "min(720px, 52vw)",
-maxWidth: "90vw",
-height: "100vh",
-overflow: "auto",
-
+  width: "min(720px, 52vw)",
+  height: "100vh",
   background: "#fff7f7",
   zIndex: 1300,
-
+  transition: "transform 0.32s ease",
+  boxShadow: "16px 0 40px rgba(127, 29, 29, 0.18)",
   display: "flex",
   flexDirection: "column",
-
-  // 👇 IMPORTANT: allow scrolling inside panel
+  overflow: "hidden",
 };
 
 const drawerHeaderStyle = {
@@ -2788,7 +2759,7 @@ const emptyTextStyle = {
 
 const drawerContentWrapStyle = {
   display: "grid",
-  gridTemplateColumns: "185px 1fr",
+  gridTemplateColumns: window.innerWidth < 768 ? "1fr" : "185px 1fr",
   minHeight: 0,
   flex: 1,
 };
