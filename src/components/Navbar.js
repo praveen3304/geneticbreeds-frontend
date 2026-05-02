@@ -1541,7 +1541,7 @@ toast.success(
             </div>
           </div>
         ) : (
-          <div style={drawerContentWrapStyle}>
+          <div className="gb-drawer-content" style={drawerContentWrapStyle}>
             <div style={{ ...drawerSidebarStyle, display: window.innerWidth < 768 && activeSection && activeSection !== "" ? "none" : "flex", flexDirection: "column" }}>
               <div style={userMiniCardStyle}>
                 <div style={userAvatarStyle}>
