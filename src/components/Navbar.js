@@ -2771,12 +2771,12 @@ const drawerContentWrapStyle = {
 };
 
 const drawerSidebarStyle = {
-  background: "linear-gradient(180deg, #1a0a0a 0%, #2d0a0a 100%)",
-  borderRight: "1px solid rgba(255,255,255,0.06)",
-  padding: "16px 12px",
+  background: "#fff",
+  borderRight: "1px solid #fee2e2",
+  padding: "14px",
   display: "flex",
   flexDirection: "column",
-  gap: "6px",
+  gap: "8px",
   overflowY: "auto",
 };
 
@@ -2784,61 +2784,61 @@ const userMiniCardStyle = {
   display: "flex",
   alignItems: "center",
   gap: "10px",
-  padding: "12px",
+  padding: "10px",
   borderRadius: "14px",
-  background: "rgba(255,255,255,0.07)",
-  border: "1px solid rgba(255,255,255,0.1)",
-  marginBottom: "8px",
+  background: "linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%)",
+  border: "1px solid #fecdd3",
+  marginBottom: "4px",
 };
 
 const userAvatarStyle = {
-  width: "42px",
-  height: "42px",
-  borderRadius: "50%",
-  background: "linear-gradient(135deg, #b91c1c 0%, #ef4444 100%)",
+  width: "38px",
+  height: "38px",
+  borderRadius: "12px",
+  background: "linear-gradient(135deg, #991b1b 0%, #ef4444 100%)",
   color: "#fff",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   fontWeight: "900",
-  fontSize: "18px",
+  fontSize: "17px",
   flexShrink: 0,
-  boxShadow: "0 4px 12px rgba(185,28,28,0.4)",
 };
 
 const userMiniNameStyle = {
   fontSize: "14px",
   fontWeight: "800",
-  color: "#ffffff",
+  color: "#111827",
 };
 
 const userMiniCodeStyle = {
   marginTop: "3px",
   fontSize: "11px",
   fontWeight: "700",
-  color: "rgba(255,255,255,0.5)",
+  color: "#991b1b",
 };
 
 const sideItemStyle = {
   width: "100%",
   textAlign: "left",
-  padding: "11px 14px",
+  padding: "12px 16px",
   borderRadius: "12px",
-  border: "1px solid transparent",
-  background: "transparent",
-  color: "rgba(255,255,255,0.7)",
+  border: "1px solid #fecaca",
+  background: "#fff5f5",
+  color: "#7f1d1d",
   fontWeight: "700",
-  fontSize: "13px",
+  fontSize: "14px",
   cursor: "pointer",
   transition: "all 0.2s",
+  boxShadow: "0 2px 6px rgba(185,28,28,0.06)",
 };
 
 const sideItemActiveStyle = {
   ...sideItemStyle,
-  background: "linear-gradient(135deg, #b91c1c 0%, #ef4444 100%)",
+  background: "linear-gradient(135deg, #7f1d1d 0%, #dc2626 100%)",
   color: "#fff",
-  boxShadow: "0 4px 14px rgba(185,28,28,0.4)",
-  border: "1px solid rgba(255,255,255,0.1)",
+  border: "1px solid transparent",
+  boxShadow: "0 6px 16px rgba(127,29,29,0.25)",
 };
 
 const drawerMainStyle = {
