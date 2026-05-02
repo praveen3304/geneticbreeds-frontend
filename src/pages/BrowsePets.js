@@ -8,6 +8,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
   const [loading, setLoading] = useState(true);
 
   const [q, setQ] = useState("");
+  const [searchInput, setSearchInput] = useState("");
   const [breed, setBreed] = useState("");
   const [category, setCategory] = useState("All");
   const [location, setLocation] = useState("");
@@ -269,7 +270,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
             className="filters-top"
             style={{
               display: "grid",
-              gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(3, minmax(0, 1fr))",
+              gridTemplateColumns: "1fr 1fr",
               gap: "10px",
               marginBottom: "10px",
             }}
@@ -315,9 +316,10 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
             >
               <span className="icon" style={{ marginRight: "8px" }}>🐾</span>
               <input
-                value={breed}
-                onChange={(e) => setBreed(e.target.value)}
-                placeholder="Breed..."
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && setQ(e.target.value)}
+                placeholder="Search breed, name..."
                 style={{
                   border: "none",
                   outline: "none",
@@ -778,6 +780,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                       height: isMobile ? "180px" : "220px",
                       width: "100%",
                       objectFit: "cover",
+                      objectPosition: "center top",
                       background: "#eef2f7",
                       display: "block",
                       transition: "transform 0.3s ease",
