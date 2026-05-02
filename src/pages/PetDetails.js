@@ -10,6 +10,7 @@ const QUICK_MESSAGES = [
 export default function PetDetails() {
   const { id } = useParams();
   const [pet, setPet] = useState(null);
+  const isMobile = window.innerWidth < 768;
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState("");
   const [message, setMessage] = useState("");
@@ -144,7 +145,7 @@ export default function PetDetails() {
           height: "100%",
           margin: "0 auto",
           display: "grid",
-          gridTemplateColumns: "1.05fr 0.95fr",
+          gridTemplateColumns: isMobile ? "1fr" : "1.05fr 0.95fr",
           gap: "16px",
           alignItems: "stretch",
         }}
@@ -286,7 +287,7 @@ export default function PetDetails() {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "1fr 1fr",
+                gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
                 gap: "8px 16px",
                 fontSize: "14px",
                 color: "#333",
