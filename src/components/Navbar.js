@@ -2771,70 +2771,74 @@ const drawerContentWrapStyle = {
 };
 
 const drawerSidebarStyle = {
-  background: "#fff",
-  borderRight: "1px solid #fee2e2",
-  padding: "14px",
+  background: "linear-gradient(180deg, #1a0a0a 0%, #2d0a0a 100%)",
+  borderRight: "1px solid rgba(255,255,255,0.06)",
+  padding: "16px 12px",
   display: "flex",
   flexDirection: "column",
-  gap: "8px",
+  gap: "6px",
+  overflowY: "auto",
 };
 
 const userMiniCardStyle = {
   display: "flex",
   alignItems: "center",
   gap: "10px",
-  padding: "10px",
+  padding: "12px",
   borderRadius: "14px",
-  background: "linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%)",
-  border: "1px solid #fecdd3",
-  marginBottom: "4px",
+  background: "rgba(255,255,255,0.07)",
+  border: "1px solid rgba(255,255,255,0.1)",
+  marginBottom: "8px",
 };
 
 const userAvatarStyle = {
-  width: "38px",
-  height: "38px",
-  borderRadius: "12px",
-  background: "linear-gradient(135deg, #991b1b 0%, #ef4444 100%)",
+  width: "42px",
+  height: "42px",
+  borderRadius: "50%",
+  background: "linear-gradient(135deg, #b91c1c 0%, #ef4444 100%)",
   color: "#fff",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   fontWeight: "900",
-  fontSize: "17px",
+  fontSize: "18px",
   flexShrink: 0,
+  boxShadow: "0 4px 12px rgba(185,28,28,0.4)",
 };
 
 const userMiniNameStyle = {
   fontSize: "14px",
   fontWeight: "800",
-  color: "#111827",
+  color: "#ffffff",
 };
 
 const userMiniCodeStyle = {
   marginTop: "3px",
   fontSize: "11px",
   fontWeight: "700",
-  color: "#991b1b",
+  color: "rgba(255,255,255,0.5)",
 };
 
 const sideItemStyle = {
   width: "100%",
   textAlign: "left",
-  padding: "10px 12px",
+  padding: "11px 14px",
   borderRadius: "12px",
   border: "1px solid transparent",
   background: "transparent",
-  color: "#374151",
-  fontWeight: "800",
+  color: "rgba(255,255,255,0.7)",
+  fontWeight: "700",
   fontSize: "13px",
   cursor: "pointer",
+  transition: "all 0.2s",
 };
 
 const sideItemActiveStyle = {
   ...sideItemStyle,
-  background: "linear-gradient(135deg, #7f1d1d 0%, #dc2626 100%)",
+  background: "linear-gradient(135deg, #b91c1c 0%, #ef4444 100%)",
   color: "#fff",
-  boxShadow: "0 8px 18px rgba(127, 29, 29, 0.2)",
+  boxShadow: "0 4px 14px rgba(185,28,28,0.4)",
+  border: "1px solid rgba(255,255,255,0.1)",
 };
 
 const drawerMainStyle = {
