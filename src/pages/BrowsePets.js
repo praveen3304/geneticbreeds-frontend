@@ -266,68 +266,14 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
             padding: "12px",
           }}
         >
-          <div
-            className="filters-top"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "10px",
-              marginBottom: "10px",
-            }}
-          >
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+            {/* Row 1: Search Breed | Category */}
+            <div style={{ background: "#fff", borderRadius: "12px", display: "flex", alignItems: "center", padding: "0 12px", minHeight: "44px", boxShadow: "0 3px 8px rgba(0,0,0,0.04)" }}>
+              <span style={{ marginRight: "8px" }}>🐾</span>
+              <input value={searchInput} onChange={(e) => setSearchInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && (setQ(e.target.value), setBreed(e.target.value))} placeholder="Search breed..." style={{ border: "none", outline: "none", width: "100%", fontSize: "14px", background: "transparent" }} />
             </div>
-
-            <div
-              className="field"
-              style={{
-                background: "#fff",
-                borderRadius: "12px",
-                display: "flex",
-                alignItems: "center",
-                padding: "0 12px",
-                minHeight: "44px",
-                boxShadow: "0 3px 8px rgba(0,0,0,0.04)",
-              }}
-            >
-              <span className="icon" style={{ marginRight: "8px" }}>🐾</span>
-              <input
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && setQ(e.target.value)}
-                placeholder="Search breed, name..."
-                style={{
-                  border: "none",
-                  outline: "none",
-                  width: "100%",
-                  fontSize: "14px",
-                  background: "transparent",
-                }}
-              />
-            </div>
-
-            <div
-              className="field"
-              style={{
-                background: "#fff",
-                borderRadius: "12px",
-                minHeight: "44px",
-                padding: "0 12px",
-                display: "flex",
-                alignItems: "center",
-                boxShadow: "0 3px 8px rgba(0,0,0,0.04)",
-              }}
-            >
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                style={{
-                  border: "none",
-                  outline: "none",
-                  width: "100%",
-                  fontSize: "14px",
-                  background: "transparent",
-                }}
-              >
+            <div style={{ background: "#fff", borderRadius: "12px", minHeight: "44px", padding: "0 12px", display: "flex", alignItems: "center", boxShadow: "0 3px 8px rgba(0,0,0,0.04)" }}>
+              <select value={category} onChange={(e) => setCategory(e.target.value)} style={{ border: "none", outline: "none", width: "100%", fontSize: "14px", background: "transparent" }}>
                 <option value="All">Category</option>
                 <option value="Dogs">Dogs</option>
                 <option value="Cats">Cats</option>
@@ -337,111 +283,19 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                 <option value="Exotics">Exotics</option>
               </select>
             </div>
-          </div>
-
-          <div
-            className="filters-bottom"
-            style={{
-              display: "grid",
-              gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, minmax(0, 1fr))",
-              gap: "10px",
-            }}
-          >
-            <div
-              className="field"
-              style={{
-                background: "#fff",
-                borderRadius: "12px",
-                display: "flex",
-                alignItems: "center",
-                padding: "0 12px",
-                minHeight: "44px",
-                boxShadow: "0 3px 8px rgba(0,0,0,0.04)",
-              }}
-            >
-              <span className="icon" style={{ marginRight: "8px" }}>📍</span>
-              <input
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                placeholder="Location"
-                style={{
-                  border: "none",
-                  outline: "none",
-                  width: "100%",
-                  fontSize: "14px",
-                  background: "transparent",
-                }}
-              />
+            {/* Row 2: Min Price | Max Price */}
+            <div style={{ background: "#fff", borderRadius: "12px", display: "flex", alignItems: "center", padding: "0 12px", minHeight: "44px", boxShadow: "0 3px 8px rgba(0,0,0,0.04)" }}>
+              <input value={minPrice} onChange={(e) => setMinPrice(e.target.value)} placeholder="Min ₹" style={{ border: "none", outline: "none", width: "100%", fontSize: "14px", background: "transparent" }} />
             </div>
-
-            <div
-              className="field"
-              style={{
-                background: "#fff",
-                borderRadius: "12px",
-                display: "flex",
-                alignItems: "center",
-                padding: "0 12px",
-                minHeight: "44px",
-                boxShadow: "0 3px 8px rgba(0,0,0,0.04)",
-              }}
-            >
-              <input
-                value={minPrice}
-                onChange={(e) => setMinPrice(e.target.value)}
-                placeholder="Min ₹"
-                style={{
-                  border: "none",
-                  outline: "none",
-                  width: "100%",
-                  fontSize: "14px",
-                  background: "transparent",
-                }}
-              />
+            <div style={{ background: "#fff", borderRadius: "12px", display: "flex", alignItems: "center", padding: "0 12px", minHeight: "44px", boxShadow: "0 3px 8px rgba(0,0,0,0.04)" }}>
+              <input value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} placeholder="Max ₹" style={{ border: "none", outline: "none", width: "100%", fontSize: "14px", background: "transparent" }} />
             </div>
-
-            <div
-              className="field"
-              style={{
-                background: "#fff",
-                borderRadius: "12px",
-                display: "flex",
-                alignItems: "center",
-                padding: "0 12px",
-                minHeight: "44px",
-                boxShadow: "0 3px 8px rgba(0,0,0,0.04)",
-              }}
-            >
-              <input
-                value={maxPrice}
-                onChange={(e) => setMaxPrice(e.target.value)}
-                placeholder="Max ₹"
-                style={{
-                  border: "none",
-                  outline: "none",
-                  width: "100%",
-                  fontSize: "14px",
-                  background: "transparent",
-                }}
-              />
+            {/* Row 3: Location | Search Button */}
+            <div style={{ background: "#fff", borderRadius: "12px", display: "flex", alignItems: "center", padding: "0 12px", minHeight: "44px", boxShadow: "0 3px 8px rgba(0,0,0,0.04)" }}>
+              <span style={{ marginRight: "8px" }}>📍</span>
+              <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" style={{ border: "none", outline: "none", width: "100%", fontSize: "14px", background: "transparent" }} />
             </div>
-
-            <button
-              onClick={resetFilters}
-              style={{
-                minHeight: "44px",
-                borderRadius: "12px",
-                border: "none",
-                background: "linear-gradient(135deg, #7a0016, #b3122a)",
-                color: "#fff",
-                fontWeight: "700",
-                fontSize: "14px",
-                cursor: "pointer",
-                boxShadow: "0 8px 18px rgba(122,0,22,0.16)",
-              }}
-            >
-              🔍 Search
-            </button>
+            <button onClick={() => { setQ(searchInput); setBreed(searchInput); }} style={{ minHeight: "44px", borderRadius: "12px", border: "none", background: "linear-gradient(135deg, #7a0016, #b3122a)", color: "#fff", fontWeight: "700", fontSize: "14px", cursor: "pointer", boxShadow: "0 8px 18px rgba(122,0,22,0.16)" }}>🔍 Search</button>
           </div>
         </div>
       </section>
