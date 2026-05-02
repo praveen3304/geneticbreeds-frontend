@@ -1603,6 +1603,11 @@ toast.success(
             </div>
 
             <div style={drawerMainStyle}>
+              {window.innerWidth < 768 && activeSection && (
+                <button onClick={() => setActiveSection("")} style={{ display: "flex", alignItems: "center", gap: "6px", background: "none", border: "none", color: "#b91c1c", fontWeight: "800", fontSize: "14px", cursor: "pointer", marginBottom: "12px", padding: "4px 0" }}>
+                  ← Back
+                </button>
+              )}
               {loadingProfile ? (
                 <div style={sectionCardStyle}>
                   <p style={infoTextStyle}>Loading profile...</p>
