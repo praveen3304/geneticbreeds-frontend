@@ -2788,7 +2788,7 @@ const emptyTextStyle = {
 
 const drawerContentWrapStyle = {
   display: "grid",
-  gridTemplateColumns: window.innerWidth < 768 ? "1fr" : "185px 1fr",
+  gridTemplateColumns: "185px 1fr",
   minHeight: 0,
   flex: 1,
 };
