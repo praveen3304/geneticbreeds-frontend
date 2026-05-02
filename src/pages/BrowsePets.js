@@ -759,8 +759,8 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                       opacity: p.status === "Sold" ? 0.72 : 1,
                       height: isMobile ? "200px" : "220px",
                       width: "100%",
-                      objectFit: "cover",
-                      background: "#f8f8f8",
+                      objectFit: "contain",
+                      background: "#1a1a2e",
                       display: "block",
                       transition: "transform 0.3s ease",
                     }}
