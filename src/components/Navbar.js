@@ -2713,7 +2713,7 @@ const drawerStyle = {
   left: 0,
 
   // 👇 FULL SCREEN FIX
-width: "min(720px, 52vw)",
+width: "min(720px, 96vw)",
 maxWidth: "90vw",
 height: "100vh",
 overflow: "auto",
