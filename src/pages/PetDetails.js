@@ -146,8 +146,9 @@ export default function PetDetails() {
           margin: "0 auto",
           display: "grid",
           gridTemplateColumns: isMobile ? "1fr" : "1.05fr 0.95fr",
-          gap: "16px",
+          gap: isMobile ? "12px" : "16px",
           alignItems: "stretch",
+          padding: isMobile ? "0 8px 16px" : "0",
         }}
       >
         {/* LEFT SIDE */}
@@ -156,9 +157,9 @@ export default function PetDetails() {
             background: "#fff",
             borderRadius: "18px",
             boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
-            padding: "16px",
+            padding: isMobile ? "10px" : "16px",
             display: "grid",
-            gridTemplateRows: "235px auto",
+            gridTemplateRows: isMobile ? "220px auto" : "235px auto",
             gap: "12px",
             minHeight: 0,
           }}
@@ -287,7 +288,7 @@ export default function PetDetails() {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+                gridTemplateColumns: isMobile ? "1fr 1fr" : "1fr 1fr",
                 gap: "8px 16px",
                 fontSize: "14px",
                 color: "#333",
@@ -319,7 +320,7 @@ export default function PetDetails() {
           </div>
         </div>
 
-        {/* RIGHT SIDE */}
+        {/* RIGHT SIDE - hidden on mobile, show chat button instead */}
         <div
           style={{
             background: "#fff",
@@ -328,7 +329,7 @@ export default function PetDetails() {
             overflow: "hidden",
             display: "flex",
             flexDirection: "column",
-            minHeight: 0,
+            minHeight: isMobile ? "500px" : 0,
           }}
         >
           <div
