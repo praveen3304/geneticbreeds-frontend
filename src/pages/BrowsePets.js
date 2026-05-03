@@ -151,7 +151,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
     const shareUrl = getShareLink(ad);
     const shareText = `${getAdTitle(ad)} - ₹${Number(ad.price || 0).toLocaleString("en-IN")} - ${getAdLocation(ad)}`;
 
-    if (navigator.share) {
+    if (navigator.share && navigator.canShare()) {
       try {
         await navigator.share({
           title: getAdTitle(ad),

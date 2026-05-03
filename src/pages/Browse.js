@@ -120,7 +120,7 @@ export default function Browse() {
     const shareUrl = `${window.location.origin}/browse`;
     const shareText = `${pet.title} - ₹${pet.price.toLocaleString()} - ${pet.location}`;
 
-    if (navigator.share) {
+    if (navigator.share && navigator.canShare()) {
       try {
         await navigator.share({
           title: pet.title,

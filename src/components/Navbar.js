@@ -1052,7 +1052,7 @@ toast.success(
         url: window.location.origin,
       };
 
-      if (navigator.share) {
+      if (navigator.share && navigator.canShare()) {
         await navigator.share(shareData);
       } else {
         await navigator.clipboard.writeText(
