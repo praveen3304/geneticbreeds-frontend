@@ -1603,6 +1603,11 @@ toast.success(
             </div>
 
             <div className="gb-drawer-main" style={drawerMainStyle}>
+              {activeSection && window.innerWidth < 768 && (
+                <button onClick={() => setActiveSection("")} style={{ display: "flex", alignItems: "center", background: "none", border: "none", cursor: "pointer", padding: "6px 8px", marginBottom: "8px", color: "#b91327", fontSize: "26px", lineHeight: 1 }}>
+                  &#8592;
+                </button>
+              )}
               
               {loadingProfile ? (
                 <div style={sectionCardStyle}>
