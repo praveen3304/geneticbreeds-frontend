@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Link, useParams } from "react-router-dom";
 
 const QUICK_MESSAGES = [
@@ -11,6 +12,7 @@ export default function PetDetails() {
   const { id } = useParams();
   const [pet, setPet] = useState(null);
   const isMobile = window.innerWidth < 768;
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState("");
   const [message, setMessage] = useState("");
@@ -69,6 +71,22 @@ export default function PetDetails() {
 
     setMessages((prev) => [...prev, newMessage]);
     setMessage("");
+  };
+
+  const handleOpenChat = async () => {
+    try {
+      const token = localStorage.getItem("gb_token");
+      const res = await fetch("https://genetic-breeds-backend.onrender.com/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ adId: pet._id || pet.id }),
+      });
+      const data = await res.json();
+      if (data._id) navigate(`/chat/${data._id}`);
+      else navigate("/chats");
+    } catch {
+      navigate("/chats");
+    }
   };
 
   const handleQuickMessage = (text) => {
@@ -320,8 +338,8 @@ export default function PetDetails() {
           </div>
         </div>
 
-        {/* RIGHT SIDE - hidden on mobile, show chat button instead */}
-        <div
+        {/* RIGHT SIDE - desktop only */}
+        {!isMobile && (<div
           style={{
             background: "#fff",
             borderRadius: "18px",
@@ -329,7 +347,7 @@ export default function PetDetails() {
             overflow: "hidden",
             display: "flex",
             flexDirection: "column",
-            minHeight: isMobile ? "500px" : 0,
+            minHeight: 0,
           }}
         >
           <div
@@ -491,6 +509,33 @@ export default function PetDetails() {
           </div>
         </div>
       </div>
+
+      {/* Mobile Chat Button */}
+      {isMobile && (
+        <div style={{ padding: "16px", position: "sticky", bottom: 0, background: "#fff", borderTop: "1px solid #eee", zIndex: 100 }}>
+          <button
+            onClick={handleOpenChat}
+            style={{
+              width: "100%",
+              padding: "14px",
+              background: "linear-gradient(135deg, #b3122a, #7a0016)",
+              color: "#fff",
+              border: "none",
+              borderRadius: "14px",
+              fontSize: "16px",
+              fontWeight: "800",
+              cursor: "pointer",
+              boxShadow: "0 4px 16px rgba(179,18,42,0.3)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+            }}
+          >
+            💬 Chat with Seller
+          </button>
+        </div>
+      )}
     </div>
   );
 }
