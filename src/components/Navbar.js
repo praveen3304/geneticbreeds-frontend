@@ -270,6 +270,12 @@ export default function Navbar({
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [activeSection, setActiveSection] = useState(window.innerWidth < 768 ? "" : "profile");
+  const [isMobile, setIsMobile] = React.useState(window.innerWidth < 768);
+  React.useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   const [user, setUser] = useState(null);
   const [membership, setMembership] = useState(null);
   const [loadingProfile, setLoadingProfile] = useState(false);
@@ -1603,7 +1609,7 @@ toast.success(
             </div>
 
             <div className="gb-drawer-main" style={drawerMainStyle}>
-              {activeSection && window.innerWidth < 768 && (
+              {activeSection && isMobile && (
                 <button onClick={() => setActiveSection("")} style={{ display: "flex", alignItems: "center", background: "none", border: "none", cursor: "pointer", padding: "6px 8px", marginBottom: "8px", color: "#b91327", fontSize: "26px", lineHeight: 1 }}>
                   &#8592;
                 </button>
