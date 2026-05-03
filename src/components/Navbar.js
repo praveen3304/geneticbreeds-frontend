@@ -1542,7 +1542,7 @@ toast.success(
           </div>
         ) : (
           <div className="gb-drawer-content" style={drawerContentWrapStyle}>
-            <div style={{ ...drawerSidebarStyle, display: "flex", flexDirection: "column" }}>
+            <div style={{ ...drawerSidebarStyle, display: window.innerWidth < 768 && activeSection ? "none" : "flex", flexDirection: "column" }}>
               <div style={userMiniCardStyle}>
                 <div style={userAvatarStyle}>
                   {(user?.name || "U").charAt(0).toUpperCase()}
@@ -1602,7 +1602,7 @@ toast.success(
               </button>
             </div>
 
-            <div style={drawerMainStyle}>
+            <div className="gb-drawer-main" style={drawerMainStyle}>
               
               {loadingProfile ? (
                 <div style={sectionCardStyle}>

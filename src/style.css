@@ -1489,3 +1489,29 @@ body.landing-page {
     flex-direction: column !important;
   }
 }
+
+/* Premium Mobile Account Panel */
+@media (max-width: 768px) {
+  .gb-drawer-main {
+    animation: slideInRight 0.25s ease forwards;
+  }
+  @keyframes slideInRight {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .side-item-btn {
+    position: relative;
+    overflow: hidden;
+  }
+  .side-item-btn::after {
+    content: "›";
+    position: absolute;
+    right: 14px;
+    font-size: 18px;
+    font-weight: 300;
+  }
+  .side-item-btn-active::after {
+    content: "✓";
+    right: 14px;
+  }
+}
