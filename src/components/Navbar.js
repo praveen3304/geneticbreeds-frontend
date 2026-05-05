@@ -1284,31 +1284,31 @@ toast.success(
               <NavLink
                 to="/wishlist"
                 style={({ isActive }) => (isActive ? activeLinkStyle : navLinkStyle)}
-              >
+
                 Wishlist ({wishlist.length})
               </NavLink>
 
               <NavLink
                 to="/browse"
                 style={({ isActive }) => (isActive ? activeLinkStyle : navLinkStyle)}
-              >
+
                 Home
               </NavLink>
 
               <NavLink
                 to="/chats"
                 style={({ isActive }) => (isActive ? activeLinkStyle : navLinkStyle)}
-              >
+
                 Chats
                 {unreadCount > 0 && (
                   <span style={inlineCountBadgeStyle}>{unreadCount}</span>
-                )}
+  
               </NavLink>
 
               <NavLink
                 to="/my-ads"
                 style={({ isActive }) => (isActive ? activeLinkStyle : navLinkStyle)}
-              >
+
                 My Ads
               </NavLink>
 
@@ -1322,14 +1322,14 @@ toast.success(
                       : notificationBellButtonStyle
                   }
                   aria-label="Open notifications"
-                >
+  
                   <span style={notificationBellIconStyle}>🔔</span>
 
                   {notificationUnreadCount > 0 && (
                     <span style={notificationBadgeStyle}>
                       {notificationUnreadCount > 99 ? "99+" : notificationUnreadCount}
                     </span>
-                  )}
+    
                 </button>
 
                 {notificationsOpen && (
@@ -1351,7 +1351,7 @@ toast.success(
                         disabled={
                           markingAllNotifications || notificationUnreadCount === 0
                         }
-                      >
+        
                         {markingAllNotifications ? "Updating..." : "Mark all read"}
                       </button>
                     </div>
@@ -1401,19 +1401,19 @@ toast.success(
                                 background: isUnread ? meta.soft : "#fff",
                                 borderColor: isUnread ? meta.border : "#f3d5d8",
                               }}
-                            >
+              
                               <button
                                 type="button"
                                 onClick={() => handleNotificationOpen(notification)}
                                 style={notificationItemButtonStyle}
-                              >
+                
                                 <div
                                   style={{
                                     ...notificationIconWrapStyle,
                                     background: meta.soft,
                                     border: `1px solid ${meta.border}`,
                                   }}
-                                >
+                  
                                   <span style={notificationIconStyle}>
                                     {meta.icon}
                                   </span>
@@ -1426,14 +1426,14 @@ toast.success(
                                         ...notificationItemTitleStyle,
                                         color: meta.accent,
                                       }}
-                                    >
+                      
                                       {getNotificationTitle(notification)}
                                     </div>
 
                                     <div style={notificationTimeStyle}>
                                       {formatRelativeTime(
                                         getNotificationTimestamp(notification)
-                                      )}
+                        
                                     </div>
                                   </div>
 
@@ -1450,7 +1450,7 @@ toast.success(
                                       <span style={notificationReadPillStyle}>
                                         Read
                                       </span>
-                                    )}
+                      
 
                                     {getNotificationLink(notification) ? (
                                       <span style={notificationViewTextStyle}>
@@ -1469,7 +1469,7 @@ toast.success(
                                   }
                                   style={notificationMarkBtnStyle}
                                   disabled={activeNotificationId === notificationId}
-                                >
+                  
                                   {activeNotificationId === notificationId
                                     ? "..."
                                     : "Mark read"}
@@ -1478,7 +1478,7 @@ toast.success(
                             </div>
                           );
                         })
-                      )}
+        
                     </div>
 
                     <div style={notificationDropdownFooterStyle}>
@@ -1488,7 +1488,7 @@ toast.success(
                           await fetchNotifications({ showLoader: true });
                         }}
                         style={notificationFooterBtnStyle}
-                      >
+        
                         Refresh
                       </button>
 
@@ -1499,22 +1499,22 @@ toast.success(
                           navigate("/chats");
                         }}
                         style={notificationFooterPrimaryBtnStyle}
-                      >
+        
                         Open Chats
                       </button>
                     </div>
                   </div>
-                )}
+  
               </div>
 
               {isAdmin && (
                 <NavLink
                   to="/admin"
                   style={({ isActive }) => (isActive ? activeAdminStyle : navAdminStyle)}
-                >
+  
                   Admin
                 </NavLink>
-              )}
+
             </>
           )}
         </div>
@@ -1563,7 +1563,7 @@ toast.success(
                 type="button"
                 onClick={() => setActiveSection(activeSection === "profile" ? "" : "profile")}
                 className={`side-item-btn ${activeSection === "profile" ? "side-item-btn-active" : ""}`} style={activeSection === "profile" ? sideItemActiveStyle : sideItemStyle}
-              >
+
                 My Profile
               </button>
 
@@ -1571,7 +1571,7 @@ toast.success(
                 type="button"
                 onClick={() => setActiveSection(activeSection === "licence" ? "" : "licence")}
                 className={`side-item-btn ${activeSection === "licence" ? "side-item-btn-active" : ""}`} style={activeSection === "licence" ? sideItemActiveStyle : sideItemStyle}
-              >
+
                 Licence Details
               </button>
 
@@ -1579,7 +1579,7 @@ toast.success(
                 type="button"
                 onClick={() => setActiveSection(activeSection === "referral" ? "" : "referral")}
                 className={`side-item-btn ${activeSection === "referral" ? "side-item-btn-active" : ""}`} style={activeSection === "referral" ? sideItemActiveStyle : sideItemStyle}
-              >
+
                 Referral Details
               </button>
 
@@ -1587,7 +1587,7 @@ toast.success(
                 type="button"
                 onClick={() => setActiveSection(activeSection === "membership" ? "" : "membership")}
                 className={`side-item-btn ${activeSection === "membership" ? "side-item-btn-active" : ""}`} style={activeSection === "membership" ? sideItemActiveStyle : sideItemStyle}
-              >
+
                 Membership Details
               </button>
 
@@ -1595,7 +1595,7 @@ toast.success(
                 type="button"
                 onClick={() => setActiveSection(activeSection === "settings" ? "" : "settings")}
                 className={`side-item-btn ${activeSection === "settings" ? "side-item-btn-active" : ""}`} style={activeSection === "settings" ? sideItemActiveStyle : sideItemStyle}
-              >
+
                 Settings
               </button>
 
@@ -1603,17 +1603,17 @@ toast.success(
                 type="button"
                 onClick={() => setActiveSection(activeSection === "support" ? "" : "support")}
                 className={`side-item-btn ${activeSection === "support" ? "side-item-btn-active" : ""}`} style={activeSection === "support" ? sideItemActiveStyle : sideItemStyle}
-              >
+
                 Help & Support
               </button>
             </div>
 
             <div className="gb-drawer-main" style={drawerMainStyle}>
-              {activeSection && isMobile && (
+
                 <button className="gb-back-btn" onClick={() => setActiveSection("")} style={{ display: "flex", alignItems: "center", background: "none", border: "none", cursor: "pointer", padding: "6px 8px", marginBottom: "8px", color: "#b91327", fontSize: "26px", lineHeight: 1 }}>
                   ←
                 </button>
-              )}
+
               
               {loadingProfile ? (
                 <div style={sectionCardStyle}>
@@ -1729,7 +1729,7 @@ toast.success(
                         onClick={updateProfileFields}
                         style={primaryActionBtnStyle}
                         disabled={savingProfile}
-                      >
+        
                      {savingProfile ? "Saving..." : profileSaveStatus === "saved" ? "Saved ✅" : "Save Profile Changes"}
 
 
@@ -1739,7 +1739,7 @@ toast.success(
 
                       </button>
                     </div>
-                  )}
+    
 
                   {activeSection === "licence" && (
                     <div style={sectionCardStyle}>
@@ -1765,7 +1765,7 @@ toast.success(
                             onChange={(e) => setLicenceType(e.target.value)}
                             style={inputStyle}
                             disabled={isLicenceLocked}
-                          >
+            
                             <option value="">Select Licence Type</option>
                             <option value="Breeder Licence">Breeder Licence</option>
                             <option value="Pet Shop Licence">Pet Shop Licence</option>
@@ -1793,7 +1793,7 @@ toast.success(
                               style={readOnlyInputStyle}
                             />
                           </div>
-                        )}
+          
 
                         {isIndiaUser && (
                           <div style={{ ...fieldStyle, gridColumn: "1 / -1" }}>
@@ -1804,7 +1804,7 @@ toast.success(
                               style={readOnlyInputStyle}
                             />
                           </div>
-                        )}
+          
 
                         <div style={{ ...fieldStyle, gridColumn: "1 / -1" }}>
                           <label style={labelStyle}>
@@ -1826,7 +1826,7 @@ toast.success(
                         <div style={softInfoBoxStyle}>
                           Selected file: <strong>{licenceFile.name}</strong>
                         </div>
-                      )}
+        
 
                       {user.licenceDocument ? (
                         <a
@@ -1834,24 +1834,24 @@ toast.success(
                           target="_blank"
                           rel="noreferrer"
                           style={licenceLinkStyle}
-                        >
+          
                           View Uploaded Licence Document
                         </a>
                       ) : (
                         <div style={softInfoBoxStyle}>No licence document uploaded yet.</div>
-                      )}
+        
 
                       {normalizedLicenceStatus === "pending" && (
                         <div style={pendingBoxStyle}>
                           Your licence is under admin review. Editing is locked until admin action.
                         </div>
-                      )}
+        
 
                       {normalizedLicenceStatus === "approved" && (
                         <div style={approvedBoxStyle}>
                           Licence upload success. Your licence has been approved by admin.
                         </div>
-                      )}
+        
 
                       {normalizedLicenceStatus === "rejected" && (
                         <div style={dangerBoxStyle}>
@@ -1859,13 +1859,13 @@ toast.success(
                           {user.licenceRejectedReason ||
                             "Please re-upload with correct details and document."}
                         </div>
-                      )}
+        
 
                       {normalizedLicenceStatus === "not_uploaded" && (
                         <div style={softInfoBoxStyle}>
                           Upload your licence document to send it for admin verification.
                         </div>
-                      )}
+        
 
                       {isLicenceEditable && (
                         <button
@@ -1873,16 +1873,16 @@ toast.success(
                           onClick={submitLicence}
                           style={primaryActionBtnStyle}
                           disabled={submittingLicence}
-                        >
+          
                           {submittingLicence
                             ? "Submitting..."
                             : normalizedLicenceStatus === "rejected"
                             ? "Re-Upload Licence"
                             : "Upload Licence"}
                         </button>
-                      )}
+        
                     </div>
-                  )}
+    
 
                   {activeSection === "referral" && (
                     <div style={sectionCardStyle}>
@@ -1907,7 +1907,7 @@ toast.success(
                             type="button"
                             onClick={copyReferralCode}
                             style={primaryActionBtnStyle}
-                          >
+            
                             Copy Code
                           </button>
 
@@ -1915,7 +1915,7 @@ toast.success(
                             type="button"
                             onClick={shareReferral}
                             style={secondaryActionBtnStyle}
-                          >
+            
                             Invite Friends
                           </button>
                         </div>
@@ -1945,7 +1945,7 @@ toast.success(
                         </div>
                       </div>
                     </div>
-                  )}
+    
 
                   {activeSection === "membership" && (
                     <div style={sectionCardStyle}>
@@ -2010,7 +2010,7 @@ toast.success(
                                 value={formatCurrencyValue(
                                   membership.amountPaid,
                                   membership.currency
-                                )}
+                  
                                 readOnly
                                 style={readOnlyInputStyle}
                               />
@@ -2074,9 +2074,9 @@ toast.success(
                             </div>
                           </div>
                         </>
-                      )}
+        
                     </div>
-                  )}
+    
 
                   {activeSection === "settings" && (
                     <div style={sectionCardStyle}>
@@ -2095,7 +2095,7 @@ toast.success(
                           type="button"
                           onClick={openInlineChangePassword}
                           style={settingsItemStyle}
-                        >
+          
                           Change User Password
                         </button>
 
@@ -2131,11 +2131,11 @@ toast.success(
                                   onClick={sendOtp}
                                   style={primaryActionBtnStyle}
                                   disabled={sendingOtp}
-                                >
+                  
                                   {sendingOtp ? "Sending..." : "Send OTP"}
                                 </button>
                               </div>
-                            )}
+              
 
                             {resetStep === 2 && (
                               <div style={inlineFormWrapStyle}>
@@ -2161,10 +2161,10 @@ toast.success(
                                     onClick={sendOtp}
                                     style={secondaryActionBtnStyle}
                                     disabled={sendingOtp}
-                                  >
+                    
                                     {sendingOtp ? "Sending..." : "Resend OTP"}
                                   </button>
-                                )}
+                  
 
                                 <input
                                   type="password"
@@ -2197,19 +2197,19 @@ toast.success(
                                   onClick={resetPasswordInline}
                                   style={primaryActionBtnStyle}
                                   disabled={resettingPassword}
-                                >
+                  
                                   {resettingPassword ? "Updating..." : "Reset Password"}
                                 </button>
                               </div>
-                            )}
+              
                           </div>
-                        )}
+          
 
                         <button
                           type="button"
                           onClick={logoutCurrentDevice}
                           style={settingsItemStyle}
-                        >
+          
                           Logout
                         </button>
 
@@ -2217,7 +2217,7 @@ toast.success(
                           type="button"
                           onClick={logoutAllDevices}
                           style={settingsItemStyle}
-                        >
+          
                           Logout From All Devices
                         </button>
 
@@ -2225,12 +2225,12 @@ toast.success(
                           type="button"
                           onClick={deleteAccount}
                           style={dangerSettingsItemStyle}
-                        >
+          
                           Delete Account
                         </button>
                       </div>
                     </div>
-                  )}
+    
 
                   {activeSection === "support" && (
                     <div style={sectionCardStyle}>
@@ -2249,7 +2249,7 @@ toast.success(
                         <a
                           href="mailto:geneticbreeds@gmail.com"
                           style={supportLinkStyle}
-                        >
+          
                           geneticbreeds@gmail.com
                         </a>
                         <p style={supportNoteStyle}>
@@ -2257,9 +2257,9 @@ toast.success(
                         </p>
                       </div>
                     </div>
-                  )}
+    
                 </>
-              )}
+
             </div>
           </div>
         )}
