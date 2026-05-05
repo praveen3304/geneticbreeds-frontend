@@ -130,8 +130,12 @@ useEffect(() => {
       : pet.ownerName || "Seller";
 
   return (
-    <>
-    <div
+ <>
+    {/* TEST TEXT */}
+    <h1 style={{ color: "red", fontSize: "30px" }}>
+      NEW BUILD TEST
+    </h1>  
+  <div
       style={{
         height: "calc(100vh - 74px)",
         background: "#f7f7f9",
