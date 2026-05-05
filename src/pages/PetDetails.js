@@ -11,7 +11,16 @@ const QUICK_MESSAGES = [
 export default function PetDetails() {
   const { id } = useParams();
   const [pet, setPet] = useState(null);
-  const isMobile = window.innerWidth < 768;
+const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+useEffect(() => {
+  const handleResize = () => {
+    setIsMobile(window.innerWidth < 768);
+  };
+
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState("");
