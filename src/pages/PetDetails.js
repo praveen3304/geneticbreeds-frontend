@@ -121,12 +121,14 @@ export default function PetDetails() {
       : pet.ownerName || "Seller";
 
   return (
+    <>
     <div
       style={{
         height: "calc(100vh - 74px)",
         background: "#f7f7f9",
         padding: "88px 14px 14px",
-        overflow: "hidden",
+        overflowY: "auto",
+        paddingBottom: isMobile ? "100px" : "14px",
         boxSizing: "border-box",
         position: "relative",
       }}
@@ -511,31 +513,37 @@ export default function PetDetails() {
       </div>
 
       {/* Mobile Chat Button */}
-      {isMobile && (
-        <div style={{ padding: "16px", position: "sticky", bottom: 0, background: "#fff", borderTop: "1px solid #eee", zIndex: 100 }}>
-          <button
-            onClick={handleOpenChat}
-            style={{
-              width: "100%",
-              padding: "14px",
-              background: "linear-gradient(135deg, #b3122a, #7a0016)",
-              color: "#fff",
-              border: "none",
-              borderRadius: "14px",
-              fontSize: "16px",
-              fontWeight: "800",
-              cursor: "pointer",
-              boxShadow: "0 4px 16px rgba(179,18,42,0.3)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "8px",
-            }}
-          >
-            💬 Chat with Seller
-          </button>
-        </div>
-      )}
-    </div>
+{isMobile && (
+  <div
+    style={{
+      position: "fixed",
+      bottom: "20px",
+      right: "20px",
+      zIndex: 1000,
+    }}
+  >
+    <button
+      onClick={handleOpenChat}
+      style={{
+        background: "linear-gradient(135deg, #b3122a, #7a0016)",
+        color: "#fff",
+        border: "none",
+        borderRadius: "999px",
+        padding: "14px 18px",
+        fontSize: "14px",
+        fontWeight: "700",
+        cursor: "pointer",
+        boxShadow: "0 6px 20px rgba(179,18,42,0.4)",
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+      }}
+    >
+      💬 Chat
+    </button>
+  </div>
+)}
+  </div>
+    </>
   );
 }

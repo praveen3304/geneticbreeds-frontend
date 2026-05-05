@@ -1283,14 +1283,14 @@ toast.success(
             <>
               <NavLink
                 to="/wishlist"
-                style={({ isActive }) => (isActive ? activeLinkStyle : navLinkStyle)}
+                style={({ isActive }) => (isActive ? activeLinkStyle : navLinkStyle)}>
 
                 Wishlist ({wishlist.length})
               </NavLink>
 
               <NavLink
                 to="/browse"
-                style={({ isActive }) => (isActive ? activeLinkStyle : navLinkStyle)}
+                style={({ isActive }) => (isActive ? activeLinkStyle : navLinkStyle)}>
 
                 Home
               </NavLink>
