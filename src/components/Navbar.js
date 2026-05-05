@@ -1610,7 +1610,7 @@ toast.success(
 
             <div className="gb-drawer-main" style={drawerMainStyle}>
               {activeSection && isMobile && (
-                <button className="gb-back-btn" onClick={() => setActiveSection("")} style={{ display: "none", alignItems: "center", background: "none", border: "none", cursor: "pointer", padding: "6px 8px", marginBottom: "8px", color: "#b91327", fontSize: "26px", lineHeight: 1 }}>
+                <button className="gb-back-btn" onClick={() => setActiveSection("")} style={{ display: "flex", alignItems: "center", background: "none", border: "none", cursor: "pointer", padding: "6px 8px", marginBottom: "8px", color: "#b91327", fontSize: "26px", lineHeight: 1 }}>
                   ←
                 </button>
               )}
