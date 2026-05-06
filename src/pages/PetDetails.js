@@ -325,12 +325,12 @@ export default function PetDetails() {
               <p style={{ margin: 0 }}>
                 <strong>Location:</strong> {[pet.city, pet.state, pet.country].filter(Boolean).join(", ") || pet.location || "N/A"}
               </p>
-<p style={{ margin: 0 }}>
-  <strong>Owner:</strong>{" "}
-  <Link to={`/seller/${pet.userId?._id || pet.userId}`}>
-    {sellerName}
-  </Link>
-</p>
+              <p style={{ margin: 0 }}>
+                <strong>Owner:</strong>{" "}
+                <Link to={`/seller/${pet.userId?._id || pet.userId}`}>
+                  {sellerName}
+                </Link>
+              </p>
               <p style={{ margin: 0 }}>
                 <strong>Seller User ID:</strong> {sellerUserCode}
               </p>
@@ -339,203 +339,206 @@ export default function PetDetails() {
         </div>
 
         {/* RIGHT SIDE - desktop only */}
-        {!isMobile && (<div
-          style={{
-            background: "#fff",
-            borderRadius: "18px",
-            boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
-            overflow: "hidden",
-            display: "flex",
-            flexDirection: "column",
-            minHeight: 0,
-          }}
-        >
+        {!isMobile && (
           <div
             style={{
-              padding: "14px 16px",
-              borderBottom: "1px solid #eee",
-              background: "linear-gradient(135deg, #b3122a, #7a0016)",
-              color: "#fff",
-              flexShrink: 0,
+              background: "#fff",
+              borderRadius: "18px",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
+              overflow: "hidden",
+              display: "flex",
+              flexDirection: "column",
+              minHeight: 0,
             }}
           >
-            <div style={{ fontSize: "18px", fontWeight: "700" }}>
-              Chat with Seller
-            </div>
-            <div style={{ fontSize: "13px", marginTop: "5px" }}>
-              Seller ID: {sellerUserCode}
-            </div>
             <div
               style={{
-                fontSize: "13px",
-                marginTop: "6px",
+                padding: "14px 16px",
+                borderBottom: "1px solid #eee",
+                background: "linear-gradient(135deg, #b3122a, #7a0016)",
+                color: "#fff",
+                flexShrink: 0,
+              }}
+            >
+              <div style={{ fontSize: "18px", fontWeight: "700" }}>
+                Chat with Seller
+              </div>
+              <div style={{ fontSize: "13px", marginTop: "5px" }}>
+                Seller ID: {sellerUserCode}
+              </div>
+              <div
+                style={{
+                  fontSize: "13px",
+                  marginTop: "6px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                <span
+                  style={{
+                    width: "10px",
+                    height: "10px",
+                    borderRadius: "50%",
+                    background: "#22c55e",
+                    display: "inline-block",
+                  }}
+                />
+                <span style={{ color: "#bbf7d0", fontWeight: "600" }}>
+                  Online
+                </span>
+              </div>
+            </div>
+
+            <div
+              style={{
+                padding: "10px 12px",
+                borderBottom: "1px solid #eee",
+                background: "#fff8f8",
+                display: "flex",
+                gap: "8px",
+                flexWrap: "wrap",
+                flexShrink: 0,
+              }}
+            >
+              {QUICK_MESSAGES.map((item, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleQuickMessage(item)}
+                  style={{
+                    border: "1px solid #f5b5b5",
+                    background: "#fff",
+                    color: "#991b1b",
+                    borderRadius: "999px",
+                    padding: "8px 12px",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+
+            <div
+              style={{
+                flex: 1,
+                minHeight: 0,
+                padding: "14px",
+                overflowY: "auto",
+                background: "#fafafa",
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+              }}
+            >
+              {messages.map((msg) => (
+                <div
+                  key={msg.id}
+                  style={{
+                    alignSelf: msg.sender === "me" ? "flex-end" : "flex-start",
+                    maxWidth: "78%",
+                    background: msg.sender === "me" ? "#eb5d5d" : "#fff",
+                    color: msg.sender === "me" ? "#fff" : "#111827",
+                    padding: "10px 12px",
+                    borderRadius: "14px",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                  }}
+                >
+                  <div style={{ fontSize: "14px", lineHeight: "1.4" }}>
+                    {msg.text}
+                  </div>
+                  <div
+                    style={{
+                      marginTop: "5px",
+                      fontSize: "11px",
+                      opacity: 0.75,
+                      textAlign: "right",
+                    }}
+                  >
+                    {msg.time}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div
+              style={{
+                borderTop: "1px solid #eee",
+                padding: "12px",
+                display: "flex",
+                gap: "8px",
+                background: "#fff",
+                flexShrink: 0,
+              }}
+            >
+              <input
+                type="text"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleSend();
+                }}
+                placeholder="Type your message..."
+                style={{
+                  flex: 1,
+                  padding: "10px 12px",
+                  borderRadius: "10px",
+                  border: "1px solid #d1d5db",
+                  outline: "none",
+                  fontSize: "14px",
+                }}
+              />
+
+              <button
+                onClick={handleSend}
+                style={{
+                  padding: "10px 18px",
+                  border: "none",
+                  borderRadius: "10px",
+                  background: "#eb5d5d",
+                  color: "#fff",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                }}
+              >
+                Send
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Mobile Chat Button */}
+        {isMobile && (
+          <div style={{ padding: "16px", position: "sticky", bottom: 0, background: "#fff", borderTop: "1px solid #eee", zIndex: 100 }}>
+            <button
+              onClick={handleOpenChat}
+              style={{
+                width: "100%",
+                padding: "14px",
+                background: "linear-gradient(135deg, #b3122a, #7a0016)",
+                color: "#fff",
+                border: "none",
+                borderRadius: "14px",
+                fontSize: "16px",
+                fontWeight: "800",
+                cursor: "pointer",
+                boxShadow: "0 4px 16px rgba(179,18,42,0.3)",
                 display: "flex",
                 alignItems: "center",
+                justifyContent: "center",
                 gap: "8px",
               }}
             >
-              <span
-                style={{
-                  width: "10px",
-                  height: "10px",
-                  borderRadius: "50%",
-                  background: "#22c55e",
-                  display: "inline-block",
-                }}
-              />
-              <span style={{ color: "#bbf7d0", fontWeight: "600" }}>
-                Online
-              </span>
-            </div>
-          </div>
-
-          <div
-            style={{
-              padding: "10px 12px",
-              borderBottom: "1px solid #eee",
-              background: "#fff8f8",
-              display: "flex",
-              gap: "8px",
-              flexWrap: "wrap",
-              flexShrink: 0,
-            }}
-          >
-            {QUICK_MESSAGES.map((item, index) => (
-              <button
-                key={index}
-                onClick={() => handleQuickMessage(item)}
-                style={{
-                  border: "1px solid #f5b5b5",
-                  background: "#fff",
-                  color: "#991b1b",
-                  borderRadius: "999px",
-                  padding: "8px 12px",
-                  fontSize: "12px",
-                  fontWeight: "600",
-                  cursor: "pointer",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {item}
-              </button>
-            ))}
-          </div>
-
-          <div
-            style={{
-              flex: 1,
-              minHeight: 0,
-              padding: "14px",
-              overflowY: "auto",
-              background: "#fafafa",
-              display: "flex",
-              flexDirection: "column",
-              gap: "10px",
-            }}
-          >
-            {messages.map((msg) => (
-              <div
-                key={msg.id}
-                style={{
-                  alignSelf: msg.sender === "me" ? "flex-end" : "flex-start",
-                  maxWidth: "78%",
-                  background: msg.sender === "me" ? "#eb5d5d" : "#fff",
-                  color: msg.sender === "me" ? "#fff" : "#111827",
-                  padding: "10px 12px",
-                  borderRadius: "14px",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-                }}
-              >
-                <div style={{ fontSize: "14px", lineHeight: "1.4" }}>
-                  {msg.text}
-                </div>
-                <div
-                  style={{
-                    marginTop: "5px",
-                    fontSize: "11px",
-                    opacity: 0.75,
-                    textAlign: "right",
-                  }}
-                >
-                  {msg.time}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div
-            style={{
-              borderTop: "1px solid #eee",
-              padding: "12px",
-              display: "flex",
-              gap: "8px",
-              background: "#fff",
-              flexShrink: 0,
-            }}
-          >
-            <input
-              type="text"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") handleSend();
-              }}
-              placeholder="Type your message..."
-              style={{
-                flex: 1,
-                padding: "10px 12px",
-                borderRadius: "10px",
-                border: "1px solid #d1d5db",
-                outline: "none",
-                fontSize: "14px",
-              }}
-            />
-
-            <button
-              onClick={handleSend}
-              style={{
-                padding: "10px 18px",
-                border: "none",
-                borderRadius: "10px",
-                background: "#eb5d5d",
-                color: "#fff",
-                fontWeight: "600",
-                cursor: "pointer",
-                fontSize: "14px",
-              }}
-            >
-              Send
+              💬 Chat with Seller
             </button>
           </div>
-        </div>
-      </div>
+        )}
 
-      {/* Mobile Chat Button */}
-      {isMobile && (
-        <div style={{ padding: "16px", position: "sticky", bottom: 0, background: "#fff", borderTop: "1px solid #eee", zIndex: 100 }}>
-          <button
-            onClick={handleOpenChat}
-            style={{
-              width: "100%",
-              padding: "14px",
-              background: "linear-gradient(135deg, #b3122a, #7a0016)",
-              color: "#fff",
-              border: "none",
-              borderRadius: "14px",
-              fontSize: "16px",
-              fontWeight: "800",
-              cursor: "pointer",
-              boxShadow: "0 4px 16px rgba(179,18,42,0.3)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "8px",
-            }}
-          >
-            💬 Chat with Seller
-          </button>
-        </div>
-      )}
+      </div>
     </div>
   );
 }
