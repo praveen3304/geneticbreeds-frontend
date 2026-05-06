@@ -11,16 +11,7 @@ const QUICK_MESSAGES = [
 export default function PetDetails() {
   const { id } = useParams();
   const [pet, setPet] = useState(null);
-const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-
-useEffect(() => {
-  const handleResize = () => {
-    setIsMobile(window.innerWidth < 768);
-  };
-
-  window.addEventListener("resize", handleResize);
-  return () => window.removeEventListener("resize", handleResize);
-}, []);
+  const isMobile = window.innerWidth < 768;
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState("");
@@ -130,14 +121,12 @@ useEffect(() => {
       : pet.ownerName || "Seller";
 
   return (
- <>
-  <div
+    <div
       style={{
         height: "calc(100vh - 74px)",
         background: "#f7f7f9",
         padding: "88px 14px 14px",
-        overflowY: "auto",
-        paddingBottom: isMobile ? "100px" : "14px",
+        overflow: "hidden",
         boxSizing: "border-box",
         position: "relative",
       }}
@@ -522,37 +511,31 @@ useEffect(() => {
       </div>
 
       {/* Mobile Chat Button */}
-{isMobile && (
-  <div
-    style={{
-      position: "fixed",
-      bottom: "20px",
-      right: "20px",
-      zIndex: 1000,
-    }}
-  >
-    <button
-      onClick={handleOpenChat}
-      style={{
-        background: "linear-gradient(135deg, #b3122a, #7a0016)",
-        color: "#fff",
-        border: "none",
-        borderRadius: "999px",
-        padding: "14px 18px",
-        fontSize: "14px",
-        fontWeight: "700",
-        cursor: "pointer",
-        boxShadow: "0 6px 20px rgba(179,18,42,0.4)",
-        display: "flex",
-        alignItems: "center",
-        gap: "8px",
-      }}
-    >
-      💬 Chat
-    </button>
-  </div>
-)}
-  </div>
-    </>
+      {isMobile && (
+        <div style={{ padding: "16px", position: "sticky", bottom: 0, background: "#fff", borderTop: "1px solid #eee", zIndex: 100 }}>
+          <button
+            onClick={handleOpenChat}
+            style={{
+              width: "100%",
+              padding: "14px",
+              background: "linear-gradient(135deg, #b3122a, #7a0016)",
+              color: "#fff",
+              border: "none",
+              borderRadius: "14px",
+              fontSize: "16px",
+              fontWeight: "800",
+              cursor: "pointer",
+              boxShadow: "0 4px 16px rgba(179,18,42,0.3)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+            }}
+          >
+            💬 Chat with Seller
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
