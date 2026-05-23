@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 
 const API_BASE_URL = "https://genetic-breeds-backend.onrender.com";
 
-const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
+
 
 function getDaysLeft(featuredUntil) {
   if (!featuredUntil) return 0;
@@ -44,6 +44,7 @@ function getCategoryLabel(value) {
 }
 
 export default function MyAds() {
+  const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
   const [ads, setAds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
