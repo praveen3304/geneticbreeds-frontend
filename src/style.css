@@ -1515,3 +1515,49 @@ body.landing-page {
     right: 14px;
   }
 }
+
+/* ── MyAds Mobile Responsive Fixes ── */
+@media (max-width: 768px) {
+  .myads-page {
+    padding: 14px !important;
+  }
+  .myads-header {
+    grid-template-columns: 1fr !important;
+  }
+  .myads-summary {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .myads-card {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+  .myads-card .myads-imagewrap {
+    width: 100% !important;
+  }
+  .myads-card .myads-imagewrap img {
+    width: 100% !important;
+    height: 200px !important;
+  }
+  .myads-noimage {
+    width: 100% !important;
+    height: 160px !important;
+    box-sizing: border-box !important;
+  }
+  .myads-infogrid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .myads-actions {
+    flex-direction: column !important;
+  }
+  .myads-actions button {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .myads-selectiongrid {
+    grid-template-columns: 1fr !important;
+  }
+  .myads-modal {
+    padding: 18px !important;
+    border-radius: 18px !important;
+  }
+}
