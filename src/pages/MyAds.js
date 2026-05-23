@@ -1011,7 +1011,7 @@ const pageStyle = {
 
 const pageHeaderStyle = {
   display: "grid",
-  gridTemplateColumns: "1.5fr 1fr",
+  gridTemplateColumns: isMobile ? "1fr" : "1.5fr 1fr",
   gap: "18px",
   alignItems: "stretch",
   marginBottom: "22px",
@@ -1079,6 +1079,8 @@ const gridStyle = {
   gap: "18px",
 };
 
+const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
+const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
 const cardStyle = {
   border: "1px solid #fee2e2",
   borderRadius: "24px",
@@ -1086,6 +1088,7 @@ const cardStyle = {
   background: "#fff",
   position: "relative",
   display: "flex",
+  flexDirection: isMobile ? "column" : "row",
   gap: "18px",
   alignItems: "flex-start",
   boxShadow: "0 16px 40px rgba(15, 23, 42, 0.06)",
@@ -1104,15 +1107,15 @@ const imageWrapStyle = {
 };
 
 const imageStyle = {
-  width: "220px",
-  height: "220px",
+  width: isMobile ? "100%" : "220px",
+  height: isMobile ? "200px" : "220px",
   objectFit: "cover",
   display: "block",
 };
 
 const noImageStyle = {
-  width: "220px",
-  height: "220px",
+  width: isMobile ? "100%" : "220px",
+  height: isMobile ? "200px" : "220px",
   borderRadius: "18px",
   background: "linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)",
   border: "1px solid #e5e7eb",
@@ -1257,6 +1260,7 @@ const softInfoBoxStyle = {
 const actionsWrapStyle = {
   marginTop: "18px",
   display: "flex",
+  flexDirection: isMobile ? "column" : "row",
   gap: "10px",
   flexWrap: "wrap",
 };
