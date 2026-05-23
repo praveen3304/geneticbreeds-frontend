@@ -2,6 +2,59 @@ import React, { useEffect, useMemo, useState } from "react";
 
 const API_BASE_URL = "https://genetic-breeds-backend.onrender.com";
 
+// Mobile responsive styles injection
+if (typeof document !== "undefined") {
+  const styleId = "myads-mobile-styles";
+  if (!document.getElementById(styleId)) {
+    const style = document.createElement("style");
+    style.id = styleId;
+    style.textContent = `
+      @media (max-width: 768px) {
+        .myads-page { padding: 14px !important; }
+        .myads-header {
+          grid-template-columns: 1fr !important;
+        }
+        .myads-summary {
+          grid-template-columns: repeat(2, 1fr) !important;
+        }
+        .myads-card {
+          flex-direction: column !important;
+          gap: 12px !important;
+        }
+        .myads-imagewrap {
+          width: 100% !important;
+        }
+        .myads-image {
+          width: 100% !important;
+          height: 200px !important;
+        }
+        .myads-noimage {
+          width: 100% !important;
+          height: 200px !important;
+        }
+        .myads-infogrid {
+          grid-template-columns: repeat(2, 1fr) !important;
+        }
+        .myads-actions {
+          flex-direction: column !important;
+        }
+        .myads-actions button {
+          width: 100% !important;
+          text-align: center !important;
+        }
+        .myads-selectiongrid {
+          grid-template-columns: 1fr !important;
+        }
+        .myads-modal {
+          padding: 20px !important;
+          border-radius: 20px !important;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+}
+
 function getDaysLeft(featuredUntil) {
   if (!featuredUntil) return 0;
 
@@ -428,8 +481,8 @@ export default function MyAds() {
 
   return (
     <>
-      <div style={pageStyle}>
-        <div style={pageHeaderStyle}>
+      <div style={pageStyle} className="myads-page">
+        <div style={pageHeaderStyle} className="myads-header">
           <div>
             <div style={pageBadgeStyle}>MANAGE LISTINGS</div>
             <h2 style={pageTitleStyle}>My Ads</h2>
@@ -439,7 +492,7 @@ export default function MyAds() {
             </p>
           </div>
 
-          <div style={summaryGridStyle}>
+          <div style={summaryGridStyle} className="myads-summary">
             <div style={summaryCardStyle}>
               <div style={summaryLabelStyle}>Total Ads</div>
               <div style={summaryValueStyle}>{enhancedAds.length}</div>
@@ -510,13 +563,14 @@ export default function MyAds() {
               const isActionLoading = actionLoadingId === ad._id;
 
               return (
-                <div key={ad._id} style={cardStyle}>
+                <div key={ad._id} style={cardStyle} className="myads-card">
                   <div style={mediaColumnStyle}>
                     {ad.images && ad.images.length > 0 ? (
-                      <div style={imageWrapStyle}>
+                      <div style={imageWrapStyle} className="myads-imagewrap">
                         <img
                           src={ad.images[0]}
                           alt={ad.breed || ad.title}
+                          className="myads-image"
                           style={{
                             ...imageStyle,
                             opacity: ad.status === "Sold" ? 0.65 : 1,
@@ -532,7 +586,7 @@ export default function MyAds() {
                         )}
                       </div>
                     ) : (
-                      <div style={noImageStyle}>No Image</div>
+                      <div style={noImageStyle} className="myads-noimage">No Image</div>
                     )}
                   </div>
 
@@ -555,7 +609,7 @@ export default function MyAds() {
                       </div>
                     </div>
 
-                    <div style={infoGridStyle}>
+                    <div style={infoGridStyle} className="myads-infogrid">
                       <div style={infoBoxStyle}>
                         <div style={infoLabelStyle}>Category</div>
                         <div style={infoValueStyle}>
@@ -603,7 +657,7 @@ export default function MyAds() {
                       </div>
                     ) : null}
 
-                    <div style={actionsWrapStyle}>
+                    <div style={actionsWrapStyle} className="myads-actions">
                       {String(ad.status || "").toLowerCase() === "live" && (
                         <button
                           type="button"
@@ -735,6 +789,7 @@ export default function MyAds() {
         <div style={modalOverlayStyle} onClick={closeBoostModal}>
           <div
             style={largeModalCardStyle}
+            className="myads-modal"
             onClick={(event) => event.stopPropagation()}
           >
             <div style={modalIconWrapWarnStyle}>🚀</div>
@@ -745,7 +800,7 @@ export default function MyAds() {
               <strong>{boostModal.ad?.title || boostModal.ad?.breed}</strong>.
             </p>
 
-            <div style={selectionGridStyle}>
+            <div style={selectionGridStyle} className="myads-selectiongrid">
               {[7, 14, 30].map((days) => {
                 const selected = Number(boostModal.selectedDays) === days;
 
@@ -815,6 +870,7 @@ export default function MyAds() {
         <div style={modalOverlayStyle} onClick={closeRenewModal}>
           <div
             style={largeModalCardStyle}
+            className="myads-modal"
             onClick={(event) => event.stopPropagation()}
           >
             <div style={modalIconWrapPrimaryStyle}>🔄</div>
