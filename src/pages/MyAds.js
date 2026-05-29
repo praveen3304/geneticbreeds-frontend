@@ -200,8 +200,8 @@ export default function MyAds() {
 
   return (
     <>
-      <div style={{ ...pageStyle, padding: isMobile ? "14px" : "24px" }}>
-        <div style={{ ...pageHeaderStyle, gridTemplateColumns: isMobile ? "1fr" : "1.5fr 1fr" }}>
+      <div style={{ ...pageStyle }}>
+        <div style={{ ...pageHeaderStyle }}>
           <div>
             <div style={pageBadgeStyle}>MANAGE LISTINGS</div>
             <h2 style={pageTitleStyle}>My Ads</h2>
@@ -237,20 +237,20 @@ export default function MyAds() {
               const isActionLoading = actionLoadingId === ad._id;
 
               return (
-                <div key={ad._id} style={{ ...cardStyle, flexDirection: isMobile ? "column" : "row" }}>
-                  <div style={{ flexShrink: isMobile ? 1 : 0, width: isMobile ? "100%" : "auto" }}>
+                <div key={ad._id} style={{ ...cardStyle }}>
+                  <div style={{ flexShrink: 1, width: "100%" }}>
                     {ad.images && ad.images.length > 0 ? (
-                      <div style={{ ...imageWrapStyle, width: isMobile ? "100%" : "auto" }}>
+                      <div style={{ ...imageWrapStyle, width: "100%" }}>
                         <img
                           src={ad.images[0]}
                           alt={ad.breed || ad.title}
-                          style={{ ...imageStyle, width: isMobile ? "100%" : "220px", height: isMobile ? "200px" : "220px", opacity: ad.status === "Sold" ? 0.65 : 1 }}
+                          style={{ ...imageStyle, opacity: ad.status === "Sold" ? 0.65 : 1 }}
                         />
                         {ad.status === "Sold" && <div style={soldRibbonStyle}>SOLD</div>}
                         {ad.boostActive && <div style={boostRibbonStyle}>BOOSTED</div>}
                       </div>
                     ) : (
-                      <div style={{ ...noImageStyle, width: isMobile ? "100%" : "220px", height: isMobile ? "160px" : "220px" }}>No Image</div>
+                      <div style={{ ...noImageStyle }}>No Image</div>
                     )}
                   </div>
 
@@ -280,7 +280,7 @@ export default function MyAds() {
                       <div style={softInfoBoxStyle}>Previous boost ended on <strong>{formatDate(ad.featuredUntil)}</strong></div>
                     ) : null}
 
-                    <div style={{ ...actionsWrapStyle, flexDirection: isMobile ? "column" : "row" }}>
+                    <div style={{ ...actionsWrapStyle }}>
                       {String(ad.status || "").toLowerCase() === "live" && (
                         <button type="button" onClick={() => openBoostModal(ad)} disabled={ad.boostActive || isActionLoading}
                           style={{ ...buttonBaseStyle, width: isMobile ? "100%" : "auto", background: ad.boostActive ? "#fde68a" : "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)", color: ad.boostActive ? "#92400e" : "#fff", cursor: ad.boostActive || isActionLoading ? "not-allowed" : "pointer", boxShadow: ad.boostActive ? "none" : "0 10px 24px rgba(245, 158, 11, 0.22)" }}>
