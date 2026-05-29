@@ -1608,3 +1608,21 @@ body.landing-page {
   }
 }
 /* cache bust Sun May 24 12:22:17 PM IST 2026 */
+
+/* Force consistent image height on all ad cards */
+.myads-imagewrap img,
+.myads-noimage {
+  height: 200px !important;
+  object-fit: cover !important;
+}
+@media (max-width: 768px) {
+  .myads-imagewrap {
+    width: 100% !important;
+    height: 200px !important;
+  }
+  .myads-imagewrap img {
+    width: 100% !important;
+    height: 200px !important;
+    object-fit: cover !important;
+  }
+}
