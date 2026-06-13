@@ -283,24 +283,24 @@ export default function MyAds() {
                     <div style={{ ...actionsWrapStyle }}>
                       {String(ad.status || "").toLowerCase() === "live" && (
                         <button type="button" onClick={() => openBoostModal(ad)} disabled={ad.boostActive || isActionLoading}
-                          style={{ ...buttonBaseStyle, width: isMobile ? "100%" : "auto", background: ad.boostActive ? "#fde68a" : "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)", color: ad.boostActive ? "#92400e" : "#fff", cursor: ad.boostActive || isActionLoading ? "not-allowed" : "pointer", boxShadow: ad.boostActive ? "none" : "0 10px 24px rgba(245, 158, 11, 0.22)" }}>
+                          style={{ ...buttonBaseStyle, width: "100%", background: ad.boostActive ? "#fde68a" : "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)", color: ad.boostActive ? "#92400e" : "#fff", cursor: ad.boostActive || isActionLoading ? "not-allowed" : "pointer", boxShadow: ad.boostActive ? "none" : "0 10px 24px rgba(245, 158, 11, 0.22)" }}>
                           {isActionLoading ? "Processing..." : ad.boostActive ? `Boost Active (${ad.boostDaysLeft}d left)` : "Boost Ad"}
                         </button>
                       )}
                       {String(ad.status || "").toLowerCase() === "expired" && (
                         <button type="button" onClick={() => openRenewModal(ad)} disabled={isActionLoading}
-                          style={{ ...buttonBaseStyle, width: isMobile ? "100%" : "auto", background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)", color: "#fff", cursor: isActionLoading ? "not-allowed" : "pointer", boxShadow: "0 10px 24px rgba(37, 99, 235, 0.22)" }}>
+                          style={{ ...buttonBaseStyle, width: "100%", background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)", color: "#fff", cursor: isActionLoading ? "not-allowed" : "pointer", boxShadow: "0 10px 24px rgba(37, 99, 235, 0.22)" }}>
                           {isActionLoading ? "Processing..." : "Renew Ad"}
                         </button>
                       )}
                       {String(ad.status || "").toLowerCase() !== "sold" && (
                         <button type="button" onClick={() => handleMarkSold(ad._id)} disabled={isActionLoading}
-                          style={{ ...buttonBaseStyle, width: isMobile ? "100%" : "auto", background: "linear-gradient(135deg, #16a34a 0%, #15803d 100%)", color: "#fff", cursor: isActionLoading ? "not-allowed" : "pointer", boxShadow: "0 10px 24px rgba(22, 163, 74, 0.22)" }}>
+                          style={{ ...buttonBaseStyle, width: "100%", background: "linear-gradient(135deg, #16a34a 0%, #15803d 100%)", color: "#fff", cursor: isActionLoading ? "not-allowed" : "pointer", boxShadow: "0 10px 24px rgba(22, 163, 74, 0.22)" }}>
                           {isActionLoading ? "Processing..." : "Mark as Sold"}
                         </button>
                       )}
                       <button type="button" onClick={() => openDeleteModal(ad)} disabled={isActionLoading}
-                        style={{ ...buttonBaseStyle, width: isMobile ? "100%" : "auto", background: "linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)", color: "#fff", cursor: isActionLoading ? "not-allowed" : "pointer", boxShadow: "0 10px 24px rgba(239, 68, 68, 0.22)" }}>
+                        style={{ ...buttonBaseStyle, width: "100%", background: "linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)", color: "#fff", cursor: isActionLoading ? "not-allowed" : "pointer", boxShadow: "0 10px 24px rgba(239, 68, 68, 0.22)" }}>
                         {isActionLoading ? "Processing..." : "Delete"}
                       </button>
                     </div>
@@ -329,12 +329,12 @@ export default function MyAds() {
 
       {boostModal.open && (
         <div style={modalOverlayStyle} onClick={closeBoostModal}>
-          <div style={{ ...largeModalCardStyle, padding: isMobile ? "18px" : "28px" }} onClick={(e) => e.stopPropagation()}>
+          <div style={{ ...largeModalCardStyle, padding: "18px" }} onClick={(e) => e.stopPropagation()}>
             <div style={modalIconWrapWarnStyle}>🚀</div>
             <div style={modalBadgeWarnStyle}>BOOST AD</div>
             <h3 style={modalTitleStyle}>Choose your boost duration</h3>
             <p style={modalTextStyle}>Select how long you want to boost <strong>{boostModal.ad?.title || boostModal.ad?.breed}</strong>.</p>
-            <div style={{ ...selectionGridStyle, gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))" }}>
+            <div style={{ ...selectionGridStyle, gridTemplateColumns: "1fr" }}>
               {[7, 14, 30].map((days) => {
                 const selected = Number(boostModal.selectedDays) === days;
                 return (
@@ -357,7 +357,7 @@ export default function MyAds() {
 
       {renewModal.open && (
         <div style={modalOverlayStyle} onClick={closeRenewModal}>
-          <div style={{ ...largeModalCardStyle, padding: isMobile ? "18px" : "28px" }} onClick={(e) => e.stopPropagation()}>
+          <div style={{ ...largeModalCardStyle, padding: "18px" }} onClick={(e) => e.stopPropagation()}>
             <div style={modalIconWrapPrimaryStyle}>🔄</div>
             <div style={modalBadgePrimaryStyle}>RENEW AD</div>
             <h3 style={modalTitleStyle}>Choose renewal method</h3>
