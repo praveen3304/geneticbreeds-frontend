@@ -2289,8 +2289,10 @@ const navLeftStyle = {
 const navRightStyle = {
   display: "flex",
   alignItems: "center",
-  gap: "10px",
+  gap: "6px",
   flexWrap: "nowrap",
+  overflowX: "auto",
+  maxWidth: "calc(100vw - 80px)",
 };
 
 const menuButtonStyle = {
@@ -2319,8 +2321,9 @@ const navLinkStyle = {
   color: "#fff",
   textDecoration: "none",
   fontWeight: "800",
-  fontSize: "13px",
-  padding: "9px 14px",
+  fontSize: "12px",
+  padding: "8px 10px",
+  whiteSpace: "nowrap",
   borderRadius: "12px",
   background: "rgba(255,255,255,0.12)",
   border: "1px solid rgba(255,255,255,0.18)",
