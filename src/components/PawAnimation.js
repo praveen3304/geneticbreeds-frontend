@@ -128,10 +128,16 @@ export default function PawAnimation() {
     spawnLions();
 
     function rescheduleSnake() {
-      timers.push(setTimeout(function(){ snakes.push(createSnake()); rescheduleSnake(); }, Math.random()*10000+8000));
+      timers.push(setTimeout(function(){
+        if (snakes.length < 2) snakes.push(createSnake());
+        rescheduleSnake();
+      }, Math.random()*10000+8000));
     }
     function rescheduleLions() {
-      timers.push(setTimeout(function(){ spawnLions(); rescheduleLions(); }, Math.random()*6000+5000));
+      timers.push(setTimeout(function(){
+        if (allPaws.length < 2) spawnLions();
+        rescheduleLions();
+      }, Math.random()*6000+5000));
     }
     rescheduleSnake();
     rescheduleLions();
