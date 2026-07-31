@@ -35,6 +35,68 @@ export default function App() {
   const navigate = useNavigate();
 
   const [token, setToken] = useState(localStorage.getItem("gb_token") || "");
+
+  // Auto-refresh token on app start
+  useEffect(() => {
+    const savedToken = localStorage.getItem("gb_token");
+    const refreshToken = localStorage.getItem("gb_refresh_token");
+    if (!savedToken && refreshToken) {
+      // No access token but have refresh token — get new access token
+      fetch("https://genetic-breeds-backend.onrender.com/api/auth/refresh-token", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken }),
+        credentials: "include",
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (data.token) {
+            localStorage.setItem("gb_token", data.token);
+            if (data.refreshToken) localStorage.setItem("gb_refresh_token", data.refreshToken);
+            setToken(data.token);
+          } else {
+            // Refresh token also invalid — clear everything
+            localStorage.removeItem("gb_token");
+            localStorage.removeItem("gb_refresh_token");
+            localStorage.removeItem("gb_user");
+            setToken("");
+            setUser(null);
+          }
+        })
+        .catch(() => {});
+    } else if (savedToken) {
+      // Have access token — verify it still works, refresh if needed
+      fetch("https://genetic-breeds-backend.onrender.com/api/auth/me", {
+        headers: { Authorization: `Bearer ${savedToken}` },
+      })
+        .then(r => {
+          if (r.status === 401 && refreshToken) {
+            // Token expired — refresh it
+            return fetch("https://genetic-breeds-backend.onrender.com/api/auth/refresh-token", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ refreshToken }),
+              credentials: "include",
+            })
+              .then(r2 => r2.json())
+              .then(data => {
+                if (data.token) {
+                  localStorage.setItem("gb_token", data.token);
+                  if (data.refreshToken) localStorage.setItem("gb_refresh_token", data.refreshToken);
+                  setToken(data.token);
+                } else {
+                  localStorage.removeItem("gb_token");
+                  localStorage.removeItem("gb_refresh_token");
+                  localStorage.removeItem("gb_user");
+                  setToken("");
+                  setUser(null);
+                }
+              });
+          }
+        })
+        .catch(() => {});
+    }
+  }, []);
   const [user, setUser] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem("gb_user") || "null");
