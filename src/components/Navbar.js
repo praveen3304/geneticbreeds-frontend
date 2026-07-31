@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { apiFetch } from "../utils/api.js";
 import { NavLink, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -583,7 +582,7 @@ useEffect(() => {
         return;
       }
 
-      const res = await apiFetch(`/api/auth/me`, {
+      const res = await fetch(`${API_BASE_URL}/api/auth/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -635,7 +634,7 @@ setLicenceType(data.licenceType || "");
         return;
       }
 
-      const res = await apiFetch(`/api/payments/my-credits`, {
+      const res = await fetch(`${API_BASE_URL}/api/payments/my-credits`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -672,7 +671,7 @@ setLicenceType(data.licenceType || "");
         setNotificationsError("");
       }
 
-      const listRes = await apiFetch(`/api/notifications`, {
+      const listRes = await fetch(`${API_BASE_URL}/api/notifications`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -757,7 +756,7 @@ const previousPaymentMode = user?.paymentRegionOverride || "auto";
 const emailChanged = email !== previousEmail;
 const paymentModeChanged = paymentRegionOverride !== previousPaymentMode;
 
-const phoneRes = await apiFetch(`/api/auth/update-phone`, {
+const phoneRes = await fetch(`${API_BASE_URL}/api/auth/update-phone`, {
   method: "PUT",
   headers: {
     "Content-Type": "application/json",
@@ -777,7 +776,7 @@ if (!phoneRes.ok) {
 
 if (emailChanged) {
   try {
-    const emailRes = await apiFetch(`/api/auth/update-email`, {
+    const emailRes = await fetch(`${API_BASE_URL}/api/auth/update-email`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -802,7 +801,7 @@ if (emailChanged) {
   }
 }
 
-const paymentModeRes = await apiFetch(`/api/auth/update-payment-mode`, {
+const paymentModeRes = await fetch(`${API_BASE_URL}/api/auth/update-payment-mode`, {
   method: "PUT",
   headers: {
     "Content-Type": "application/json",
@@ -896,7 +895,7 @@ toast.success(
         formData.append("licenceDocument", licenceFile);
       }
 
-      const res = await apiFetch(`/api/auth/upload-licence`, {
+      const res = await fetch(`${API_BASE_URL}/api/auth/upload-licence`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
