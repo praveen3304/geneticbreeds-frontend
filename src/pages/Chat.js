@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import socket from "../socket";
 
 const QUICK_MESSAGES = [
   "Hi, is this pet still available?",
@@ -227,6 +228,23 @@ export default function Chat() {
   }, []);
 
   useEffect(() => {
+    if (!id) return;
+    socket.emit("joinChat", id);
+
+    const handleNewMessage = (data) => {
+      if (String(data.chatId) === String(id)) {
+        setMessages((prev) => [...prev, data.message]);
+      }
+    };
+
+    socket.on("newMessage", handleNewMessage);
+
+    return () => {
+      socket.off("newMessage", handleNewMessage);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!token || !id) return;
     loadChat();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -344,6 +362,7 @@ export default function Chat() {
 
       const newMsg = formatMessage(data.message);
       setMessages((prev) => [...prev, newMsg]);
+      socket.emit("sendMessage", { chatId: id, message: data.message });
       setMessage("");
       loadChat();
     } catch (err) {

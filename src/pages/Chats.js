@@ -7,7 +7,7 @@ export default function Chats() {
 
   const fetchChats = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("gb_token");
 
       const res = await fetch("https://genetic-breeds-backend.onrender.com/api/chat", {
         headers: {
@@ -126,7 +126,7 @@ export default function Chats() {
           const seller = chat.sellerId || {};
           const buyer = chat.buyerId || {};
 
-          const currentUserId = localStorage.getItem("userId");
+          const currentUserId = JSON.parse(localStorage.getItem("gb_user") || "null")?._id;
 
           const isBuyer = String(buyer._id) === String(currentUserId);
           const otherUser = isBuyer ? seller : buyer;
