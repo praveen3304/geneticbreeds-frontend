@@ -76,7 +76,7 @@ export default function PetDetails() {
   const handleOpenChat = async () => {
     try {
       const token = localStorage.getItem("gb_token");
-      const res = await fetch("https://genetic-breeds-backend.onrender.com/api/chat", {
+      const res = await fetch("https://genetic-breeds-backend.onrender.com/api/chat/start", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ adId: pet._id || pet.id }),
