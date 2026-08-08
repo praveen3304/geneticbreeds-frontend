@@ -82,7 +82,7 @@ export default function PetDetails() {
         body: JSON.stringify({ adId: pet._id || pet.id }),
       });
       const data = await res.json();
-      if (data._id) navigate(`/chat/${data._id}`);
+      if (data.chat?._id) navigate(`/chat/${data.chat._id}`);
       else navigate("/chats");
     } catch {
       navigate("/chats");
