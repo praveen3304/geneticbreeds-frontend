@@ -117,6 +117,7 @@ function getCurrentUser() {
 
 export default function Chat() {
   const { id } = useParams(); // chatId now
+  const isMobile = window.innerWidth < 768;
 
   const [chat, setChat] = useState(null);
   const [ad, setAd] = useState(null);
@@ -498,20 +499,24 @@ export default function Chat() {
     <>
       <div
         style={{
-          minHeight: "100vh",
+          height: "100vh",
           background: "#f7f7fb",
-          padding: "94px 16px 22px",
+          padding: isMobile ? "84px 8px 8px" : "94px 16px 22px",
           boxSizing: "border-box",
+          overflow: "hidden",
         }}
       >
         <div
           style={{
             maxWidth: "1380px",
+            height: "100%",
             margin: "0 auto",
-            display: "grid",
-            gridTemplateColumns: "380px 1fr",
-            gap: "18px",
+            display: isMobile ? "flex" : "grid",
+            flexDirection: isMobile ? "column" : undefined,
+            gridTemplateColumns: isMobile ? undefined : "380px 1fr",
+            gap: isMobile ? "10px" : "18px",
             alignItems: "start",
+            overflow: "hidden",
           }}
         >
           <div
@@ -941,7 +946,7 @@ export default function Chat() {
               overflow: "hidden",
               display: "flex",
               flexDirection: "column",
-              height: "760px",
+              height: isMobile ? "100%" : "760px",
               position: "relative",
             }}
           >
