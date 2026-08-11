@@ -513,10 +513,11 @@ export default function Chat() {
             margin: "0 auto",
             display: isMobile ? "flex" : "grid",
             flexDirection: isMobile ? "column" : undefined,
-            gridTemplateColumns: isMobile ? undefined : "380px 1fr",
+            gridTemplateColumns: isMobile ? undefined : "1fr 1fr",
             gap: isMobile ? "10px" : "18px",
-            alignItems: "start",
+            alignItems: "stretch",
             overflow: "hidden",
+            height: "100%",
           }}
         >
           <div
@@ -524,8 +525,10 @@ export default function Chat() {
               background: "#fff",
               borderRadius: "22px",
               boxShadow: "0 10px 28px rgba(0,0,0,0.08)",
-              overflow: "hidden",
+              overflowY: "auto",
+              overflowX: "hidden",
               border: "1px solid #ececec",
+              height: isMobile ? "50%" : "100%",
             }}
           >
             <div
