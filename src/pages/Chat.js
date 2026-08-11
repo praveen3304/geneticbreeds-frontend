@@ -525,7 +525,7 @@ export default function Chat() {
               background: "#fff",
               borderRadius: "22px",
               boxShadow: "0 10px 28px rgba(0,0,0,0.08)",
-              overflowY: "auto",
+              overflowY: "hidden",
               overflowX: "hidden",
               border: "1px solid #ececec",
               height: isMobile ? "50%" : "100%",
