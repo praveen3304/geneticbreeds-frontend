@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import socket from "../socket";
 import apiFetch from "../utils/api";
@@ -119,6 +119,7 @@ function getCurrentUser() {
 export default function Chat() {
   const { id } = useParams(); // chatId now
   const isMobile = window.innerWidth < 768;
+  const messagesEndRef = useRef(null);
   useEffect(() => {
     document.body.classList.add("chat-page");
     return () => document.body.classList.remove("chat-page");
@@ -488,6 +489,12 @@ export default function Chat() {
   };
 
   const renderedMessages = messages.map(formatMessage);
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   if (loading) {
     return <div style={{ padding: "100px 20px" }}>Loading chat...</div>;
@@ -1197,6 +1204,7 @@ export default function Chat() {
                   </div>
                 </div>
               ))}
+              <div ref={messagesEndRef} />
             </div>
 
             <div
