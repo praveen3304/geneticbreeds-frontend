@@ -6,10 +6,6 @@ import apiFetch from "../utils/api";
 const QUICK_MESSAGES = [
   "Hi, is this pet still available?",
   "Can you share more details about this pet?",
-  "Is the price negotiable?",
-  "Is the vaccination completed?",
-  "What is the exact location?",
-  "Can I get your contact number or WhatsApp number?",
 ];
 
 const USER_STATUS_KEY = "gb_user_status";
@@ -548,7 +544,7 @@ export default function Chat() {
               style={{
                 background: "linear-gradient(135deg, #7a0016, #b3122a)",
                 color: "#fff",
-                padding: "16px 18px",
+                padding: "10px 14px",
               }}
             >
               <div style={{ fontSize: "13px", opacity: 0.9, fontWeight: "700" }}>
@@ -806,23 +802,6 @@ export default function Chat() {
                     </p>
                   </div>
 
-                  <div style={{ marginTop: "12px" }}>
-                    <Link
-                      to={`/pet/${ad?._id || ad?.id}`}
-                      style={{
-                        display: "inline-block",
-                        padding: "8px 12px",
-                        borderRadius: "10px",
-                        background: "linear-gradient(135deg, #7a0016, #b3122a)",
-                        color: "#fff",
-                        textDecoration: "none",
-                        fontWeight: "700",
-                        fontSize: "13px",
-                      }}
-                    >
-                      View Full Ad
-                    </Link>
-                  </div>
                 </>
               )}
 
