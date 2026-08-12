@@ -912,7 +912,7 @@ export default function Chat() {
               overflow: "hidden",
               display: "flex",
               flexDirection: "column",
-              height: isMobile ? "100%" : "760px",
+              height: "100%",
               position: "relative",
             }}
           >
