@@ -514,7 +514,7 @@ export default function Chat() {
         style={{
           height: "100vh",
           background: "#f7f7fb",
-          padding: isMobile ? "72px 8px 8px" : "76px 16px 16px",
+          padding: isMobile ? "12px 8px 8px" : "16px 16px 16px",
           boxSizing: "border-box",
           overflow: "hidden",
         }}
