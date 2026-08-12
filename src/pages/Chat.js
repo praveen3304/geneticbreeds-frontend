@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import socket from "../socket";
+import apiFetch from "../utils/api";
 
 const QUICK_MESSAGES = [
   "Hi, is this pet still available?",
@@ -149,7 +150,7 @@ export default function Chat() {
     try {
       setLoading(true);
 
-      const res = await fetch(`https://genetic-breeds-backend.onrender.com/api/chat/${id}/messages`, {
+      const res = await apiFetch(`/api/chat/${id}/messages`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -209,7 +210,7 @@ export default function Chat() {
         setIsBlocked(sellerBlocked);
       }
 
-      await fetch(`https://genetic-breeds-backend.onrender.com/api/chat/${id}/read`, {
+      await apiFetch(`/api/chat/${id}/read`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -344,7 +345,7 @@ export default function Chat() {
     try {
       setSending(true);
 
-      const res = await fetch(`https://genetic-breeds-backend.onrender.com/api/chat/${id}/messages`, {
+      const res = await apiFetch(`/api/chat/${id}/messages`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -382,7 +383,7 @@ export default function Chat() {
 
   const handleBlockUser = async () => {
     try {
-      const res = await fetch(`https://genetic-breeds-backend.onrender.com/api/chat/${id}/block`, {
+      const res = await apiFetch(`/api/chat/${id}/block`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -409,7 +410,7 @@ export default function Chat() {
 
   const handleUnblockUser = async () => {
     try {
-      const res = await fetch(`https://genetic-breeds-backend.onrender.com/api/chat/${id}/unblock`, {
+      const res = await apiFetch(`/api/chat/${id}/unblock`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
