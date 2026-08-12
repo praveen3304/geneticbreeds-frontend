@@ -139,6 +139,7 @@ export default function Chat() {
   const [reportReason, setReportReason] = useState("Spam");
   const [reportSubmitted, setReportSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
+  const [activeTab, setActiveTab] = useState("details");
 
   const token = localStorage.getItem("gb_token") || "";
 
@@ -673,270 +674,227 @@ export default function Chat() {
               )}
             </div>
 
-            <div style={{ padding: "16px" }}>
-              <div
+            <div style={{ display: "flex", borderBottom: "1px solid #eee", flexShrink: 0 }}>
+              <button
+                onClick={() => setActiveTab("details")}
                 style={{
-                  width: "100%",
-                  height: "220px",
-                  borderRadius: "16px",
-                  background: "#f3f4f6",
-                  overflow: "hidden",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: "12px",
-                }}
-              >
-                <img
-                  src={selectedImage}
-                  alt={ad.title}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "contain",
-                    display: "block",
-                  }}
-                />
-              </div>
-
-              {images.length > 1 && (
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "8px",
-                    flexWrap: "wrap",
-                    marginBottom: "14px",
-                  }}
-                >
-                  {images.map((img, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setSelectedImage(img)}
-                      style={{
-                        border:
-                          selectedImage === img
-                            ? "2px solid #b3122a"
-                            : "1px solid #ddd",
-                        borderRadius: "10px",
-                        padding: 0,
-                        background: "#fff",
-                        cursor: "pointer",
-                        width: "62px",
-                        height: "62px",
-                        overflow: "hidden",
-                      }}
-                    >
-                      <img
-                        src={img}
-                        alt={`Pet ${index + 1}`}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                          display: "block",
-                        }}
-                      />
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              <div
-                style={{
-                  display: "inline-block",
-                  padding: "5px 10px",
-                  borderRadius: "999px",
-                  background: "#fdf2f8",
-                  color: "#9d174d",
+                  flex: 1,
+                  padding: "12px",
+                  border: "none",
+                  background: activeTab === "details" ? "#fff8f8" : "#fff",
+                  color: activeTab === "details" ? "#b3122a" : "#6b7280",
                   fontWeight: "700",
-                  fontSize: "12px",
-                  marginBottom: "10px",
+                  fontSize: "13px",
+                  cursor: "pointer",
+                  borderBottom: activeTab === "details" ? "2px solid #b3122a" : "2px solid transparent",
                 }}
               >
-                {ad.category || "Other"}
-              </div>
-
-              <h2
+                Details
+              </button>
+              <button
+                onClick={() => setActiveTab("seller")}
                 style={{
-                  margin: "0 0 8px",
-                  fontSize: "28px",
-                  color: "#1f2559",
-                  lineHeight: "1.15",
+                  flex: 1,
+                  padding: "12px",
+                  border: "none",
+                  background: activeTab === "seller" ? "#fff8f8" : "#fff",
+                  color: activeTab === "seller" ? "#b3122a" : "#6b7280",
+                  fontWeight: "700",
+                  fontSize: "13px",
+                  cursor: "pointer",
+                  borderBottom: activeTab === "seller" ? "2px solid #b3122a" : "2px solid transparent",
                 }}
               >
-                {ad.title || ad.breed || "Pet Ad"}
-              </h2>
+                Seller Info
+              </button>
+            </div>
 
-              <div
-                style={{
-                  fontSize: "24px",
-                  fontWeight: "800",
-                  color: "#b3122a",
-                  marginBottom: "12px",
-                }}
-              >
-                ₹{Number(ad.price || 0).toLocaleString("en-IN")}
-              </div>
-
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: "8px 14px",
-                  fontSize: "14px",
-                  color: "#374151",
-                }}
-              >
-                <p style={{ margin: 0 }}>
-                  <strong>Breed:</strong> {ad.breed || "-"}
-                </p>
-                <p style={{ margin: 0 }}>
-                  <strong>Age:</strong> {ad.age || "-"}
-                </p>
-                <p style={{ margin: 0 }}>
-                  <strong>Gender:</strong> {ad.gender || "-"}
-                </p>
-                <p style={{ margin: 0 }}>
-                  <strong>Location:</strong> {ad.city || ad.location || "-"}
-                </p>
-                <p style={{ margin: 0 }}>
-                  <strong>Owner:</strong> {sellerName}
-                </p>
-                <p style={{ margin: 0 }}>
-                  <strong>Seller User ID:</strong> {sellerUserCode || "-"}
-                </p>
-                <p style={{ margin: 0 }}>
-                  <strong>Status:</strong> {ad.status || "Live"}
-                </p>
-                <p style={{ margin: 0 }}>
-                  <strong>Posted On:</strong>{" "}
-                  {ad.createdAt
-                    ? new Date(ad.createdAt).toLocaleDateString("en-IN")
-                    : "-"}
-                </p>
-              </div>
-
-              <div
-                style={{
-                  marginTop: "16px",
-                  padding: "16px",
-                  borderRadius: "16px",
-                  background: "#fff8f8",
-                  border: "1px solid #f4d4d4",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: "12px",
-                    fontWeight: "800",
-                    color: "#9f1239",
-                    letterSpacing: "0.4px",
-                    marginBottom: "10px",
-                  }}
-                >
-                  SELLER MINI PROFILE
-                </div>
-
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
-                    gap: "10px 14px",
-                    fontSize: "14px",
-                    color: "#374151",
-                  }}
-                >
-                  <p style={{ margin: 0 }}>
-                    <strong>User ID:</strong> {sellerUserCode || "-"}
-                  </p>
-                  <p style={{ margin: 0 }}>
-                    <strong>Member since:</strong> {sellerMiniProfile.memberSince}
-                  </p>
-                  <p style={{ margin: 0 }}>
-                    <strong>Total ads:</strong> {sellerMiniProfile.totalAds}
-                  </p>
-                  <p style={{ margin: 0 }}>
-                    <strong>Response time:</strong> {sellerMiniProfile.responseTime}
-                  </p>
-                  <p style={{ margin: 0, gridColumn: "1 / -1" }}>
-                    <strong>Status:</strong>{" "}
-                    {sellerStatus.online ? "Online" : formatLastSeen(sellerStatus.lastSeen)}
-                  </p>
-                </div>
-
-                <div style={{ marginTop: "12px", display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                  <Link
-                    to={sellerObjectId ? `/seller/${sellerObjectId}` : "#"}
+            <div style={{ padding: "16px", flex: 1, minHeight: 0 }}>
+              {activeTab === "details" && (
+                <>
+                  <div
                     style={{
-                      display: "inline-block",
-                      padding: "10px 14px",
-                      borderRadius: "10px",
-                      border: "1px solid #e5caca",
-                      background: "#fff",
-                      color: "#7a0016",
-                      fontWeight: "700",
-                      fontSize: "13px",
-                      textDecoration: "none",
+                      width: "100%",
+                      height: isMobile ? "110px" : "160px",
+                      borderRadius: "16px",
+                      background: "#f3f4f6",
+                      overflow: "hidden",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginBottom: "10px",
                     }}
                   >
-                    View Profile
-                  </Link>
-
-                  {!isBlocked ? (
-                    <button
-                      type="button"
-                      onClick={() => setShowBlockConfirm(true)}
+                    <img
+                      src={selectedImage}
+                      alt={ad.title}
                       style={{
-                        padding: "10px 14px",
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "contain",
+                        display: "block",
+                      }}
+                    />
+                  </div>
+
+                  <div
+                    style={{
+                      display: "inline-block",
+                      padding: "4px 10px",
+                      borderRadius: "999px",
+                      background: "#fdf2f8",
+                      color: "#9d174d",
+                      fontWeight: "700",
+                      fontSize: "11px",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    {ad.category || "Other"}
+                  </div>
+
+                  <h2
+                    style={{
+                      margin: "0 0 6px",
+                      fontSize: "20px",
+                      color: "#1f2559",
+                      lineHeight: "1.15",
+                    }}
+                  >
+                    {ad.title || ad.breed || "Pet Ad"}
+                  </h2>
+
+                  <div
+                    style={{
+                      fontSize: "18px",
+                      fontWeight: "800",
+                      color: "#b3122a",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    ₹{Number(ad.price || 0).toLocaleString("en-IN")}
+                  </div>
+
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: "6px 12px",
+                      fontSize: "13px",
+                      color: "#374151",
+                    }}
+                  >
+                    <p style={{ margin: 0 }}><strong>Breed:</strong> {ad.breed || "-"}</p>
+                    <p style={{ margin: 0 }}><strong>Age:</strong> {ad.age || "-"}</p>
+                    <p style={{ margin: 0 }}><strong>Gender:</strong> {ad.gender || "-"}</p>
+                    <p style={{ margin: 0 }}><strong>Location:</strong> {ad.city || ad.location || "-"}</p>
+                    <p style={{ margin: 0 }}><strong>Status:</strong> {ad.status || "Live"}</p>
+                    <p style={{ margin: 0 }}>
+                      <strong>Posted:</strong>{" "}
+                      {ad.createdAt ? new Date(ad.createdAt).toLocaleDateString("en-IN") : "-"}
+                    </p>
+                  </div>
+
+                  <div style={{ marginTop: "12px" }}>
+                    <Link
+                      to={`/pet/${ad?._id || ad?.id}`}
+                      style={{
+                        display: "inline-block",
+                        padding: "8px 12px",
                         borderRadius: "10px",
-                        border: "1px solid #fecaca",
-                        background: "#fff",
-                        color: "#b91c1c",
+                        background: "linear-gradient(135deg, #7a0016, #b3122a)",
+                        color: "#fff",
+                        textDecoration: "none",
                         fontWeight: "700",
                         fontSize: "13px",
-                        cursor: "pointer",
                       }}
                     >
-                      Block User
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={handleUnblockUser}
+                      View Full Ad
+                    </Link>
+                  </div>
+                </>
+              )}
+
+              {activeTab === "seller" && (
+                <>
+                  <div style={{ fontSize: "12px", fontWeight: "800", color: "#9f1239", letterSpacing: "0.4px", marginBottom: "10px" }}>
+                    SELLER MINI PROFILE
+                  </div>
+
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: "8px 12px",
+                      fontSize: "13px",
+                      color: "#374151",
+                    }}
+                  >
+                    <p style={{ margin: 0 }}><strong>User ID:</strong> {sellerUserCode || "-"}</p>
+                    <p style={{ margin: 0 }}><strong>Member since:</strong> {sellerMiniProfile.memberSince}</p>
+                    <p style={{ margin: 0 }}><strong>Total ads:</strong> {sellerMiniProfile.totalAds}</p>
+                    <p style={{ margin: 0 }}><strong>Response time:</strong> {sellerMiniProfile.responseTime}</p>
+                    <p style={{ margin: 0, gridColumn: "1 / -1" }}>
+                      <strong>Status:</strong>{" "}
+                      {sellerStatus.online ? "Online" : formatLastSeen(sellerStatus.lastSeen)}
+                    </p>
+                  </div>
+
+                  <div style={{ marginTop: "14px", display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                    <Link
+                      to={sellerObjectId ? `/seller/${sellerObjectId}` : "#"}
                       style={{
-                        padding: "10px 14px",
+                        display: "inline-block",
+                        padding: "8px 12px",
                         borderRadius: "10px",
-                        border: "1px solid #d1d5db",
+                        border: "1px solid #e5caca",
                         background: "#fff",
-                        color: "#111827",
+                        color: "#7a0016",
                         fontWeight: "700",
                         fontSize: "13px",
-                        cursor: "pointer",
+                        textDecoration: "none",
                       }}
                     >
-                      Unblock User
-                    </button>
-                  )}
-                </div>
-              </div>
+                      View Profile
+                    </Link>
 
-              <div style={{ marginTop: "16px" }}>
-                <Link
-                  to={`/pet/${ad?._id || ad?.id}`}
-                  style={{
-                    display: "inline-block",
-                    padding: "10px 14px",
-                    borderRadius: "10px",
-                    background: "linear-gradient(135deg, #7a0016, #b3122a)",
-                    color: "#fff",
-                    textDecoration: "none",
-                    fontWeight: "700",
-                    fontSize: "14px",
-                  }}
-                >
-                  View Full Ad
-                </Link>
-              </div>
+                    {!isBlocked ? (
+                      <button
+                        type="button"
+                        onClick={() => setShowBlockConfirm(true)}
+                        style={{
+                          padding: "8px 12px",
+                          borderRadius: "10px",
+                          border: "1px solid #fecaca",
+                          background: "#fff",
+                          color: "#b91c1c",
+                          fontWeight: "700",
+                          fontSize: "13px",
+                          cursor: "pointer",
+                        }}
+                      >
+                        Block User
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleUnblockUser}
+                        style={{
+                          padding: "8px 12px",
+                          borderRadius: "10px",
+                          border: "1px solid #d1d5db",
+                          background: "#fff",
+                          color: "#111827",
+                          fontWeight: "700",
+                          fontSize: "13px",
+                          cursor: "pointer",
+                        }}
+                      >
+                        Unblock User
+                      </button>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
