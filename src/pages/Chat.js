@@ -1110,7 +1110,7 @@ export default function Chat() {
             {!isBlocked && !isAdInactive && (
               <div
                 style={{
-                  padding: "10px 12px",
+                  padding: "6px 10px",
                   borderBottom: "1px solid #eee",
                   background: "#fff8f8",
                   display: "flex",
