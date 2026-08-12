@@ -119,6 +119,10 @@ function getCurrentUser() {
 export default function Chat() {
   const { id } = useParams(); // chatId now
   const isMobile = window.innerWidth < 768;
+  useEffect(() => {
+    document.body.classList.add("chat-page");
+    return () => document.body.classList.remove("chat-page");
+  }, []);
 
   const [chat, setChat] = useState(null);
   const [ad, setAd] = useState(null);

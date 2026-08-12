@@ -1626,3 +1626,8 @@ body.landing-page {
     object-fit: cover !important;
   }
 }
+
+/* Hide page scrollbar on chat page - scroll stays inside chat box only */
+body.chat-page {
+  overflow: hidden;
+}
