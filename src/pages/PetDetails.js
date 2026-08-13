@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link, useParams } from "react-router-dom";
+import apiFetch from "../utils/api";
+import socket from "../socket";
 
 const QUICK_MESSAGES = [
   "Hi, is this pet still available?",
@@ -16,20 +18,35 @@ export default function PetDetails() {
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState("");
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      sender: "seller",
-      text: "Hello, thanks for your interest.",
-      time: "10:20 AM",
-    },
-    {
-      id: 2,
-      sender: "me",
-      text: "Is this pet still available?",
-      time: "10:21 AM",
-    },
-  ]);
+  const [messages, setMessages] = useState([]);
+  const [chatId, setChatId] = useState(null);
+  const [chatLoading, setChatLoading] = useState(true);
+  const [sending, setSending] = useState(false);
+  const [sellerOnline, setSellerOnline] = useState(true);
+  const messagesEndRef = useRef(null);
+
+  const getCurrentUser = () => {
+    try {
+      return JSON.parse(localStorage.getItem("gb_user") || "null");
+    } catch {
+      return null;
+    }
+  };
+  const currentUser = getCurrentUser();
+  const currentUserId = currentUser?._id || currentUser?.id || "";
+
+  const formatChatMessage = (msg) => {
+    const senderId = msg?.senderId?._id || msg?.senderId || "";
+    const isMe = String(senderId) === String(currentUserId);
+    return {
+      id: msg._id,
+      sender: isMe ? "me" : "seller",
+      text: msg.text || "",
+      time: msg.createdAt
+        ? new Date(msg.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        : "",
+    };
+  };
 
   useEffect(() => {
     const fetchPet = async () => {
@@ -56,18 +73,72 @@ export default function PetDetails() {
     fetchPet();
   }, [id]);
 
-  const handleSend = () => {
-    if (!message.trim()) return;
+  useEffect(() => {
+    if (pet) initChat();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pet]);
 
-    const newMessage = {
-      id: Date.now(),
-      sender: "me",
-      text: message.trim(),
-      time: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
+  useEffect(() => {
+    if (!chatId) return;
+    const handleNewMessage = (data) => {
+      if (String(data.chatId) === String(chatId)) {
+        setMessages((prev) => [...prev, formatChatMessage(data.message)]);
+      }
     };
+    socket.on("newMessage", handleNewMessage);
+    return () => socket.off("newMessage", handleNewMessage);
+  }, [chatId]);
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
+  const initChat = async () => {
+    if (!pet) return;
+    try {
+      setChatLoading(true);
+      const startRes = await apiFetch("/api/chat/start", { method: "POST", body: JSON.stringify({ adId: pet._id || pet.id }) });
+      const startData = await startRes.json();
+      const cid = startData.chat?._id;
+      if (!cid) { setChatLoading(false); return; }
+      setChatId(cid);
+      const msgRes = await apiFetch(`/api/chat/${cid}/messages`);
+      const msgData = await msgRes.json();
+      const loadedMessages = Array.isArray(msgData.messages) ? msgData.messages : [];
+      setMessages(loadedMessages.map(formatChatMessage));
+      await apiFetch(`/api/chat/${cid}/read`, { method: "POST" });
+      socket.emit("joinChat", cid);
+    } catch (err) {
+      console.error("initChat failed:", err);
+    } finally {
+      setChatLoading(false);
+    }
+  };
+  const handleSend = async () => {
+    if (!message.trim() || !chatId || sending) return;
+    try {
+      setSending(true);
+      const res = await apiFetch(`/api/chat/${chatId}/messages`, {
+        method: "POST",
+        body: JSON.stringify({ text: message.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data?.error || "Failed to send message");
+        return;
+      }
+      const newMsg = formatChatMessage(data.message);
+      setMessages((prev) => [...prev, newMsg]);
+      socket.emit("sendMessage", { chatId, message: data.message });
+      setMessage("");
+    } catch (err) {
+      console.error("Send failed:", err);
+    } finally {
+      setSending(false);
+    }
+  };
 
     setMessages((prev) => [...prev, newMessage]);
     setMessage("");
@@ -361,10 +432,10 @@ export default function PetDetails() {
               }}
             >
               <div style={{ fontSize: "18px", fontWeight: "700" }}>
-                Chat with Seller
+                {sellerName}
               </div>
               <div style={{ fontSize: "13px", marginTop: "5px" }}>
-                Seller ID: {sellerUserCode}
+                Seller ID: {sellerUserCode || "Not available"}
               </div>
               <div
                 style={{
@@ -380,12 +451,12 @@ export default function PetDetails() {
                     width: "10px",
                     height: "10px",
                     borderRadius: "50%",
-                    background: "#22c55e",
+                    background: sellerOnline ? "#22c55e" : "#9ca3af",
                     display: "inline-block",
                   }}
                 />
-                <span style={{ color: "#bbf7d0", fontWeight: "600" }}>
-                  Online
+                <span style={{ color: sellerOnline ? "#bbf7d0" : "#e5e7eb", fontWeight: "600" }}>
+                  {sellerOnline ? "Online" : "Offline"}
                 </span>
               </div>
             </div>
