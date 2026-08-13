@@ -461,40 +461,129 @@ export default function PetDetails() {
               </div>
             </div>
 
+            {!chatLoading && (
+              <div
+                style={{
+                  padding: "8px 10px",
+                  borderBottom: "1px solid #eee",
+                  background: "#fff8f8",
+                  display: "flex",
+                  gap: "8px",
+                  flexWrap: "wrap",
+                  flexShrink: 0,
+                }}
+              >
+                {QUICK_MESSAGES.map((item, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleQuickMessage(item)}
+                    style={{
+                      border: "1px solid #f5b5b5",
+                      background: "#fff",
+                      color: "#991b1b",
+                      borderRadius: "999px",
+                      padding: "6px 10px",
+                      fontSize: "12px",
+                      fontWeight: "600",
+                      cursor: "pointer",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+            )}
+
             <div
               style={{
                 flex: 1,
+                minHeight: 0,
+                padding: "10px 14px",
+                overflowY: "auto",
+                background: "#fafafa",
                 display: "flex",
                 flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "14px",
-                padding: "32px 20px",
-                textAlign: "center",
+                gap: "6px",
               }}
             >
-              <div style={{ fontSize: "40px" }}>💬</div>
-              <div style={{ fontSize: "16px", fontWeight: "700", color: "#1f2559" }}>
-                Start a conversation with {sellerName}
-              </div>
-              <div style={{ fontSize: "13px", color: "#6b7280", maxWidth: "280px" }}>
-                Ask about availability, price, or vaccination status. Messages are saved and visible in your Chats list.
-              </div>
-              <button
-                onClick={handleOpenChat}
+              {chatLoading && (
+                <div style={{ textAlign: "center", color: "#9ca3af", fontSize: "13px", marginTop: "20px" }}>
+                  Loading conversation...
+                </div>
+              )}
+              {!chatLoading && messages.length === 0 && (
+                <div style={{ textAlign: "center", color: "#9ca3af", fontSize: "13px", marginTop: "20px" }}>
+                  Start the conversation with {sellerName}
+                </div>
+              )}
+              {messages.map((msg) => (
+                <div
+                  key={msg.id}
+                  style={{
+                    alignSelf: msg.sender === "me" ? "flex-end" : "flex-start",
+                    maxWidth: "74%",
+                    background: msg.sender === "me" ? "#eb5d5d" : "#fff",
+                    color: msg.sender === "me" ? "#fff" : "#111827",
+                    padding: "11px 13px",
+                    borderRadius: "14px",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                  }}
+                >
+                  <div style={{ fontSize: "14px", lineHeight: "1.45" }}>
+                    {msg.text}
+                  </div>
+                  <div style={{ fontSize: "12px", marginTop: "6px", textAlign: "right", opacity: 0.88 }}>
+                    {msg.time}
+                  </div>
+                </div>
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
+
+            <div
+              style={{
+                borderTop: "1px solid #eee",
+                padding: "12px",
+                display: "flex",
+                gap: "8px",
+                background: "#fff",
+                flexShrink: 0,
+              }}
+            >
+              <input
+                type="text"
+                value={message}
+                disabled={!chatId || sending}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleSend();
+                }}
+                placeholder={sending ? "Sending..." : "Type your message..."}
                 style={{
-                  padding: "12px 22px",
+                  flex: 1,
+                  padding: "10px 12px",
+                  borderRadius: "10px",
+                  border: "1px solid #d1d5db",
+                  outline: "none",
+                  fontSize: "14px",
+                }}
+              />
+              <button
+                onClick={handleSend}
+                disabled={!chatId || sending}
+                style={{
+                  padding: "10px 18px",
                   border: "none",
-                  borderRadius: "12px",
-                  background: "linear-gradient(135deg, #b3122a, #7a0016)",
+                  borderRadius: "10px",
+                  background: "#eb5d5d",
                   color: "#fff",
-                  fontWeight: "700",
+                  fontWeight: "600",
                   cursor: "pointer",
                   fontSize: "14px",
-                  boxShadow: "0 6px 16px rgba(179,18,42,0.25)",
                 }}
               >
-                Open Chat
+                Send
               </button>
             </div>
           </div>
