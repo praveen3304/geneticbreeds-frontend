@@ -547,10 +547,7 @@ export default function Chat() {
                 padding: "10px 14px",
               }}
             >
-              <div style={{ fontSize: "13px", opacity: 0.9, fontWeight: "700" }}>
-                CHAT WITH SELLER
-              </div>
-              <div style={{ fontSize: "24px", fontWeight: "800", marginTop: "4px" }}>
+              <div style={{ fontSize: "20px", fontWeight: "800" }}>
                 {sellerName}
               </div>
               <div style={{ fontSize: "13px", marginTop: "6px", opacity: 0.92 }}>
@@ -1145,12 +1142,12 @@ export default function Chat() {
               style={{
                 flex: 1,
                 minHeight: 0,
-                padding: "14px",
+                padding: "10px 14px",
                 overflowY: "auto",
                 background: "#fafafa",
                 display: "flex",
                 flexDirection: "column",
-                gap: "10px",
+                gap: "6px",
               }}
             >
               {renderedMessages.map((msg) => (
