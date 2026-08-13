@@ -508,9 +508,9 @@ export default function Chat() {
     <>
       <div
         style={{
-          height: "100vh",
+          height: "calc(100vh - 70px)",
           background: "#f7f7fb",
-          padding: isMobile ? "10px 8px 8px" : "10px 16px 10px",
+          padding: isMobile ? "8px" : "8px 12px",
           boxSizing: "border-box",
           overflow: "hidden",
         }}
