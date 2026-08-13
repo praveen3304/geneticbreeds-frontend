@@ -510,7 +510,7 @@ export default function Chat() {
         style={{
           height: "100vh",
           background: "#f7f7fb",
-          padding: isMobile ? "12px 8px 8px" : "16px 16px 16px",
+          padding: isMobile ? "8px 6px 6px" : "8px 12px 8px",
           boxSizing: "border-box",
           overflow: "hidden",
         }}
@@ -907,7 +907,7 @@ export default function Chat() {
               style={{
                 background: "linear-gradient(135deg, #7a0016, #b3122a)",
                 color: "#fff",
-                padding: "16px 18px",
+                padding: "8px 14px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
