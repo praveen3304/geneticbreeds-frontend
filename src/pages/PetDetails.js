@@ -140,10 +140,6 @@ export default function PetDetails() {
     }
   };
 
-    setMessages((prev) => [...prev, newMessage]);
-    setMessage("");
-  };
-
   const handleOpenChat = async () => {
     try {
       const token = localStorage.getItem("gb_token");
