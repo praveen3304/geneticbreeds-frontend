@@ -142,6 +142,8 @@ export default function Chat() {
   const [reportSubmitted, setReportSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [activeTab, setActiveTab] = useState("details");
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   const token = localStorage.getItem("gb_token") || "";
 
@@ -254,6 +256,9 @@ export default function Chat() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, token]);
 
+  const isCurrentUserBuyer = String(buyer?._id || buyer) === String(currentUserId);
+  const otherParty = isCurrentUserBuyer ? seller : buyer;
+
   const sellerUserCode =
     seller?.userCode ||
     seller?.userCodeNumber ||
@@ -261,6 +266,10 @@ export default function Chat() {
 
   const sellerName = seller?.name || ad?.ownerName || "Seller";
   const sellerObjectId = seller?._id || seller?.id || "";
+
+  const otherPartyName = otherParty?.name || (isCurrentUserBuyer ? sellerName : "Buyer");
+  const otherPartyObjectId = otherParty?._id || otherParty?.id || "";
+  const otherPartyUserCode = otherParty?.userCode || otherParty?.userCodeNumber || "";
 
   useEffect(() => {
     if (!sellerUserCode) return;
@@ -720,7 +729,7 @@ export default function Chat() {
                   <div
                     style={{
                       width: "100%",
-                      height: isMobile ? "110px" : "160px",
+                      height: isMobile ? "160px" : "230px",
                       borderRadius: "16px",
                       background: "#f3f4f6",
                       overflow: "hidden",
@@ -914,10 +923,10 @@ export default function Chat() {
             >
               <div>
                 <div style={{ fontSize: "24px", fontWeight: "800" }}>
-                  Chat with Seller
+                  {otherPartyName}
                 </div>
                 <div style={{ fontSize: "13px", marginTop: "4px", opacity: 0.92 }}>
-                  Seller ID: {sellerUserCode || "Not available"}
+                  User ID: {otherPartyUserCode || "Not available"}
                 </div>
                 <div
                   style={{
