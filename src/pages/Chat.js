@@ -698,7 +698,7 @@ export default function Chat() {
                   <div
                     style={{
                       width: "100%",
-                      height: isMobile ? "200px" : "300px",
+                      height: isMobile ? "150px" : "190px",
                       borderRadius: "16px",
                       background: "#f3f4f6",
                       overflow: "hidden",
