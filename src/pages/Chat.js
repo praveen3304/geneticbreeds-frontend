@@ -553,42 +553,11 @@ export default function Chat() {
               style={{
                 background: "linear-gradient(135deg, #7a0016, #b3122a)",
                 color: "#fff",
-                padding: "10px 14px",
+                padding: "6px 14px",
               }}
             >
-              <div style={{ fontSize: "20px", fontWeight: "800" }}>
-                {sellerName}
-              </div>
-              <div style={{ fontSize: "13px", marginTop: "6px", opacity: 0.92 }}>
-                Seller ID: {sellerUserCode || "Not available"}
-              </div>
-
-              <div
-                style={{
-                  fontSize: "13px",
-                  marginTop: "8px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                }}
-              >
-                <span
-                  style={{
-                    width: "10px",
-                    height: "10px",
-                    borderRadius: "50%",
-                    background: sellerStatus.online ? "#22c55e" : "#9ca3af",
-                    display: "inline-block",
-                  }}
-                />
-                <span
-                  style={{
-                    color: sellerStatus.online ? "#bbf7d0" : "#e5e7eb",
-                    fontWeight: "700",
-                  }}
-                >
-                  {sellerStatus.online ? "Online" : formatLastSeen(sellerStatus.lastSeen)}
-                </span>
+              <div style={{ fontSize: "15px", fontWeight: "800" }}>
+                Pet Details
               </div>
 
               {ad.status === "Sold" && (
