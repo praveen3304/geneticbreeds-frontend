@@ -698,14 +698,14 @@ export default function Chat() {
                   <div
                     style={{
                       width: "100%",
-                      height: isMobile ? "150px" : "190px",
+                      height: isMobile ? "165px" : "215px",
                       borderRadius: "16px",
                       background: "#f3f4f6",
                       overflow: "hidden",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      marginBottom: "10px",
+                      marginBottom: "16px",
                     }}
                   >
                     <img
