@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import apiFetch from "../utils/api";
 
 const THREADS_KEY = "gb_chat_threads";
 const API_BASE_URL = "https://genetic-breeds-backend.onrender.com";
@@ -671,11 +672,7 @@ setLicenceType(data.licenceType || "");
         setNotificationsError("");
       }
 
-      const listRes = await fetch(`${API_BASE_URL}/api/notifications`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const listRes = await apiFetch("/api/notifications");
 
       const listData = await listRes.json();
 
@@ -701,14 +698,7 @@ setLicenceType(data.licenceType || "");
       ).length;
 
       try {
-        const countRes = await fetch(
-          `${API_BASE_URL}/api/notifications/unread-count`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const countRes = await apiFetch("/api/notifications/unread-count");
 
         const countData = await countRes.json();
 
