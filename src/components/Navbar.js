@@ -1069,37 +1069,13 @@ toast.success(
 
       let success = false;
 
-      const attempts = [
-        {
-          url: `${API_BASE_URL}/api/notifications/${notificationId}/read`,
+      try {
+        const res = await apiFetch(`/api/notifications/${notificationId}/read`, {
           method: "PUT",
-        },
-        {
-          url: `${API_BASE_URL}/api/notifications/${notificationId}/read`,
-          method: "PATCH",
-        },
-        {
-          url: `${API_BASE_URL}/api/notifications/read/${notificationId}`,
-          method: "PUT",
-        },
-      ];
-
-      for (const attempt of attempts) {
-        try {
-          const res = await fetch(attempt.url, {
-            method: attempt.method,
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-
-          if (res.ok) {
-            success = true;
-            break;
-          }
-        } catch {
-          // try next pattern
-        }
+        });
+        success = res.ok;
+      } catch {
+        // fall through to silent refetch below
       }
 
       setNotifications((prev) =>
