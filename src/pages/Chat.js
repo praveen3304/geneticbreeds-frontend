@@ -116,6 +116,7 @@ export default function Chat() {
   const { id } = useParams(); // chatId now
   const isMobile = window.innerWidth < 768;
   const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
   useEffect(() => {
     document.body.classList.add("chat-page");
     return () => document.body.classList.remove("chat-page");
@@ -516,10 +517,12 @@ export default function Chat() {
 
   useEffect(() => {
     const t = setTimeout(() => {
-      if (messagesEndRef.current) {
+      if (messagesContainerRef.current) {
+        messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+      } else if (messagesEndRef.current) {
         messagesEndRef.current.scrollIntoView({ behavior: "auto", block: "end" });
       }
-    }, 50);
+    }, 80);
     return () => clearTimeout(t);
   }, [messages]);
 
@@ -1139,6 +1142,7 @@ export default function Chat() {
             )}
 
             <div
+              ref={messagesContainerRef}
               style={{
                 flex: 1,
                 minHeight: 0,
