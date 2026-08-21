@@ -330,20 +330,39 @@ export default function Chat() {
     };
   }, [seller, ad]);
 
+  const getDateLabel = (dateObj) => {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const msgDay = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
+    const diffDays = Math.round((today - msgDay) / 86400000);
+    if (diffDays === 0) return "Today";
+    if (diffDays === 1) return "Yesterday";
+    return dateObj.toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
   const formatMessage = (msg) => {
     const senderId = msg?.senderId?._id || msg?.senderId || "";
     const isMe = String(senderId) === String(currentUserId);
+    const createdDate = msg.createdAt ? new Date(msg.createdAt) : null;
 
     return {
       id: msg._id,
       sender: isMe ? "me" : "seller",
       text: msg.text || "",
-      time: msg.createdAt
-        ? new Date(msg.createdAt).toLocaleTimeString([], {
+      time: createdDate
+        ? createdDate.toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
           })
         : "",
+      dateKey: createdDate
+        ? `${createdDate.getFullYear()}-${createdDate.getMonth()}-${createdDate.getDate()}`
+        : "",
+      dateLabel: createdDate ? getDateLabel(createdDate) : "",
       status: msg.status || "sent",
     };
   };
@@ -1128,7 +1147,15 @@ export default function Chat() {
                 gap: "6px",
               }}
             >
-              {renderedMessages.map((msg) => (
+              {renderedMessages.map((msg, idx) => (
+                <React.Fragment key={msg.id}>
+                {(idx === 0 || renderedMessages[idx - 1].dateKey !== msg.dateKey) && msg.dateLabel && (
+                  <div style={{ textAlign: "center", margin: "10px 0" }}>
+                    <span style={{ background: "#f1f1f1", color: "#6b7280", fontSize: "12px", padding: "4px 12px", borderRadius: "12px" }}>
+                      {msg.dateLabel}
+                    </span>
+                  </div>
+                )}
                 <div
                   key={msg.id}
                   style={{
@@ -1157,6 +1184,7 @@ export default function Chat() {
                     {renderTicks(msg)}
                   </div>
                 </div>
+                </React.Fragment>
               ))}
               <div ref={messagesEndRef} />
             </div>
