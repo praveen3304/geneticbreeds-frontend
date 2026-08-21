@@ -517,6 +517,7 @@ export default function Chat() {
 
   useEffect(() => {
     const t = setTimeout(() => {
+      window.scrollTo(0, 0);
       if (messagesContainerRef.current) {
         messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
       } else if (messagesEndRef.current) {
