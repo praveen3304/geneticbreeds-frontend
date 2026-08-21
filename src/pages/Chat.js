@@ -515,9 +515,12 @@ export default function Chat() {
   const renderedMessages = messages.map(formatMessage);
 
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    const t = setTimeout(() => {
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ behavior: "auto", block: "end" });
+      }
+    }, 50);
+    return () => clearTimeout(t);
   }, [messages]);
 
   if (loading) {
