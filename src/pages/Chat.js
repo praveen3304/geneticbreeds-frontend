@@ -525,7 +525,7 @@ export default function Chat() {
       }
     }, 80);
     return () => clearTimeout(t);
-  }, [messages]);
+  }, [messages, loading]);
 
   if (loading) {
     return <div style={{ padding: "100px 20px" }}>Loading chat...</div>;
