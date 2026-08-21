@@ -2411,11 +2411,15 @@ const notificationDropdownStyle = {
   top: "64px",
   right: "10px",
   width: "min(420px, calc(100vw - 28px))",
+  maxHeight: "calc(100vh - 90px)",
   background: "#fff",
   border: "1px solid #fecaca",
   borderRadius: "20px",
   boxShadow: "0 24px 60px rgba(15, 23, 42, 0.18)",
-  overflow: "hidden",
+  overflowX: "hidden",
+  overflowY: "auto",
+  display: "flex",
+  flexDirection: "column",
   zIndex: 9999,
 };
 
