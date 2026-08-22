@@ -47,6 +47,8 @@ async function refreshAccessToken() {
   }
 }
 
+export { refreshAccessToken };
+
 export async function apiFetch(url, options = {}) {
   const token = localStorage.getItem("gb_token");
   const headers = {
