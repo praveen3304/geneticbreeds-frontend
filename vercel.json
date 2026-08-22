@@ -13,6 +13,7 @@
     }
   ],
   "rewrites": [
+    { "source": "/share/:path*", "destination": "https://genetic-breeds-backend.onrender.com/share/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

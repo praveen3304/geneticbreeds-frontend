@@ -41,7 +41,7 @@ export default function Wishlist({ wishlist = [], toggleWishlist = () => {} }) {
     });
   }, [localItems]);
 
-  const getShareLink = (ad) => `https://genetic-breeds-backend.onrender.com/share/pet/${getAdId(ad)}`;
+  const getShareLink = (ad) => `https://www.geneticbreeds.com/share/pet/${getAdId(ad)}`;
 
   const handleShare = async (ad) => {
     const shareUrl = getShareLink(ad);
