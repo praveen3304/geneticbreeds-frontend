@@ -149,7 +149,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
 
   const handleShare = async (ad) => {
     const shareUrl = getShareLink(ad);
-    const shareText = `${getAdTitle(ad)} - ₹${Number(ad.price || 0).toLocaleString("en-IN")} - ${getAdLocation(ad)}`;
+    const shareText = `${ad.breed ? ad.breed + " - " : ""}${getAdTitle(ad)} - ₹${Number(ad.price || 0).toLocaleString("en-IN")} - ${getAdLocation(ad)}`;
 
     if (navigator.share) {
       try {
