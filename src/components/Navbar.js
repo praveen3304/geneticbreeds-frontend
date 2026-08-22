@@ -339,7 +339,7 @@ const isIndiaUser =
 
   const referralShareText = useMemo(() => {
     const code = user?.referralCode || "";
-    return `Join Genetic Breeds using my referral code: ${code}`;
+    return `Join Genetic Breeds using my referral code: ${code} and get rewarded! Each successful referral gives you 1 free pet ad post.`;
   }, [user]);
 
   const usedReferralAdsCount = useMemo(() => {
