@@ -47,7 +47,7 @@ export default function Wishlist({ wishlist = [], toggleWishlist = () => {} }) {
     const shareUrl = getShareLink(ad);
     const shareText = `${getAdTitle(ad)} - ₹${getPrice(ad)} - ${getLocation(ad)}`;
 
-    if (navigator.share && navigator.canShare()) {
+    if (navigator.share) {
       try {
         await navigator.share({
           title: getAdTitle(ad),
