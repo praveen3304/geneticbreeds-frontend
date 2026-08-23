@@ -125,10 +125,13 @@ export default function App() {
     setAuthOpen(false);
   };
 
-  const onAuthSuccess = ({ token: newToken, user: newUser }) => {
+  const onAuthSuccess = ({ token: newToken, refreshToken: newRefreshToken, user: newUser }) => {
     if (newToken) {
       localStorage.setItem("gb_token", newToken);
       setToken(newToken);
+    }
+    if (newRefreshToken) {
+      localStorage.setItem("gb_refresh_token", newRefreshToken);
     }
     if (newUser) {
       localStorage.setItem("gb_user", JSON.stringify(newUser));
