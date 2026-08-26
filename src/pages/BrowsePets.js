@@ -612,7 +612,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                       height: isMobile ? "180px" : "220px",
                       width: "100%",
                       objectFit: "cover",
-                      objectPosition: "center top",
+                      objectPosition: "center center",
                       background: "#eef2f7",
                       display: "block",
                       transition: "transform 0.3s ease",
