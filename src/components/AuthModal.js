@@ -141,7 +141,7 @@ export default function AuthModal({ type, onClose, onSuccess }) {
       localStorage.setItem("gb_user", JSON.stringify(data.user));
 
       if (typeof onSuccess === "function") {
-        onSuccess({ token: data.token, user: data.user });
+        onSuccess({ token: data.token, refreshToken: data.refreshToken, user: data.user });
         return;
       }
 
