@@ -583,11 +583,7 @@ useEffect(() => {
         return;
       }
 
-      const res = await fetch(`${API_BASE_URL}/api/auth/me`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await apiFetch(`/api/auth/me`);
 
       const data = await res.json();
 
