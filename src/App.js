@@ -169,7 +169,7 @@ export default function App() {
       {/* 🔥 MAIN CONTENT */}
       <div style={{ minHeight: "90vh" }}>
         <Routes>
-          <Route path="/" element={<Landing onLogin={openLogin} onRegister={openRegister} />} />
+          <Route path="/" element={isAuthed ? <Navigate to="/browse" replace /> : <Landing onLogin={openLogin} onRegister={openRegister} />} />
 
           <Route path="/admin/dashboard" element={isAuthed && isAdmin ? <AdminDashboardPage /> : <Navigate to="/" replace />} />
           <Route path="/admin/daily-posts" element={isAuthed && isAdmin ? <AdminDailyPostsPage /> : <Navigate to="/" replace />} />
