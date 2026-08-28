@@ -8,6 +8,7 @@ async function refreshAccessToken() {
   }
 
   refreshPromise = (async () => {
+    debugLog("refresh_attempt", "starting refresh, token present: " + !!localStorage.getItem("gb_refresh_token"));
     const refreshToken = localStorage.getItem("gb_refresh_token");
     if (!refreshToken) return null;
     try {
@@ -18,6 +19,7 @@ async function refreshAccessToken() {
         credentials: "include",
       });
       if (!res.ok) {
+        debugLog("refresh_failed", "status=" + res.status);
         if (res.status === 401 || res.status === 403) {
           localStorage.removeItem("gb_token");
           localStorage.removeItem("gb_refresh_token");
@@ -28,6 +30,7 @@ async function refreshAccessToken() {
       }
       const data = await res.json();
       if (data.token) {
+        debugLog("refresh_success", "new access token stored");
         localStorage.setItem("gb_token", data.token);
         if (data.refreshToken) {
           localStorage.setItem("gb_refresh_token", data.refreshToken);
@@ -36,6 +39,7 @@ async function refreshAccessToken() {
       }
       return null;
     } catch (err) {
+      debugLog("refresh_exception", String(err));
       console.error("Token refresh failed:", err);
       return null;
     }
@@ -94,3 +98,20 @@ export async function apiFetch(url, options = {}) {
 }
 
 export default apiFetch;
+
+export function getDebugLog() {
+  try {
+    return JSON.parse(localStorage.getItem("gb_debug_log") || "[]");
+  } catch {
+    return [];
+  }
+}
+
+export function debugLog(event, detail) {
+  try {
+    const log = JSON.parse(localStorage.getItem("gb_debug_log") || "[]");
+    log.push({ time: new Date().toISOString(), event, detail });
+    while (log.length > 50) log.shift();
+    localStorage.setItem("gb_debug_log", JSON.stringify(log));
+  } catch {}
+}
