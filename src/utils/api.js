@@ -18,10 +18,12 @@ async function refreshAccessToken() {
         credentials: "include",
       });
       if (!res.ok) {
-        localStorage.removeItem("gb_token");
-        localStorage.removeItem("gb_refresh_token");
-        localStorage.removeItem("gb_user");
-        window.location.href = "/";
+        if (res.status === 401 || res.status === 403) {
+          localStorage.removeItem("gb_token");
+          localStorage.removeItem("gb_refresh_token");
+          localStorage.removeItem("gb_user");
+          window.location.href = "/";
+        }
         return null;
       }
       const data = await res.json();
