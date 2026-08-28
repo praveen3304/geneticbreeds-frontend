@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import apiFetch from "../utils/api";
 
 export default function Chats() {
   const [chats, setChats] = useState([]);
@@ -7,18 +8,17 @@ export default function Chats() {
 
   const fetchChats = async () => {
     try {
-      const token = localStorage.getItem("gb_token");
-
-      const res = await fetch("https://genetic-breeds-backend.onrender.com/api/chat", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await apiFetch("/api/chat");
 
       const data = await res.json();
 
       if (res.ok) {
-        setChats(data.chats || []);
+        const sorted = (data.chats || []).slice().sort((a, b) => {
+          const aTime = new Date(a.lastMessageAt || a.updatedAt || 0).getTime();
+          const bTime = new Date(b.lastMessageAt || b.updatedAt || 0).getTime();
+          return bTime - aTime;
+        });
+        setChats(sorted);
       } else {
         console.error(data);
       }
