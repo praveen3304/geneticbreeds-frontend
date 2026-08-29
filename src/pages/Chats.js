@@ -237,6 +237,7 @@ export default function Chats() {
                     }}
                   >
                     {ad.title || "Pet Ad"}
+                    {ad.breed ? ` • ${ad.breed}` : ""}
                   </h3>
                 </div>
 
