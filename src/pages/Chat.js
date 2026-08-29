@@ -904,6 +904,55 @@ export default function Chat() {
               position: "relative",
             }}
           >
+            {isMobile && (
+              <Link
+                to={`/pet/${ad?._id || ad?.id || ""}`}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  padding: "8px 14px",
+                  background: "#fff5f5",
+                  borderBottom: "1px solid #f3d6d6",
+                  textDecoration: "none",
+                  color: "#111827",
+                }}
+              >
+                <img
+                  src={
+                    Array.isArray(ad?.images) && ad.images.length > 0
+                      ? ad.images[0]
+                      : "https://placehold.co/100x100"
+                  }
+                  alt={ad?.title || "Pet"}
+                  style={{
+                    width: "44px",
+                    height: "44px",
+                    borderRadius: "8px",
+                    objectFit: "cover",
+                    flexShrink: 0,
+                    background: "#eee",
+                  }}
+                />
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <div
+                    style={{
+                      fontSize: "13px",
+                      fontWeight: "700",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {ad?.title || ad?.breed || "Pet Ad"}
+                  </div>
+                  <div style={{ fontSize: "12px", color: "#7a0016", fontWeight: "700" }}>
+                    {ad?.price ? `₹${Number(ad.price).toLocaleString("en-IN")}` : ""}
+                  </div>
+                </div>
+                <span style={{ fontSize: "18px", color: "#9ca3af" }}>{"›"}</span>
+              </Link>
+            )}
             <div
               style={{
                 background: "linear-gradient(135deg, #7a0016, #b3122a)",
