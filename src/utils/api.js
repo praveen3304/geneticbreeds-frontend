@@ -54,12 +54,24 @@ async function refreshAccessToken() {
       return null;
     }
     try {
-      const res = await fetch(`${API_BASE_URL}/api/auth/refresh-token`, {
+      let res = await fetch(`${API_BASE_URL}/api/auth/refresh-token`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ refreshToken }),
         credentials: "include",
       });
+
+      if (res.status >= 500) {
+        debugLog("refresh_failed", "status=" + res.status + " (retrying once)");
+        await new Promise((r) => setTimeout(r, 1500));
+        res = await fetch(`${API_BASE_URL}/api/auth/refresh-token`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ refreshToken }),
+          credentials: "include",
+        });
+      }
+
       if (!res.ok) {
         debugLog("refresh_failed", "status=" + res.status);
         if (res.status === 401 || res.status === 403) {
