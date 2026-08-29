@@ -545,7 +545,7 @@ export default function Chat() {
         style={{
           height: "calc(100dvh - 70px)",
           background: "#f7f7fb",
-          padding: isMobile ? "8px" : "8px 12px",
+          padding: isMobile ? "0" : "8px 12px",
           boxSizing: "border-box",
           overflow: "hidden",
         }}
@@ -894,9 +894,9 @@ export default function Chat() {
           <div
             style={{
               background: "#fff",
-              borderRadius: "22px",
-              boxShadow: "0 10px 28px rgba(0,0,0,0.08)",
-              border: "1px solid #ececec",
+              borderRadius: isMobile ? "0" : "22px",
+              boxShadow: isMobile ? "none" : "0 10px 28px rgba(0,0,0,0.08)",
+              border: isMobile ? "none" : "1px solid #ececec",
               overflow: "hidden",
               display: "flex",
               flexDirection: "column",
