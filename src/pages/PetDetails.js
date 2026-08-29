@@ -211,22 +211,21 @@ export default function PetDetails() {
           zIndex: 10,
         }}
       >
-        <Link to="/browse">
-          <button
-            style={{
-              padding: "10px 16px",
-              borderRadius: "10px",
-              border: "none",
-              background: "linear-gradient(135deg, #b3122a, #7a0016)",
-              color: "#fff",
-              fontWeight: "600",
-              cursor: "pointer",
-              boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
-            }}
-          >
-            ← Back
-          </button>
-        </Link>
+        <button
+          onClick={() => navigate(-1)}
+          style={{
+            padding: "10px 16px",
+            borderRadius: "10px",
+            border: "none",
+            background: "linear-gradient(135deg, #b3122a, #7a0016)",
+            color: "#fff",
+            fontWeight: "600",
+            cursor: "pointer",
+            boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
+          }}
+        >
+          ← Back
+        </button>
       </div>
 
       <div
