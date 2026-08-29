@@ -573,6 +573,7 @@ export default function Chat() {
               overflowX: "hidden",
               border: "1px solid #ececec",
               height: isMobile ? "50%" : "100%",
+              display: isMobile ? "none" : "block",
             }}
           >
             <div
