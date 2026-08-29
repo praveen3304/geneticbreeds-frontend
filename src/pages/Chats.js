@@ -5,6 +5,8 @@ import apiFetch from "../utils/api";
 export default function Chats() {
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("all");
+  const currentUserId = JSON.parse(localStorage.getItem("gb_user") || "null")?._id;
 
   const fetchChats = async () => {
     try {
@@ -32,6 +34,15 @@ export default function Chats() {
   useEffect(() => {
     fetchChats();
   }, []);
+
+  const filteredChats = chats.filter((chat) => {
+    if (activeTab === "all") return true;
+    const buyer = chat.buyerId || {};
+    const isBuyer = String(buyer._id) === String(currentUserId);
+    if (activeTab === "buying") return isBuyer;
+    if (activeTab === "selling") return !isBuyer;
+    return true;
+  });
 
   if (loading) {
     return (
@@ -100,7 +111,43 @@ export default function Chats() {
           </Link>
         </div>
 
-        {chats.length === 0 && (
+        <div
+          style={{
+            display: "flex",
+            gap: "6px",
+            marginBottom: "16px",
+            borderBottom: "1px solid #e5e7eb",
+          }}
+        >
+          {[
+            { key: "all", label: "ALL" },
+            { key: "buying", label: "BUYING" },
+            { key: "selling", label: "SELLING" },
+          ].map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              style={{
+                background: "none",
+                border: "none",
+                padding: "10px 16px",
+                fontSize: "13px",
+                fontWeight: "700",
+                letterSpacing: "0.3px",
+                color: activeTab === tab.key ? "#7a0016" : "#6b7280",
+                borderBottom:
+                  activeTab === tab.key
+                    ? "2.5px solid #7a0016"
+                    : "2.5px solid transparent",
+                cursor: "pointer",
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {filteredChats.length === 0 && (
           <div
             style={{
               background: "#fff",
@@ -121,12 +168,10 @@ export default function Chats() {
           </div>
         )}
 
-        {chats.map((chat) => {
+        {filteredChats.map((chat) => {
           const ad = chat.adId || {};
           const seller = chat.sellerId || {};
           const buyer = chat.buyerId || {};
-
-          const currentUserId = JSON.parse(localStorage.getItem("gb_user") || "null")?._id;
 
           const isBuyer = String(buyer._id) === String(currentUserId);
           const otherUser = isBuyer ? seller : buyer;
