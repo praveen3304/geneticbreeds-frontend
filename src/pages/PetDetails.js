@@ -34,6 +34,11 @@ export default function PetDetails() {
   };
   const currentUser = getCurrentUser();
   const currentUserId = currentUser?._id || currentUser?.id || "";
+  const petOwnerId =
+    typeof pet?.userId === "object" ? pet?.userId?._id : pet?.userId;
+  const isOwner = Boolean(
+    currentUserId && petOwnerId && String(currentUserId) === String(petOwnerId)
+  );
 
   const formatChatMessage = (msg) => {
     const senderId = msg?.senderId?._id || msg?.senderId || "";
@@ -586,7 +591,7 @@ export default function PetDetails() {
         )}
 
         {/* Mobile Chat Button */}
-        {isMobile && (
+        {isMobile && !isOwner && (
           <div style={{ padding: "16px", position: "sticky", bottom: 0, background: "#fff", borderTop: "1px solid #eee", zIndex: 100 }}>
             <button
               onClick={handleOpenChat}
