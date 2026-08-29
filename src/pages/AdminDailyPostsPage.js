@@ -36,6 +36,7 @@ export default function AdminDailyPostsPage() {
   const [search, setSearch] = useState("");
 
   const token = localStorage.getItem("gb_token");
+  const isMobile = window.innerWidth < 768;
 
   const fetchDailyPosts = async () => {
     try {
@@ -243,7 +244,7 @@ export default function AdminDailyPostsPage() {
                     <div
                       style={{
                         display: "grid",
-                        gridTemplateColumns: "120px 1fr auto",
+                        gridTemplateColumns: isMobile ? "1fr" : "120px 1fr auto",
                         gap: "16px",
                         alignItems: "start",
                       }}
@@ -314,7 +315,7 @@ export default function AdminDailyPostsPage() {
                         <div
                           style={{
                             display: "grid",
-                            gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+                            gridTemplateColumns: isMobile ? "repeat(2, minmax(0, 1fr))" : "repeat(4, minmax(0, 1fr))",
                             gap: "12px",
                             marginBottom: "12px",
                           }}
@@ -345,7 +346,7 @@ export default function AdminDailyPostsPage() {
                         <div
                           style={{
                             display: "grid",
-                            gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+                            gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))",
                             gap: "12px",
                             marginBottom: "12px",
                           }}
@@ -371,7 +372,7 @@ export default function AdminDailyPostsPage() {
                         <div
                           style={{
                             display: "grid",
-                            gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+                            gridTemplateColumns: isMobile ? "repeat(2, minmax(0, 1fr))" : "repeat(4, minmax(0, 1fr))",
                             gap: "12px",
                             marginBottom: "12px",
                             padding: "12px",
@@ -422,7 +423,7 @@ export default function AdminDailyPostsPage() {
                           <div
                             style={{
                               display: "grid",
-                              gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+                              gridTemplateColumns: isMobile ? "repeat(2, minmax(0, 1fr))" : "repeat(4, minmax(0, 1fr))",
                               gap: "12px",
                             }}
                           >
