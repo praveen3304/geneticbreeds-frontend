@@ -117,7 +117,9 @@ export default function App() {
 
   const onLogout = () => {
     localStorage.removeItem("gb_token");
+    localStorage.removeItem("gb_refresh_token");
     localStorage.removeItem("gb_user");
+    localStorage.removeItem("gb_refresh_lock");
     setToken("");
     setUser(null);
 
