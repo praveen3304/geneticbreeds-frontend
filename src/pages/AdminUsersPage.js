@@ -448,6 +448,31 @@ export default function AdminUsersPage() {
                   >
                     View Details
                   </button>
+                  <button
+                    onClick={async () => {
+                      if (!window.confirm(`Delete user "${u.name || u.email || u._id}"? This cannot be undone.`)) {
+                        return;
+                      }
+                      try {
+                        const res = await fetch(`${API_BASE_URL}/api/admin/users/${u._id}`, {
+                          method: "DELETE",
+                          headers: { Authorization: `Bearer ${token}` },
+                        });
+                        const data = await res.json();
+                        if (!res.ok) {
+                          alert(data.message || "Failed to delete user");
+                          return;
+                        }
+                        fetchUsers();
+                      } catch (err) {
+                        console.error(err);
+                        alert("Error deleting user");
+                      }
+                    }}
+                    style={{ ...secondaryButton, color: "#b91c1c", borderColor: "#fecaca" }}
+                  >
+                    Delete
+                  </button>
                 </div>
               ))}
             </div>
