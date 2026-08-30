@@ -53,7 +53,7 @@ function formatLastSeen(ts) {
     })}`;
   }
 
-  return `Last seen on ${date.toLocaleDateString("en-IN")} at ${date.toLocaleTimeString([], {
+  return `Last seen on ${date.toLocaleDateString()} at ${date.toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
   })}`;
@@ -79,7 +79,7 @@ function getMemberSince(seller, ad) {
   const date = new Date(candidate);
   if (Number.isNaN(date.getTime())) return "Not available";
 
-  return date.toLocaleDateString("en-IN", {
+  return date.toLocaleDateString(undefined, {
     month: "short",
     year: "numeric",
   });
@@ -338,7 +338,7 @@ export default function Chat() {
     const diffDays = Math.round((today - msgDay) / 86400000);
     if (diffDays === 0) return "Today";
     if (diffDays === 1) return "Yesterday";
-    return dateObj.toLocaleDateString("en-IN", {
+    return dateObj.toLocaleDateString(undefined, {
       day: "numeric",
       month: "short",
       year: "numeric",
@@ -800,7 +800,7 @@ export default function Chat() {
                     <p style={{ margin: 0 }}><strong>Status:</strong> {ad.status || "Live"}</p>
                     <p style={{ margin: 0 }}>
                       <strong>Posted:</strong>{" "}
-                      {ad.createdAt ? new Date(ad.createdAt).toLocaleDateString("en-IN") : "-"}
+                      {ad.createdAt ? new Date(ad.createdAt).toLocaleDateString() : "-"}
                     </p>
                   </div>
 
