@@ -753,26 +753,6 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                         ₹{Number(p.price || 0).toLocaleString("en-IN")}
                       </div>
                     </div>
-
-                    <div
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "6px",
-                        padding: "7px 11px",
-                        borderRadius: "999px",
-                        background: p.isFeatured
-                          ? "rgba(255,247,237,0.94)"
-                          : "rgba(255,255,255,0.92)",
-                        color: p.isFeatured ? "#b45309" : "#111827",
-                        fontSize: "12px",
-                        fontWeight: "800",
-                        whiteSpace: "nowrap",
-                        boxShadow: "0 10px 24px rgba(15,23,42,0.18)",
-                      }}
-                    >
-                      📍 {getAdLocation(p)}
-                    </div>
                   </div>
                 </div>
 
@@ -859,6 +839,9 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                       {p.createdAt
                         ? new Date(p.createdAt).toLocaleDateString("en-IN")
                         : "N/A"}
+                      <div style={{ marginTop: "6px", fontSize: "11px", fontWeight: "700", color: "#94a3b8" }}>
+                        📍 {getAdLocation(p)}
+                      </div>
                     </div>
                   </div>
 
