@@ -638,6 +638,32 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                     }}
                   />
 
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "12px",
+                      left: "12px",
+                      zIndex: 4,
+                    }}
+                  >
+                    <span
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        padding: "6px 10px",
+                        borderRadius: "999px",
+                        background: "rgba(255,255,255,0.92)",
+                        color: "#111827",
+                        fontSize: "11px",
+                        fontWeight: "800",
+                        boxShadow: "0 6px 14px rgba(15,23,42,0.18)",
+                      }}
+                    >
+                      🛡️ {getSellerName(p)}
+                    </span>
+                  </div>
+
                   {p.status === "Sold" && (
                     <div
                       style={{
@@ -689,11 +715,13 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                       display: "flex",
                       alignItems: "flex-end",
                       justifyContent: "space-between",
+                      flexWrap: "wrap",
+                      rowGap: "8px",
                       gap: "10px",
                       zIndex: 3,
                     }}
                   >
-                    <div style={{ minWidth: 0 }}>
+                    <div style={{ minWidth: 0, flex: "1 1 auto" }}>
                       <div
                         style={{
                           display: "inline-flex",
@@ -770,6 +798,18 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                       >
                         {getAdTitle(p)}
                       </div>
+                      {p.breed && (
+                        <div
+                          style={{
+                            fontSize: "13px",
+                            fontWeight: "600",
+                            color: "#6b7280",
+                            marginBottom: "8px",
+                          }}
+                        >
+                          🐾 {p.breed}
+                        </div>
+                      )}
 
                       <div
                         style={{
@@ -779,22 +819,6 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                           alignItems: "center",
                         }}
                       >
-                        <span
-                          style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: "6px",
-                            padding: "6px 10px",
-                            borderRadius: "999px",
-                            background: "#f8fafc",
-                            border: "1px solid #e5e7eb",
-                            color: "#334155",
-                            fontSize: "12px",
-                            fontWeight: "700",
-                          }}
-                        >
-                          🛡️ {getSellerName(p)}
-                        </span>
 
                         {p.isFeatured && p.featuredUntil && (
                           <span
