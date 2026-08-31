@@ -76,6 +76,20 @@ export default function App() {
     }
   });
 
+  // Cross-tab logout: if gb_token is cleared in ANY tab, force this tab
+  // to log out too instead of showing stale data with Login/Register buttons.
+  useEffect(() => {
+    const handleStorageChange = (event) => {
+      if (event.key === "gb_token" && event.newValue === null) {
+        setToken("");
+        setUser(null);
+        window.location.href = "/";
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
   const [wishlist, setWishlist] = useState(() => {
     const saved = localStorage.getItem("gb_wishlist");
     return saved ? JSON.parse(saved) : [];

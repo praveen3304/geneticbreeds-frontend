@@ -143,6 +143,7 @@ export default function Chat() {
   const [reportSubmitted, setReportSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [activeTab, setActiveTab] = useState("details");
+  const [showMobilePanel, setShowMobilePanel] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
@@ -567,13 +568,18 @@ export default function Chat() {
           <div
             style={{
               background: "#fff",
-              borderRadius: "22px",
-              boxShadow: "0 10px 28px rgba(0,0,0,0.08)",
-              overflowY: "hidden",
+              borderRadius: isMobile ? "0" : "22px",
+              boxShadow: isMobile ? "none" : "0 10px 28px rgba(0,0,0,0.08)",
+              overflowY: isMobile ? "auto" : "hidden",
               overflowX: "hidden",
-              border: "1px solid #ececec",
-              height: isMobile ? "50%" : "100%",
-              display: isMobile ? "none" : "block",
+              border: isMobile ? "none" : "1px solid #ececec",
+              height: isMobile ? "100%" : "100%",
+              display: isMobile ? (showMobilePanel ? "block" : "none") : "block",
+              position: isMobile ? "fixed" : "static",
+              top: isMobile ? 0 : undefined,
+              left: isMobile ? 0 : undefined,
+              width: isMobile ? "100vw" : undefined,
+              zIndex: isMobile ? 2000 : undefined,
             }}
           >
             <div
@@ -583,8 +589,25 @@ export default function Chat() {
                 padding: "6px 14px",
               }}
             >
-              <div style={{ fontSize: "15px", fontWeight: "800" }}>
+              <div style={{ fontSize: "15px", fontWeight: "800", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 Pet Details
+                {isMobile && (
+                  <button
+                    onClick={() => setShowMobilePanel(false)}
+                    style={{
+                      background: "rgba(255,255,255,0.2)",
+                      border: "none",
+                      color: "#fff",
+                      borderRadius: "8px",
+                      padding: "4px 10px",
+                      fontWeight: "700",
+                      fontSize: "13px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    ✕ Close
+                  </button>
+                )}
               </div>
 
               {ad.status === "Sold" && (
@@ -684,40 +707,7 @@ export default function Chat() {
               )}
             </div>
 
-            <div style={{ display: "flex", borderBottom: "1px solid #eee", flexShrink: 0 }}>
-              <button
-                onClick={() => setActiveTab("details")}
-                style={{
-                  flex: 1,
-                  padding: "12px",
-                  border: "none",
-                  background: activeTab === "details" ? "#fff8f8" : "#fff",
-                  color: activeTab === "details" ? "#b3122a" : "#6b7280",
-                  fontWeight: "700",
-                  fontSize: "13px",
-                  cursor: "pointer",
-                  borderBottom: activeTab === "details" ? "2px solid #b3122a" : "2px solid transparent",
-                }}
-              >
-                Details
-              </button>
-              <button
-                onClick={() => setActiveTab("seller")}
-                style={{
-                  flex: 1,
-                  padding: "12px",
-                  border: "none",
-                  background: activeTab === "seller" ? "#fff8f8" : "#fff",
-                  color: activeTab === "seller" ? "#b3122a" : "#6b7280",
-                  fontWeight: "700",
-                  fontSize: "13px",
-                  cursor: "pointer",
-                  borderBottom: activeTab === "seller" ? "2px solid #b3122a" : "2px solid transparent",
-                }}
-              >
-                Seller Info
-              </button>
-            </div>
+
 
             <div style={{ padding: "16px", flex: 1, minHeight: 0 }}>
               {activeTab === "details" && (
@@ -807,87 +797,6 @@ export default function Chat() {
                 </>
               )}
 
-              {activeTab === "seller" && (
-                <>
-                  <div style={{ fontSize: "12px", fontWeight: "800", color: "#9f1239", letterSpacing: "0.4px", marginBottom: "10px" }}>
-                    SELLER MINI PROFILE
-                  </div>
-
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "1fr 1fr",
-                      gap: "8px 12px",
-                      fontSize: "13px",
-                      color: "#374151",
-                    }}
-                  >
-                    <p style={{ margin: 0 }}><strong>User ID:</strong> {sellerUserCode || "-"}</p>
-                    <p style={{ margin: 0 }}><strong>Member since:</strong> {sellerMiniProfile.memberSince}</p>
-                    <p style={{ margin: 0 }}><strong>Total ads:</strong> {sellerMiniProfile.totalAds}</p>
-                    <p style={{ margin: 0 }}><strong>Response time:</strong> {sellerMiniProfile.responseTime}</p>
-                    <p style={{ margin: 0, gridColumn: "1 / -1" }}>
-                      <strong>Status:</strong>{" "}
-                      {sellerStatus.online ? "Online" : formatLastSeen(sellerStatus.lastSeen)}
-                    </p>
-                  </div>
-
-                  <div style={{ marginTop: "14px", display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                    <Link
-                      to={sellerObjectId ? `/seller/${sellerObjectId}` : "#"}
-                      style={{
-                        display: "inline-block",
-                        padding: "8px 12px",
-                        borderRadius: "10px",
-                        border: "1px solid #e5caca",
-                        background: "#fff",
-                        color: "#7a0016",
-                        fontWeight: "700",
-                        fontSize: "13px",
-                        textDecoration: "none",
-                      }}
-                    >
-                      View Profile
-                    </Link>
-
-                    {!isBlocked ? (
-                      <button
-                        type="button"
-                        onClick={() => setShowBlockConfirm(true)}
-                        style={{
-                          padding: "8px 12px",
-                          borderRadius: "10px",
-                          border: "1px solid #fecaca",
-                          background: "#fff",
-                          color: "#b91c1c",
-                          fontWeight: "700",
-                          fontSize: "13px",
-                          cursor: "pointer",
-                        }}
-                      >
-                        Block User
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={handleUnblockUser}
-                        style={{
-                          padding: "8px 12px",
-                          borderRadius: "10px",
-                          border: "1px solid #d1d5db",
-                          background: "#fff",
-                          color: "#111827",
-                          fontWeight: "700",
-                          fontSize: "13px",
-                          cursor: "pointer",
-                        }}
-                      >
-                        Unblock User
-                      </button>
-                    )}
-                  </div>
-                </>
-              )}
             </div>
           </div>
 
@@ -906,8 +815,7 @@ export default function Chat() {
             }}
           >
             {isMobile && (
-              <Link
-                to={`/pet/${ad?._id || ad?.id || ""}`}
+              <div
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -915,8 +823,6 @@ export default function Chat() {
                   padding: "8px 14px",
                   background: "#fff5f5",
                   borderBottom: "1px solid #f3d6d6",
-                  textDecoration: "none",
-                  color: "#111827",
                 }}
               >
                 <img
@@ -951,8 +857,42 @@ export default function Chat() {
                     {ad?.price ? `₹${Number(ad.price).toLocaleString("en-IN")}` : ""}
                   </div>
                 </div>
-                <span style={{ fontSize: "18px", color: "#9ca3af" }}>{"›"}</span>
-              </Link>
+                <button
+                  onClick={() => {
+                    setActiveTab("details");
+                    setShowMobilePanel(true);
+                  }}
+                  style={{
+                    padding: "6px 10px",
+                    borderRadius: "8px",
+                    border: "1px solid #e5caca",
+                    background: "#fff",
+                    color: "#7a0016",
+                    fontWeight: "700",
+                    fontSize: "11px",
+                    cursor: "pointer",
+                    flexShrink: 0,
+                  }}
+                >
+                  Pet Details
+                </button>
+                <button
+                  onClick={() => setIsMenuOpen(true)}
+                  style={{
+                    padding: "6px 10px",
+                    borderRadius: "8px",
+                    border: "1px solid #e5caca",
+                    background: "#fff",
+                    color: "#7a0016",
+                    fontWeight: "700",
+                    fontSize: "11px",
+                    cursor: "pointer",
+                    flexShrink: 0,
+                  }}
+                >
+                  Seller Info
+                </button>
+              </div>
             )}
             <div
               style={{

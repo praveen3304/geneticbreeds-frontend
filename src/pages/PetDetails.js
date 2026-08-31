@@ -23,7 +23,38 @@ export default function PetDetails() {
   const [chatLoading, setChatLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [sellerOnline, setSellerOnline] = useState(true);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportReason, setReportReason] = useState("banned_or_wildlife_species");
+  const [reportDetails, setReportDetails] = useState("");
+  const [reportSubmitting, setReportSubmitting] = useState(false);
+  const [reportSuccess, setReportSuccess] = useState(false);
   const messagesEndRef = useRef(null);
+
+  const handleReportSubmit = async () => {
+    try {
+      setReportSubmitting(true);
+      const res = await apiFetch("/api/listing-reports", {
+        method: "POST",
+        body: JSON.stringify({
+          petId: pet._id || pet.id,
+          reason: reportReason,
+          details: reportDetails,
+        }),
+      });
+      if (res.ok) {
+        setReportSuccess(true);
+        setTimeout(() => {
+          setShowReportModal(false);
+          setReportSuccess(false);
+          setReportDetails("");
+        }, 1500);
+      }
+    } catch (err) {
+      console.error("Report submit failed:", err);
+    } finally {
+      setReportSubmitting(false);
+    }
+  };
 
   const getCurrentUser = () => {
     try {
@@ -405,9 +436,129 @@ export default function PetDetails() {
               <p style={{ margin: 0 }}>
                 <strong>Seller User ID:</strong> {sellerUserCode}
               </p>
+              <button
+                onClick={() => setShowReportModal(true)}
+                style={{
+                  marginTop: "10px",
+                  padding: "8px 14px",
+                  borderRadius: "8px",
+                  border: "1px solid #b3122a",
+                  background: "#fff",
+                  color: "#b3122a",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  fontSize: "13px",
+                }}
+              >
+                Report this listing
+              </button>
             </div>
           </div>
         </div>
+
+        {showReportModal && (
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100vw",
+              height: "100vh",
+              background: "rgba(0,0,0,0.5)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 1000,
+            }}
+          >
+            <div
+              style={{
+                background: "#fff",
+                borderRadius: "14px",
+                padding: "20px",
+                width: "90%",
+                maxWidth: "420px",
+              }}
+            >
+              {reportSuccess ? (
+                <p style={{ margin: 0, fontWeight: "600", color: "#16a34a" }}>
+                  Report submitted. Thank you for helping keep the platform safe.
+                </p>
+              ) : (
+                <>
+                  <h3 style={{ marginTop: 0 }}>Report this listing</h3>
+                  <label style={{ fontSize: "13px", fontWeight: "600" }}>
+                    Reason
+                  </label>
+                  <select
+                    value={reportReason}
+                    onChange={(e) => setReportReason(e.target.value)}
+                    style={{
+                      width: "100%",
+                      padding: "8px",
+                      marginTop: "4px",
+                      marginBottom: "12px",
+                      borderRadius: "8px",
+                      border: "1px solid #ddd",
+                    }}
+                  >
+                    <option value="banned_or_wildlife_species">Banned / wildlife species</option>
+                    <option value="unlicensed_seller">Unlicensed seller</option>
+                    <option value="animal_cruelty_concern">Animal cruelty concern</option>
+                    <option value="fake_or_misleading_listing">Fake or misleading listing</option>
+                    <option value="other">Other</option>
+                  </select>
+                  <label style={{ fontSize: "13px", fontWeight: "600" }}>
+                    Additional details (optional)
+                  </label>
+                  <textarea
+                    value={reportDetails}
+                    onChange={(e) => setReportDetails(e.target.value)}
+                    rows={3}
+                    style={{
+                      width: "100%",
+                      padding: "8px",
+                      marginTop: "4px",
+                      marginBottom: "14px",
+                      borderRadius: "8px",
+                      border: "1px solid #ddd",
+                      resize: "vertical",
+                    }}
+                  />
+                  <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
+                    <button
+                      onClick={() => setShowReportModal(false)}
+                      style={{
+                        padding: "8px 14px",
+                        borderRadius: "8px",
+                        border: "1px solid #ddd",
+                        background: "#fff",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleReportSubmit}
+                      disabled={reportSubmitting}
+                      style={{
+                        padding: "8px 14px",
+                        borderRadius: "8px",
+                        border: "none",
+                        background: "#b3122a",
+                        color: "#fff",
+                        fontWeight: "600",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {reportSubmitting ? "Submitting..." : "Submit Report"}
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* RIGHT SIDE - desktop only */}
         {!isMobile && (
