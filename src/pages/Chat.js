@@ -140,6 +140,7 @@ export default function Chat() {
   const [showBlockConfirm, setShowBlockConfirm] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportReason, setReportReason] = useState("Spam");
+  const [reportDetails, setReportDetails] = useState("");
   const [reportSubmitted, setReportSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [activeTab, setActiveTab] = useState("details");
@@ -475,6 +476,7 @@ export default function Chat() {
         adId: ad?._id || ad?.id || "",
         petTitle: ad?.title || ad?.breed || "Pet Ad",
         reason: reportReason,
+        details: reportDetails.trim(),
         timestamp: Date.now(),
       },
       ...existingReports,
@@ -487,6 +489,7 @@ export default function Chat() {
       setShowReportModal(false);
       setReportSubmitted(false);
       setReportReason("Spam");
+      setReportDetails("");
     }, 1200);
 
     setIsMenuOpen(false);
@@ -590,7 +593,7 @@ export default function Chat() {
               }}
             >
               <div style={{ fontSize: "15px", fontWeight: "800", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                Pet Details
+                {activeTab === "seller" ? "Seller Info" : "Pet Details"}
                 {isMobile && (
                   <button
                     onClick={() => setShowMobilePanel(false)}
@@ -796,6 +799,56 @@ export default function Chat() {
 
                 </>
               )}
+              {activeTab === "seller" && (
+                <div style={{ display: "grid", gap: "14px" }}>
+                  <div
+                    style={{
+                      padding: "16px",
+                      borderRadius: "16px",
+                      background: "#f9fafb",
+                      border: "1px solid #e5e7eb",
+                    }}
+                  >
+                    <div style={{ fontSize: "18px", fontWeight: "800", color: "#111827", marginBottom: "6px" }}>
+                      {sellerName}
+                    </div>
+                    <div style={{ fontSize: "13px", color: "#6b7280", marginBottom: "10px" }}>
+                      User ID: {sellerUserCode || "Not available"}
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <span
+                        style={{
+                          width: "10px",
+                          height: "10px",
+                          borderRadius: "50%",
+                          background: sellerStatus.online ? "#22c55e" : "#9ca3af",
+                          display: "inline-block",
+                        }}
+                      />
+                      <span style={{ fontWeight: "700", fontSize: "13px", color: sellerStatus.online ? "#166534" : "#6b7280" }}>
+                        {sellerStatus.online ? "Online" : formatLastSeen(sellerStatus.lastSeen)}
+                      </span>
+                    </div>
+                  </div>
+                  {sellerObjectId && (
+                    <Link
+                      to={`/seller/${sellerObjectId}`}
+                      style={{
+                        textAlign: "center",
+                        padding: "12px",
+                        borderRadius: "12px",
+                        border: "1px solid #e5e7eb",
+                        color: "#7a0016",
+                        fontWeight: "700",
+                        fontSize: "13px",
+                        textDecoration: "none",
+                      }}
+                    >
+                      View Full Profile & All Ads →
+                    </Link>
+                  )}
+                </div>
+              )}
 
             </div>
           </div>
@@ -853,45 +906,15 @@ export default function Chat() {
                   >
                     {ad?.title || ad?.breed || "Pet Ad"}
                   </div>
+                  {ad?.breed && (
+                    <div style={{ fontSize: "11px", color: "#6b7280", fontWeight: "600" }}>
+                      🐾 {ad.breed}
+                    </div>
+                  )}
                   <div style={{ fontSize: "12px", color: "#7a0016", fontWeight: "700" }}>
                     {ad?.price ? `₹${Number(ad.price).toLocaleString("en-IN")}` : ""}
                   </div>
                 </div>
-                <button
-                  onClick={() => {
-                    setActiveTab("details");
-                    setShowMobilePanel(true);
-                  }}
-                  style={{
-                    padding: "6px 10px",
-                    borderRadius: "8px",
-                    border: "1px solid #e5caca",
-                    background: "#fff",
-                    color: "#7a0016",
-                    fontWeight: "700",
-                    fontSize: "11px",
-                    cursor: "pointer",
-                    flexShrink: 0,
-                  }}
-                >
-                  Pet Details
-                </button>
-                <button
-                  onClick={() => setIsMenuOpen(true)}
-                  style={{
-                    padding: "6px 10px",
-                    borderRadius: "8px",
-                    border: "1px solid #e5caca",
-                    background: "#fff",
-                    color: "#7a0016",
-                    fontWeight: "700",
-                    fontSize: "11px",
-                    cursor: "pointer",
-                    flexShrink: 0,
-                  }}
-                >
-                  Seller Info
-                </button>
               </div>
             )}
             <div
@@ -1040,9 +1063,13 @@ export default function Chat() {
                         Report User
                       </button>
 
-                      <Link
-                        to={sellerObjectId ? `/seller/${sellerObjectId}` : "#"}
-                        onClick={() => setIsMenuOpen(false)}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveTab("seller");
+                          setIsMenuOpen(false);
+                          if (isMobile) setShowMobilePanel(true);
+                        }}
                         style={{
                           width: "100%",
                           padding: "14px 16px",
@@ -1053,13 +1080,12 @@ export default function Chat() {
                           fontWeight: "700",
                           color: "#374151",
                           cursor: "pointer",
-                          textDecoration: "none",
-                          display: "block",
+                          border: "none",
                           boxSizing: "border-box",
                         }}
                       >
                         View Seller Profile
-                      </Link>
+                      </button>
                     </div>
                   )}
                 </div>
@@ -1384,6 +1410,27 @@ export default function Chat() {
                   <span style={{ fontWeight: "600", color: "#111827" }}>{reason}</span>
                 </label>
               ))}
+            </div>
+            <div style={{ marginTop: "14px" }}>
+              <label style={{ fontSize: "13px", fontWeight: "700", color: "#374151", display: "block", marginBottom: "6px" }}>
+                Additional details (optional)
+              </label>
+              <textarea
+                value={reportDetails}
+                onChange={(e) => setReportDetails(e.target.value)}
+                placeholder="Explain what happened so we can look into it..."
+                rows={4}
+                style={{
+                  width: "100%",
+                  padding: "10px 12px",
+                  borderRadius: "10px",
+                  border: "1px solid #d1d5db",
+                  fontSize: "14px",
+                  fontFamily: "inherit",
+                  resize: "vertical",
+                  boxSizing: "border-box",
+                }}
+              />
             </div>
 
             {reportSubmitted && (
