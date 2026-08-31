@@ -205,7 +205,7 @@ export default function ResetPassword() {
               onClick={() => { setStep(1); setError(""); setSuccess(""); }}
               style={secondaryBtnStyle}
             >
-              ← Back
+              ←
             </button>
           </div>
         )}

@@ -64,7 +64,7 @@ export default function AdminNav() {
             fontWeight: "700",
           }}
         >
-          ← Back
+          ←
         </button>
       </div>
 

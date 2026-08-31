@@ -124,7 +124,7 @@ export default function SellerProfile() {
               fontWeight: "700",
             }}
           >
-            ← Back
+            ←
           </Link>
 
           <div

@@ -1182,7 +1182,7 @@ export default function Chat() {
                     fontSize: "14px",
                   }}
                 >
-                  ← Back
+                  ←
                 </Link>
               </div>
             </div>

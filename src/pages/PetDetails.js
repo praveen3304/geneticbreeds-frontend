@@ -255,7 +255,7 @@ export default function PetDetails() {
             boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
           }}
         >
-          ← Back
+          ←
         </button>
       </div>
 
