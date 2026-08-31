@@ -145,7 +145,19 @@ export default function Chat() {
   const [reportDetails, setReportDetails] = useState("");
   const [reportSubmitted, setReportSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
-  const [activeTab, setActiveTab] = useState("details");
+  const [activeTab, setActiveTabState] = useState(() => {
+    try {
+      return sessionStorage.getItem(`gb_chat_tab_${id}`) || "details";
+    } catch {
+      return "details";
+    }
+  });
+  const setActiveTab = (tab) => {
+    setActiveTabState(tab);
+    try {
+      sessionStorage.setItem(`gb_chat_tab_${id}`, tab);
+    } catch {}
+  };
   const [showMobilePanel, setShowMobilePanel] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
@@ -849,6 +861,22 @@ export default function Chat() {
                       <span style={{ fontWeight: "700", fontSize: "13px", color: sellerStatus.online ? "#166534" : "#6b7280" }}>
                         {sellerStatus.online ? "Online" : formatLastSeen(sellerStatus.lastSeen)}
                       </span>
+                    </div>
+                    <div style={{ marginTop: "12px", paddingTop: "12px", borderTop: "1px solid #e5e7eb", display: "grid", gap: "6px" }}>
+                      <div style={{ fontSize: "12px", color: "#6b7280" }}>
+                        Member since:{" "}
+                        <strong style={{ color: "#374151" }}>
+                          {seller?.createdAt ? new Date(seller.createdAt).toLocaleDateString(undefined, { month: "short", year: "numeric" }) : "N/A"}
+                        </strong>
+                      </div>
+                      <div style={{ fontSize: "12px", color: "#6b7280" }}>
+                        Total ads: <strong style={{ color: "#374151" }}>{sellerAds.length}</strong>
+                      </div>
+                      {(seller?.city || seller?.state) && (
+                        <div style={{ fontSize: "12px", color: "#6b7280" }}>
+                          Location: <strong style={{ color: "#374151" }}>{[seller?.city, seller?.state].filter(Boolean).join(", ")}</strong>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div>
