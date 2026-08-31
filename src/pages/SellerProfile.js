@@ -121,7 +121,9 @@ export default function SellerProfile() {
               textDecoration: "none",
               background: "#f3f4f6",
               color: "#111827",
-              fontWeight: "700",
+              fontWeight: "900",
+              fontSize: "20px",
+              lineHeight: 1,
             }}
           >
             ←

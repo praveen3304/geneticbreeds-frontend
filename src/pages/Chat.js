@@ -1178,8 +1178,9 @@ export default function Chat() {
                     background: "rgba(255,255,255,0.14)",
                     color: "#fff",
                     textDecoration: "none",
-                    fontWeight: "700",
-                    fontSize: "14px",
+                    fontWeight: "900",
+                    fontSize: "22px",
+                    lineHeight: 1,
                   }}
                 >
                   ←

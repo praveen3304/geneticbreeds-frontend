@@ -61,7 +61,9 @@ export default function AdminNav() {
             background: "rgba(255,255,255,0.2)",
             color: "#fff",
             cursor: "pointer",
-            fontWeight: "700",
+            fontWeight: "900",
+            fontSize: "20px",
+            lineHeight: 1,
           }}
         >
           ←

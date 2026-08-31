@@ -203,7 +203,7 @@ export default function ResetPassword() {
             <button
               type="button"
               onClick={() => { setStep(1); setError(""); setSuccess(""); }}
-              style={secondaryBtnStyle}
+              style={{ ...secondaryBtnStyle, fontSize: "20px", fontWeight: "900", lineHeight: 1 }}
             >
               ←
             </button>

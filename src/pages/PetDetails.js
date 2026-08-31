@@ -250,7 +250,9 @@ export default function PetDetails() {
             border: "none",
             background: "linear-gradient(135deg, #b3122a, #7a0016)",
             color: "#fff",
-            fontWeight: "600",
+            fontWeight: "900",
+            fontSize: "22px",
+            lineHeight: 1,
             cursor: "pointer",
             boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
           }}
