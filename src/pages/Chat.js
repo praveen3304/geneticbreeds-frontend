@@ -125,6 +125,8 @@ export default function Chat() {
   const [chat, setChat] = useState(null);
   const [ad, setAd] = useState(null);
   const [seller, setSeller] = useState(null);
+  const [sellerAds, setSellerAds] = useState([]);
+  const [sellerAdsLoading, setSellerAdsLoading] = useState(false);
   const [buyer, setBuyer] = useState(null);
   const [currentUser, setCurrentUser] = useState(getCurrentUser());
   const [loading, setLoading] = useState(true);
@@ -315,6 +317,25 @@ export default function Chat() {
       writeUserStatus(latest);
     };
   }, [sellerUserCode]);
+
+  useEffect(() => {
+    if (activeTab !== "seller" || !sellerObjectId) return;
+    const fetchSellerAds = async () => {
+      try {
+        setSellerAdsLoading(true);
+        const res = await fetch(`https://genetic-breeds-backend.onrender.com/api/ads?seller=${sellerObjectId}`);
+        const data = await res.json();
+        const list = Array.isArray(data) ? data : Array.isArray(data.ads) ? data.ads : [];
+        setSellerAds(list);
+      } catch (err) {
+        console.error("Failed to load seller ads:", err);
+        setSellerAds([]);
+      } finally {
+        setSellerAdsLoading(false);
+      }
+    };
+    fetchSellerAds();
+  }, [activeTab, sellerObjectId]);
 
   const images = useMemo(() => {
     if (ad?.images?.length) return ad.images;
@@ -830,23 +851,54 @@ export default function Chat() {
                       </span>
                     </div>
                   </div>
-                  {sellerObjectId && (
-                    <Link
-                      to={`/seller/${sellerObjectId}`}
-                      style={{
-                        textAlign: "center",
-                        padding: "12px",
-                        borderRadius: "12px",
-                        border: "1px solid #e5e7eb",
-                        color: "#7a0016",
-                        fontWeight: "700",
-                        fontSize: "13px",
-                        textDecoration: "none",
-                      }}
-                    >
-                      View Full Profile & All Ads →
-                    </Link>
-                  )}
+                  <div>
+                    <div style={{ fontSize: "13px", fontWeight: "700", color: "#374151", marginBottom: "10px" }}>
+                      Other ads by {sellerName}
+                    </div>
+                    {sellerAdsLoading ? (
+                      <div style={{ fontSize: "13px", color: "#6b7280" }}>Loading ads...</div>
+                    ) : sellerAds.length === 0 ? (
+                      <div style={{ fontSize: "13px", color: "#6b7280" }}>No other ads found.</div>
+                    ) : (
+                      <div style={{ display: "grid", gap: "10px" }}>
+                        {sellerAds.map((sellerAd) => (
+                          <Link
+                            key={sellerAd._id || sellerAd.id}
+                            to={`/pet/${sellerAd._id || sellerAd.id}`}
+                            style={{
+                              display: "flex",
+                              gap: "10px",
+                              padding: "10px",
+                              borderRadius: "12px",
+                              border: "1px solid #e5e7eb",
+                              textDecoration: "none",
+                              color: "inherit",
+                              alignItems: "center",
+                            }}
+                          >
+                            <img
+                              src={sellerAd.images?.[0] || "https://placehold.co/80x80"}
+                              alt={sellerAd.title || "Pet"}
+                              style={{ width: "48px", height: "48px", borderRadius: "8px", objectFit: "cover", background: "#eee", flexShrink: 0 }}
+                            />
+                            <div style={{ minWidth: 0, flex: 1 }}>
+                              <div style={{ fontSize: "13px", fontWeight: "700", color: "#111827", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                {sellerAd.title || sellerAd.breed || "Pet Ad"}
+                              </div>
+                              <div style={{ fontSize: "12px", color: "#7a0016", fontWeight: "700" }}>
+                                ₹{Number(sellerAd.price || 0).toLocaleString("en-IN")}
+                              </div>
+                            </div>
+                            {sellerAd.status === "Sold" && (
+                              <span style={{ fontSize: "11px", fontWeight: "800", color: "#6b7280", background: "#f3f4f6", padding: "4px 8px", borderRadius: "999px", flexShrink: 0 }}>
+                                Sold
+                              </span>
+                            )}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
