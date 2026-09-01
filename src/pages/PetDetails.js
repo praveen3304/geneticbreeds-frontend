@@ -22,6 +22,13 @@ export default function PetDetails() {
   const [chatId, setChatId] = useState(null);
   const [isBlocked, setIsBlocked] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showReportUserModal, setShowReportUserModal] = useState(false);
+  const [reportUserReason, setReportUserReason] = useState("Spam");
+  const [reportUserDetails, setReportUserDetails] = useState("");
+  const [reportUserSubmitted, setReportUserSubmitted] = useState(false);
+  const [rightPanelView, setRightPanelView] = useState("chat");
+  const [sellerAds, setSellerAds] = useState([]);
+  const [sellerAdsLoading, setSellerAdsLoading] = useState(false);
   const [chatLoading, setChatLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [sellerOnline, setSellerOnline] = useState(true);
@@ -76,6 +83,35 @@ export default function PetDetails() {
       console.error("Block user failed:", err);
       alert("Failed to block user");
     }
+
+  const handleReportUserSubmit = () => {
+    if (!sellerUserCode) return;
+    try {
+      const existing = JSON.parse(localStorage.getItem("gb_reported_users") || "[]");
+      const next = [
+        {
+          userId: sellerUserCode,
+          sellerName,
+          adId: pet?._id || pet?.id || "",
+          petTitle: pet?.title || pet?.breed || "Pet Ad",
+          reason: reportUserReason,
+          details: reportUserDetails.trim(),
+          timestamp: Date.now(),
+        },
+        ...existing,
+      ];
+      localStorage.setItem("gb_reported_users", JSON.stringify(next));
+    } catch (err) {
+      console.error("Report user failed:", err);
+    }
+    setReportUserSubmitted(true);
+    setTimeout(() => {
+      setShowReportUserModal(false);
+      setReportUserSubmitted(false);
+      setReportUserReason("Spam");
+      setReportUserDetails("");
+    }, 1200);
+  };
   };
 
   const getCurrentUser = () => {
@@ -130,6 +166,26 @@ export default function PetDetails() {
 
     fetchPet();
   }, [id]);
+
+  useEffect(() => {
+    const sellerId = pet?.userId?._id || (typeof pet?.userId === "string" ? pet.userId : "");
+    if (rightPanelView !== "seller" || !sellerId) return;
+    const fetchSellerAds = async () => {
+      try {
+        setSellerAdsLoading(true);
+        const res = await fetch(`https://genetic-breeds-backend.onrender.com/api/ads?seller=${sellerId}`);
+        const data = await res.json();
+        const list = Array.isArray(data) ? data : Array.isArray(data.ads) ? data.ads : [];
+        setSellerAds(list);
+      } catch (err) {
+        console.error("Failed to load seller ads:", err);
+        setSellerAds([]);
+      } finally {
+        setSellerAdsLoading(false);
+      }
+    };
+    fetchSellerAds();
+  }, [rightPanelView, pet]);
 
   useEffect(() => {
     if (pet) initChat();
@@ -584,6 +640,114 @@ export default function PetDetails() {
           </div>
         )}
 
+        {showReportUserModal && (
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100vw",
+              height: "100vh",
+              background: "rgba(0,0,0,0.5)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 1000,
+            }}
+          >
+            <div
+              style={{
+                background: "#fff",
+                borderRadius: "14px",
+                padding: "20px",
+                width: "90%",
+                maxWidth: "420px",
+              }}
+            >
+              {reportUserSubmitted ? (
+                <p style={{ margin: 0, fontWeight: "600", color: "#16a34a" }}>
+                  Report submitted. Thank you for helping keep the platform safe.
+                </p>
+              ) : (
+                <>
+                  <h3 style={{ marginTop: 0 }}>Report {sellerName}</h3>
+                  <div style={{ display: "grid", gap: "10px", marginBottom: "14px" }}>
+                    {["Spam", "Scam", "Abusive", "Fake listing", "Other"].map((reason) => (
+                      <label
+                        key={reason}
+                        style={{
+                          border: reportUserReason === reason ? "2px solid #b3122a" : "1px solid #e5e7eb",
+                          borderRadius: "12px",
+                          padding: "12px 14px",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "10px",
+                        }}
+                      >
+                        <input
+                          type="radio"
+                          name="reportUserReason"
+                          checked={reportUserReason === reason}
+                          onChange={() => setReportUserReason(reason)}
+                        />
+                        <span style={{ fontWeight: "600", color: "#111827" }}>{reason}</span>
+                      </label>
+                    ))}
+                  </div>
+                  <label style={{ fontSize: "13px", fontWeight: "600" }}>
+                    Additional details (optional)
+                  </label>
+                  <textarea
+                    value={reportUserDetails}
+                    onChange={(e) => setReportUserDetails(e.target.value)}
+                    placeholder="Explain what happened so we can look into it..."
+                    rows={3}
+                    style={{
+                      width: "100%",
+                      padding: "8px",
+                      marginTop: "4px",
+                      marginBottom: "14px",
+                      borderRadius: "8px",
+                      border: "1px solid #ddd",
+                      resize: "vertical",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                  <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
+                    <button
+                      onClick={() => setShowReportUserModal(false)}
+                      style={{
+                        padding: "8px 14px",
+                        borderRadius: "8px",
+                        border: "1px solid #ddd",
+                        background: "#fff",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleReportUserSubmit}
+                      style={{
+                        padding: "8px 14px",
+                        borderRadius: "8px",
+                        border: "none",
+                        background: "#b3122a",
+                        color: "#fff",
+                        fontWeight: "600",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Submit Report
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* RIGHT SIDE - desktop only */}
         {!isMobile && (
           <div
@@ -685,6 +849,52 @@ export default function PetDetails() {
                     >
                       {isBlocked ? "User Blocked" : "Block User"}
                     </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowReportUserModal(true);
+                        setIsMenuOpen(false);
+                      }}
+                      style={{
+                        width: "100%",
+                        padding: "12px 16px",
+                        borderTop: "1px solid #f3f4f6",
+                        border: "none",
+                        borderTopWidth: "1px",
+                        background: "#fff",
+                        textAlign: "left",
+                        fontSize: "14px",
+                        fontWeight: "700",
+                        color: "#374151",
+                        cursor: "pointer",
+                        boxSizing: "border-box",
+                      }}
+                    >
+                      Report User
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setRightPanelView((prev) => (prev === "seller" ? "chat" : "seller"));
+                        setIsMenuOpen(false);
+                      }}
+                      style={{
+                        width: "100%",
+                        padding: "12px 16px",
+                        borderTop: "1px solid #f3f4f6",
+                        border: "none",
+                        borderTopWidth: "1px",
+                        background: "#fff",
+                        textAlign: "left",
+                        fontSize: "14px",
+                        fontWeight: "700",
+                        color: "#374151",
+                        cursor: "pointer",
+                        boxSizing: "border-box",
+                      }}
+                    >
+                      View Seller Profile
+                    </button>
                   </div>
                 )}
               </div>
@@ -723,6 +933,7 @@ export default function PetDetails() {
                 ))}
               </div>
             )}
+            {rightPanelView === "chat" && (
 
             <div
               style={{
@@ -814,7 +1025,74 @@ export default function PetDetails() {
               >
                 Send
               </button>
-            </div>
+              )}
+              {rightPanelView === "seller" && (
+                <div style={{ flex: 1, minHeight: 0, padding: "14px", overflowY: "auto", background: "#fafafa" }}>
+                  <div
+                    style={{
+                      padding: "16px",
+                      borderRadius: "16px",
+                      background: "#fff",
+                      border: "1px solid #e5e7eb",
+                      marginBottom: "14px",
+                    }}
+                  >
+                    <div style={{ fontSize: "18px", fontWeight: "800", color: "#111827", marginBottom: "6px" }}>
+                      {sellerName}
+                    </div>
+                    <div style={{ fontSize: "13px", color: "#6b7280" }}>
+                      User ID: {sellerUserCode || "Not available"}
+                    </div>
+                  </div>
+                  <div style={{ fontSize: "13px", fontWeight: "700", color: "#374151", marginBottom: "10px" }}>
+                    Other ads by {sellerName}
+                  </div>
+                  {sellerAdsLoading ? (
+                    <div style={{ fontSize: "13px", color: "#6b7280" }}>Loading ads...</div>
+                  ) : sellerAds.length === 0 ? (
+                    <div style={{ fontSize: "13px", color: "#6b7280" }}>No other ads found.</div>
+                  ) : (
+                    <div style={{ display: "grid", gap: "10px" }}>
+                      {sellerAds.map((sellerAd) => (
+                        
+                          key={sellerAd._id || sellerAd.id}
+                          href={`/pet/${sellerAd._id || sellerAd.id}`}
+                          style={{
+                            display: "flex",
+                            gap: "10px",
+                            padding: "10px",
+                            borderRadius: "12px",
+                            border: "1px solid #e5e7eb",
+                            textDecoration: "none",
+                            color: "inherit",
+                            alignItems: "center",
+                            background: "#fff",
+                          }}
+                        >
+                          <img
+                            src={sellerAd.images?.[0] || "https://placehold.co/80x80"}
+                            alt={sellerAd.title || "Pet"}
+                            style={{ width: "48px", height: "48px", borderRadius: "8px", objectFit: "cover", background: "#eee", flexShrink: 0 }}
+                          />
+                          <div style={{ minWidth: 0, flex: 1 }}>
+                            <div style={{ fontSize: "13px", fontWeight: "700", color: "#111827", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                              {sellerAd.title || sellerAd.breed || "Pet Ad"}
+                            </div>
+                            <div style={{ fontSize: "12px", color: "#7a0016", fontWeight: "700" }}>
+                              ₹{Number(sellerAd.price || 0).toLocaleString("en-IN")}
+                            </div>
+                          </div>
+                          {sellerAd.status === "Sold" && (
+                            <span style={{ fontSize: "11px", fontWeight: "800", color: "#6b7280", background: "#f3f4f6", padding: "4px 8px", borderRadius: "999px", flexShrink: 0 }}>
+                              Sold
+                            </span>
+                          )}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
           </div>
         )}
 
