@@ -908,21 +908,6 @@ export default function PetDetails() {
                   )}
                 </div>
 
-                <Link
-                  to="/chats"
-                  style={{
-                    padding: "10px 14px",
-                    borderRadius: "10px",
-                    background: "rgba(255,255,255,0.14)",
-                    color: "#fff",
-                    textDecoration: "none",
-                    fontWeight: "900",
-                    fontSize: "22px",
-                    lineHeight: 1,
-                  }}
-                >
-                  ←
-                </Link>
               </div>
             </div>
 
