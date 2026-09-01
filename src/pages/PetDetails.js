@@ -20,6 +20,8 @@ export default function PetDetails() {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [chatId, setChatId] = useState(null);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [chatLoading, setChatLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [sellerOnline, setSellerOnline] = useState(true);
@@ -53,6 +55,26 @@ export default function PetDetails() {
       console.error("Report submit failed:", err);
     } finally {
       setReportSubmitting(false);
+    }
+  };
+
+  const handleBlockUser = async () => {
+    if (!chatId) return;
+    if (!window.confirm("Block this user? You won't be able to message each other until you unblock them.")) {
+      return;
+    }
+    try {
+      const res = await apiFetch(`/api/chat/${chatId}/block`, { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data?.error || "Failed to block user");
+        return;
+      }
+      setIsBlocked(true);
+      setIsMenuOpen(false);
+    } catch (err) {
+      console.error("Block user failed:", err);
+      alert("Failed to block user");
     }
   };
 
@@ -226,7 +248,7 @@ export default function PetDetails() {
   return (
     <div
       style={{
-        height: "calc(100vh - 74px)",
+        height: "calc(100dvh - 74px)",
         background: "#f7f7f9",
         padding: "88px 14px 14px",
         overflow: "hidden",
@@ -582,6 +604,7 @@ export default function PetDetails() {
                 background: "linear-gradient(135deg, #b3122a, #7a0016)",
                 color: "#fff",
                 flexShrink: 0,
+                position: "relative",
               }}
             >
               <div style={{ fontSize: "18px", fontWeight: "700" }}>
@@ -611,6 +634,59 @@ export default function PetDetails() {
                 <span style={{ color: sellerOnline ? "#bbf7d0" : "#e5e7eb", fontWeight: "600" }}>
                   {sellerOnline ? "Online" : "Offline"}
                 </span>
+              </div>
+              <div style={{ position: "absolute", top: "14px", right: "16px" }}>
+                <button
+                  type="button"
+                  onClick={() => setIsMenuOpen((prev) => !prev)}
+                  style={{
+                    width: "36px",
+                    height: "36px",
+                    borderRadius: "10px",
+                    border: "none",
+                    background: "rgba(255,255,255,0.16)",
+                    color: "#fff",
+                    fontSize: "18px",
+                    fontWeight: "800",
+                    cursor: "pointer",
+                  }}
+                >
+                  ⋮
+                </button>
+                {isMenuOpen && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "44px",
+                      right: 0,
+                      background: "#fff",
+                      borderRadius: "12px",
+                      boxShadow: "0 10px 30px rgba(0,0,0,0.18)",
+                      overflow: "hidden",
+                      minWidth: "160px",
+                      zIndex: 20,
+                    }}
+                  >
+                    <button
+                      type="button"
+                      onClick={handleBlockUser}
+                      style={{
+                        width: "100%",
+                        padding: "12px 16px",
+                        border: "none",
+                        background: "#fff",
+                        textAlign: "left",
+                        fontSize: "14px",
+                        fontWeight: "700",
+                        color: "#b91c1c",
+                        cursor: "pointer",
+                        boxSizing: "border-box",
+                      }}
+                    >
+                      {isBlocked ? "User Blocked" : "Block User"}
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
