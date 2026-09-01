@@ -934,6 +934,7 @@ export default function PetDetails() {
               </div>
             )}
             {rightPanelView === "chat" && (
+            <>
 
             <div
               style={{
@@ -1025,6 +1026,8 @@ export default function PetDetails() {
               >
                 Send
               </button>
+              </div>
+              </>
               )}
               {rightPanelView === "seller" && (
                 <div style={{ flex: 1, minHeight: 0, padding: "14px", overflowY: "auto", background: "#fafafa" }}>
@@ -1054,7 +1057,7 @@ export default function PetDetails() {
                   ) : (
                     <div style={{ display: "grid", gap: "10px" }}>
                       {sellerAds.map((sellerAd) => (
-                        
+                          <a
                           key={sellerAd._id || sellerAd.id}
                           href={`/pet/${sellerAd._id || sellerAd.id}`}
                           style={{
