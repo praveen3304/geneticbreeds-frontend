@@ -763,140 +763,166 @@ export default function PetDetails() {
           >
             <div
               style={{
-                padding: "14px 16px",
-                borderBottom: "1px solid #eee",
-                background: "linear-gradient(135deg, #b3122a, #7a0016)",
+                background: "linear-gradient(135deg, #7a0016, #b3122a)",
                 color: "#fff",
-                flexShrink: 0,
+                padding: "8px 14px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: "12px",
                 position: "relative",
               }}
             >
-              <div style={{ fontSize: "18px", fontWeight: "700" }}>
-                {sellerName}
-              </div>
-              <div style={{ fontSize: "13px", marginTop: "5px" }}>
-                Seller ID: {sellerUserCode || "Not available"}
-              </div>
-              <div
-                style={{
-                  fontSize: "13px",
-                  marginTop: "6px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                }}
-              >
-                <span
+              <div>
+                <div style={{ fontSize: "24px", fontWeight: "800" }}>
+                  {sellerName}
+                </div>
+                <div style={{ fontSize: "13px", marginTop: "4px", opacity: 0.92 }}>
+                  User ID: {sellerUserCode || "Not available"}
+                </div>
+                <div
                   style={{
-                    width: "10px",
-                    height: "10px",
-                    borderRadius: "50%",
-                    background: sellerOnline ? "#22c55e" : "#9ca3af",
-                    display: "inline-block",
-                  }}
-                />
-                <span style={{ color: sellerOnline ? "#bbf7d0" : "#e5e7eb", fontWeight: "600" }}>
-                  {sellerOnline ? "Online" : "Offline"}
-                </span>
-              </div>
-              <div style={{ position: "absolute", top: "14px", right: "70px" }}>
-                <button
-                  type="button"
-                  onClick={() => setIsMenuOpen((prev) => !prev)}
-                  style={{
-                    width: "36px",
-                    height: "36px",
-                    borderRadius: "10px",
-                    border: "none",
-                    background: "rgba(255,255,255,0.16)",
-                    color: "#fff",
-                    fontSize: "18px",
-                    fontWeight: "800",
-                    cursor: "pointer",
+                    fontSize: "13px",
+                    marginTop: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
                   }}
                 >
-                  ⋮
-                </button>
-                {isMenuOpen && (
-                  <div
+                  <span
                     style={{
-                      position: "absolute",
-                      top: "44px",
-                      right: 0,
-                      background: "#fff",
-                      borderRadius: "12px",
-                      boxShadow: "0 10px 30px rgba(0,0,0,0.18)",
-                      overflow: "hidden",
-                      minWidth: "160px",
-                      zIndex: 20,
+                      width: "10px",
+                      height: "10px",
+                      borderRadius: "50%",
+                      background: sellerOnline ? "#22c55e" : "#9ca3af",
+                      display: "inline-block",
+                    }}
+                  />
+                  <span
+                    style={{
+                      color: sellerOnline ? "#bbf7d0" : "#e5e7eb",
+                      fontWeight: "700",
                     }}
                   >
-                    <button
-                      type="button"
-                      onClick={handleBlockUser}
+                    {sellerOnline ? "Online" : "Offline"}
+                  </span>
+                </div>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <div style={{ position: "relative" }}>
+                  <button
+                    type="button"
+                    onClick={() => setIsMenuOpen((prev) => !prev)}
+                    style={{
+                      width: "42px",
+                      height: "42px",
+                      borderRadius: "12px",
+                      border: "none",
+                      background: "rgba(255,255,255,0.14)",
+                      color: "#fff",
+                      fontSize: "20px",
+                      fontWeight: "800",
+                      cursor: "pointer",
+                    }}
+                  >
+                    ⋮
+                  </button>
+                  {isMenuOpen && (
+                    <div
                       style={{
-                        width: "100%",
-                        padding: "12px 16px",
-                        border: "none",
+                        position: "absolute",
+                        top: "50px",
+                        right: 0,
+                        width: "220px",
                         background: "#fff",
-                        textAlign: "left",
-                        fontSize: "14px",
-                        fontWeight: "700",
-                        color: "#b91c1c",
-                        cursor: "pointer",
-                        boxSizing: "border-box",
+                        borderRadius: "14px",
+                        boxShadow: "0 14px 34px rgba(0,0,0,0.16)",
+                        border: "1px solid #eee",
+                        overflow: "hidden",
+                        zIndex: 20,
                       }}
                     >
-                      {isBlocked ? "User Blocked" : "Block User"}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowReportUserModal(true);
-                        setIsMenuOpen(false);
-                      }}
-                      style={{
-                        width: "100%",
-                        padding: "12px 16px",
-                        borderTop: "1px solid #f3f4f6",
-                        border: "none",
-                        borderTopWidth: "1px",
-                        background: "#fff",
-                        textAlign: "left",
-                        fontSize: "14px",
-                        fontWeight: "700",
-                        color: "#374151",
-                        cursor: "pointer",
-                        boxSizing: "border-box",
-                      }}
-                    >
-                      Report User
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setRightPanelView((prev) => (prev === "seller" ? "chat" : "seller"));
-                        setIsMenuOpen(false);
-                      }}
-                      style={{
-                        width: "100%",
-                        padding: "12px 16px",
-                        borderTop: "1px solid #f3f4f6",
-                        border: "none",
-                        borderTopWidth: "1px",
-                        background: "#fff",
-                        textAlign: "left",
-                        fontSize: "14px",
-                        fontWeight: "700",
-                        color: "#374151",
-                        cursor: "pointer",
-                        boxSizing: "border-box",
-                      }}
-                    >
-                      View Seller Profile
-                    </button>
-                  </div>
-                )}
+                      <button
+                        type="button"
+                        onClick={handleBlockUser}
+                        style={{
+                          width: "100%",
+                          padding: "14px 16px",
+                          border: "none",
+                          background: "#fff",
+                          textAlign: "left",
+                          fontSize: "14px",
+                          fontWeight: "700",
+                          color: "#b91c1c",
+                          cursor: "pointer",
+                        }}
+                      >
+                        {isBlocked ? "Unblock User" : "Block User"}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowReportUserModal(true);
+                          setIsMenuOpen(false);
+                        }}
+                        style={{
+                          width: "100%",
+                          padding: "14px 16px",
+                          border: "none",
+                          borderTop: "1px solid #f3f4f6",
+                          background: "#fff",
+                          textAlign: "left",
+                          fontSize: "14px",
+                          fontWeight: "700",
+                          color: "#7a0016",
+                          cursor: "pointer",
+                        }}
+                      >
+                        Report User
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setRightPanelView("seller");
+                          setIsMenuOpen(false);
+                        }}
+                        style={{
+                          width: "100%",
+                          padding: "14px 16px",
+                          borderTop: "1px solid #f3f4f6",
+                          background: "#fff",
+                          textAlign: "left",
+                          fontSize: "14px",
+                          fontWeight: "700",
+                          color: "#374151",
+                          cursor: "pointer",
+                          border: "none",
+                          boxSizing: "border-box",
+                        }}
+                      >
+                        View Seller Profile
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                <Link
+                  to="/chats"
+                  style={{
+                    padding: "10px 14px",
+                    borderRadius: "10px",
+                    background: "rgba(255,255,255,0.14)",
+                    color: "#fff",
+                    textDecoration: "none",
+                    fontWeight: "900",
+                    fontSize: "22px",
+                    lineHeight: 1,
+                  }}
+                >
+                  ←
+                </Link>
               </div>
             </div>
 
