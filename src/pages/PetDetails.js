@@ -635,7 +635,7 @@ export default function PetDetails() {
                   {sellerOnline ? "Online" : "Offline"}
                 </span>
               </div>
-              <div style={{ position: "absolute", top: "14px", right: "16px" }}>
+              <div style={{ position: "absolute", top: "14px", right: "70px" }}>
                 <button
                   type="button"
                   onClick={() => setIsMenuOpen((prev) => !prev)}
