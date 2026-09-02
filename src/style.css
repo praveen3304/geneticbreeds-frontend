@@ -1631,3 +1631,6 @@ body.landing-page {
 body.chat-page {
   overflow: hidden;
 }
+body.chat-page footer {
+  display: none;
+}
