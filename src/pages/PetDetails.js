@@ -311,7 +311,7 @@ export default function PetDetails() {
       style={{
         height: "calc(100dvh - 74px)",
         background: "#f7f7f9",
-        padding: "88px 14px 14px",
+        padding: "14px",
         overflow: "hidden",
         boxSizing: "border-box",
         position: "relative",
@@ -362,7 +362,6 @@ export default function PetDetails() {
               gap: "12px",
               minHeight: 0,
               flex: 1,
-              overflowY: "auto",
             }}
           >
           <div
