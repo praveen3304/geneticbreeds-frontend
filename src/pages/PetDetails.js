@@ -315,7 +315,7 @@ export default function PetDetails() {
       <div
         style={{
           position: "absolute",
-          top: "24px",
+          top: "92px",
           left: "24px",
           zIndex: 10,
         }}
