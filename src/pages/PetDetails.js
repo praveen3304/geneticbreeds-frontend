@@ -143,6 +143,11 @@ export default function PetDetails() {
   };
 
   useEffect(() => {
+    document.body.classList.add("chat-page");
+    return () => document.body.classList.remove("chat-page");
+  }, []);
+
+  useEffect(() => {
     const fetchPet = async () => {
       try {
         const res = await fetch(`https://genetic-breeds-backend.onrender.com/api/ads/${id}`);
