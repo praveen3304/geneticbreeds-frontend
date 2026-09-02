@@ -336,13 +336,35 @@ export default function PetDetails() {
             background: "#fff",
             borderRadius: "18px",
             boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
-            padding: isMobile ? "10px" : "16px",
-            display: "grid",
-            gridTemplateRows: isMobile ? "220px auto" : "235px auto",
-            gap: "12px",
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
             minHeight: 0,
           }}
         >
+          <div
+            style={{
+              background: "linear-gradient(135deg, #b3122a, #7a0016)",
+              color: "#fff",
+              padding: "18px 16px",
+              fontWeight: "800",
+              fontSize: "20px",
+              flexShrink: 0,
+            }}
+          >
+            Pet Details
+          </div>
+          <div
+            style={{
+              padding: isMobile ? "10px" : "16px",
+              display: "grid",
+              gridTemplateRows: isMobile ? "220px auto" : "235px auto",
+              gap: "12px",
+              minHeight: 0,
+              flex: 1,
+              overflowY: "auto",
+            }}
+          >
           <div
             style={{
               display: "grid",
@@ -512,6 +534,7 @@ export default function PetDetails() {
                 Report this listing
               </button>
             </div>
+          </div>
           </div>
         </div>
 
