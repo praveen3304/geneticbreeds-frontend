@@ -143,6 +143,7 @@ export default function PetDetails() {
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     document.body.classList.add("chat-page");
     return () => document.body.classList.remove("chat-page");
   }, []);
