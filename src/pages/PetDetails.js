@@ -312,32 +312,6 @@ export default function PetDetails() {
         position: "relative",
       }}
     >
-      <div
-        style={{
-          position: "absolute",
-          top: "92px",
-          left: "24px",
-          zIndex: 10,
-        }}
-      >
-        <button
-          onClick={() => navigate(-1)}
-          style={{
-            padding: "10px 16px",
-            borderRadius: "10px",
-            border: "none",
-            background: "linear-gradient(135deg, #b3122a, #7a0016)",
-            color: "#fff",
-            fontWeight: "900",
-            fontSize: "22px",
-            lineHeight: 1,
-            cursor: "pointer",
-            boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
-          }}
-        >
-          ←
-        </button>
-      </div>
 
       <div
         style={{
@@ -907,6 +881,24 @@ export default function PetDetails() {
                     </div>
                   )}
                 </div>
+
+                <button
+                  type="button"
+                  onClick={() => navigate(-1)}
+                  style={{
+                    padding: "10px 14px",
+                    borderRadius: "10px",
+                    border: "none",
+                    background: "rgba(255,255,255,0.14)",
+                    color: "#fff",
+                    fontWeight: "900",
+                    fontSize: "22px",
+                    lineHeight: 1,
+                    cursor: "pointer",
+                  }}
+                >
+                  ←
+                </button>
 
               </div>
             </div>
