@@ -348,12 +348,30 @@ export default function PetDetails() {
               background: "linear-gradient(135deg, #b3122a, #7a0016)",
               color: "#fff",
               padding: "18px 16px",
-              fontWeight: "800",
-              fontSize: "20px",
               flexShrink: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "12px",
             }}
           >
-            Pet Details
+            <span style={{ fontWeight: "800", fontSize: "20px" }}>Pet Details</span>
+            <button
+              onClick={() => setShowReportModal(true)}
+              style={{
+                padding: "8px 14px",
+                borderRadius: "8px",
+                border: "none",
+                background: "rgba(255,255,255,0.16)",
+                color: "#fff",
+                fontWeight: "600",
+                cursor: "pointer",
+                fontSize: "13px",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Report this listing
+            </button>
           </div>
           <div
             style={{
@@ -517,22 +535,6 @@ export default function PetDetails() {
               <p style={{ margin: 0 }}>
                 <strong>Seller User ID:</strong> {sellerUserCode}
               </p>
-              <button
-                onClick={() => setShowReportModal(true)}
-                style={{
-                  marginTop: "10px",
-                  padding: "8px 14px",
-                  borderRadius: "8px",
-                  border: "1px solid #b3122a",
-                  background: "#fff",
-                  color: "#b3122a",
-                  fontWeight: "600",
-                  cursor: "pointer",
-                  fontSize: "13px",
-                }}
-              >
-                Report this listing
-              </button>
             </div>
           </div>
           </div>
