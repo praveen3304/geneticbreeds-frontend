@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import socket from "../socket";
 import apiFetch from "../utils/api";
 
@@ -114,6 +114,7 @@ function getCurrentUser() {
 
 export default function Chat() {
   const { id } = useParams(); // chatId now
+  const navigate = useNavigate();
   const isMobile = window.innerWidth < 768;
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
@@ -1161,21 +1162,23 @@ export default function Chat() {
                   )}
                 </div>
 
-                <Link
-                  to="/chats"
+                <button
+                  type="button"
+                  onClick={() => navigate(-1)}
                   style={{
                     padding: "10px 14px",
                     borderRadius: "10px",
+                    border: "none",
                     background: "rgba(255,255,255,0.14)",
                     color: "#fff",
-                    textDecoration: "none",
                     fontWeight: "900",
                     fontSize: "22px",
                     lineHeight: 1,
+                    cursor: "pointer",
                   }}
                 >
                   ←
-                </Link>
+                </button>
               </div>
             </div>
 
