@@ -1367,7 +1367,13 @@ export default function Chat() {
 
                 <button
                   type="button"
-                  onClick={() => navigate(-1)}
+                  onClick={() => {
+                    if (activeTab === "seller") {
+                      setActiveTab("details");
+                    } else {
+                      navigate(-1);
+                    }
+                  }}
                   style={{
                     padding: "10px 14px",
                     borderRadius: "10px",
