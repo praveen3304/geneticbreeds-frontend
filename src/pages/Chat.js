@@ -897,7 +897,7 @@ export default function Chat() {
                             Copy Link
                           </button>
                           <a
-                            href={`https://wa.me/?text=${encodeURIComponent(`${ad.title || "Pet Ad"} ${getShareLink()}`)}`}
+                            href={`https://wa.me/?text=${encodeURIComponent(`${ad.breed ? ad.breed + " - " : ""}${ad.title || "Pet Ad"} ${getShareLink()}`)}`}
                             target="_blank"
                             rel="noreferrer"
                             style={{
