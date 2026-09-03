@@ -1230,10 +1230,6 @@ RESPONSIVE
 .chat-page{
   height: calc(100vh - 70px);
   overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 20px;
 }
 
 /* Chat container (smaller) */
