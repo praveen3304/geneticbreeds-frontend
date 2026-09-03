@@ -145,18 +145,9 @@ export default function Chat() {
   const [reportDetails, setReportDetails] = useState("");
   const [reportSubmitted, setReportSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
-  const [activeTab, setActiveTabState] = useState(() => {
-    try {
-      return sessionStorage.getItem(`gb_chat_tab_${id}`) || "details";
-    } catch {
-      return "details";
-    }
-  });
+  const [activeTab, setActiveTabState] = useState("details");
   const setActiveTab = (tab) => {
     setActiveTabState(tab);
-    try {
-      sessionStorage.setItem(`gb_chat_tab_${id}`, tab);
-    } catch {}
   };
   const [showMobilePanel, setShowMobilePanel] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
