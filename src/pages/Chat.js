@@ -848,16 +848,16 @@ export default function Chat() {
                           width: "38px",
                           height: "38px",
                           borderRadius: "999px",
-                          border: "1px solid #e5e7eb",
-                          background: "#fff",
-                          color: "#374151",
+                          border: "none",
+                          background: "linear-gradient(135deg, #b3122a, #7a0016)",
+                          color: "#fff",
                           fontSize: "16px",
                           fontWeight: "800",
                           cursor: "pointer",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          boxShadow: "0 4px 10px rgba(0,0,0,0.08)",
+                          boxShadow: "0 4px 10px rgba(122,0,22,0.28)",
                         }}
                         title="Share"
                       >
