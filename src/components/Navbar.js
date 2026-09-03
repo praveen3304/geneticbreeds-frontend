@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import apiFetch from "../utils/api";
-import logo from "../assets/new-logo.png";
+import logo from "../assets/logo-text.png";
 
 const THREADS_KEY = "gb_chat_threads";
 const API_BASE_URL = "https://genetic-breeds-backend.onrender.com";
@@ -2248,7 +2248,9 @@ const navLogoStyle = {
   left: "50%",
   top: "50%",
   transform: "translate(-50%, -50%)",
-  height: "34px",
+  height: "30px",
+  maxWidth: "160px",
+  objectFit: "contain",
   pointerEvents: "none",
 };
 
