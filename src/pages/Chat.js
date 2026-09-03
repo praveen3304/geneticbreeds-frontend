@@ -151,6 +151,19 @@ export default function Chat() {
     setActiveTabState(tab);
   };
   const [showMobilePanel, setShowMobilePanel] = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
+  const getShareLink = () => `https://www.geneticbreeds.com/share/pet/${ad?._id || ad?.id}`;
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(getShareLink());
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 1800);
+      setShowShareMenu(false);
+    } catch {
+      window.prompt("Copy this link:", getShareLink());
+    }
+  };
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
@@ -827,40 +840,123 @@ export default function Chat() {
                     <div style={{ fontSize: "18px", fontWeight: "800", color: "#b3122a" }}>
                       ₹{Number(ad.price || 0).toLocaleString("en-IN")}
                     </div>
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        const shareUrl = `https://www.geneticbreeds.com/share/pet/${ad._id || ad.id}`;
-                        const shareText = `${ad.breed ? ad.breed + " - " : ""}${ad.title || "Pet Ad"} - ₹${Number(ad.price || 0).toLocaleString("en-IN")}`;
-                        if (navigator.share) {
-                          try {
-                            await navigator.share({ title: ad.title || "Pet Ad", text: shareText, url: shareUrl });
-                            return;
-                          } catch (err) {
-                            if (err?.name === "AbortError") return;
-                          }
-                        }
-                        try {
-                          await navigator.clipboard.writeText(shareUrl);
-                          window.alert("Link copied to clipboard!");
-                        } catch {
-                          window.prompt("Copy this link:", shareUrl);
-                        }
-                      }}
-                      style={{
-                        padding: "8px 14px",
-                        borderRadius: "8px",
-                        border: "none",
-                        background: "#fef9c3",
-                        color: "#854d0e",
-                        fontWeight: "700",
-                        fontSize: "13px",
-                        cursor: "pointer",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      Share
-                    </button>
+                    <div style={{ position: "relative" }}>
+                      <button
+                        type="button"
+                        onClick={() => setShowShareMenu((prev) => !prev)}
+                        style={{
+                          padding: "8px 14px",
+                          borderRadius: "8px",
+                          border: "none",
+                          background: "#fef9c3",
+                          color: "#854d0e",
+                          fontWeight: "700",
+                          fontSize: "13px",
+                          cursor: "pointer",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        Share
+                      </button>
+                      {showShareMenu && (
+                        <div
+                          onClick={(e) => e.stopPropagation()}
+                          style={{
+                            position: "absolute",
+                            top: "44px",
+                            right: 0,
+                            background: "#fff",
+                            borderRadius: "14px",
+                            padding: "10px",
+                            boxShadow: "0 18px 36px rgba(0,0,0,0.18)",
+                            border: "1px solid #eef2f7",
+                            zIndex: 10,
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "8px",
+                            minWidth: "160px",
+                          }}
+                        >
+                          <button
+                            onClick={handleCopyLink}
+                            style={{
+                              border: "none",
+                              background: "#f3f4f6",
+                              padding: "10px",
+                              borderRadius: "10px",
+                              cursor: "pointer",
+                              fontWeight: "700",
+                              color: "#111827",
+                            }}
+                          >
+                            Copy Link
+                          </button>
+                          <a
+                            href={`https://wa.me/?text=${encodeURIComponent(`${ad.title || "Pet Ad"} ${getShareLink()}`)}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{
+                              background: "#25D366",
+                              color: "white",
+                              padding: "10px",
+                              borderRadius: "10px",
+                              textAlign: "center",
+                              textDecoration: "none",
+                              fontWeight: "700",
+                            }}
+                          >
+                            WhatsApp
+                          </a>
+                          <a
+                            href={`https://t.me/share/url?url=${encodeURIComponent(getShareLink())}&text=${encodeURIComponent(ad.title || "Pet Ad")}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{
+                              background: "#0088cc",
+                              color: "white",
+                              padding: "10px",
+                              borderRadius: "10px",
+                              textAlign: "center",
+                              textDecoration: "none",
+                              fontWeight: "700",
+                            }}
+                          >
+                            Telegram
+                          </a>
+                          <button
+                            onClick={() => setShowShareMenu(false)}
+                            style={{
+                              border: "none",
+                              background: "transparent",
+                              fontSize: "12px",
+                              color: "#6b7280",
+                              cursor: "pointer",
+                              fontWeight: "700",
+                            }}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      )}
+                      {linkCopied && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "44px",
+                            right: 0,
+                            background: "#111827",
+                            color: "#fff",
+                            fontSize: "12px",
+                            padding: "8px 10px",
+                            borderRadius: "8px",
+                            whiteSpace: "nowrap",
+                            zIndex: 11,
+                          }}
+                        >
+                          Link copied!
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   <div
