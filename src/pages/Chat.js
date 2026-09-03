@@ -928,6 +928,45 @@ export default function Chat() {
                           >
                             Telegram
                           </a>
+                          <a
+                            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(getShareLink())}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{
+                              background: "#1877F2",
+                              color: "white",
+                              padding: "10px",
+                              borderRadius: "10px",
+                              textAlign: "center",
+                              textDecoration: "none",
+                              fontWeight: "700",
+                            }}
+                          >
+                            Facebook
+                          </a>
+                          <button
+                            onClick={async () => {
+                              try {
+                                await navigator.clipboard.writeText(getShareLink());
+                              } catch {}
+                              window.open("https://www.instagram.com/", "_blank");
+                              setLinkCopied(true);
+                              setTimeout(() => setLinkCopied(false), 2500);
+                              setShowShareMenu(false);
+                            }}
+                            style={{
+                              background: "linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)",
+                              color: "white",
+                              border: "none",
+                              padding: "10px",
+                              borderRadius: "10px",
+                              textAlign: "center",
+                              fontWeight: "700",
+                              cursor: "pointer",
+                            }}
+                          >
+                            Instagram
+                          </button>
                           <button
                             onClick={() => setShowShareMenu(false)}
                             style={{
