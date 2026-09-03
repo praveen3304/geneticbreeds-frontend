@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import apiFetch from "../utils/api";
+import logo from "../assets/new-logo.png";
 
 const THREADS_KEY = "gb_chat_threads";
 const API_BASE_URL = "https://genetic-breeds-backend.onrender.com";
@@ -1212,7 +1213,7 @@ toast.success(
   return (
     <>
       <div style={{ ...navStyle, position: "sticky", top: 0 }}>
-        <div style={navLogoStyle}>GeneticBreeds</div>
+        <img src={logo} alt="GeneticBreeds" style={navLogoStyle} />
         <div style={navLeftStyle}>
           {isAuthed && (
             <button
@@ -2247,11 +2248,7 @@ const navLogoStyle = {
   left: "50%",
   top: "50%",
   transform: "translate(-50%, -50%)",
-  color: "#fff",
-  fontWeight: "800",
-  fontSize: "18px",
-  letterSpacing: "0.3px",
-  whiteSpace: "nowrap",
+  height: "34px",
   pointerEvents: "none",
 };
 
