@@ -817,13 +817,50 @@ export default function Chat() {
 
                   <div
                     style={{
-                      fontSize: "18px",
-                      fontWeight: "800",
-                      color: "#b3122a",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: "10px",
                       marginBottom: "10px",
                     }}
                   >
-                    ₹{Number(ad.price || 0).toLocaleString("en-IN")}
+                    <div style={{ fontSize: "18px", fontWeight: "800", color: "#b3122a" }}>
+                      ₹{Number(ad.price || 0).toLocaleString("en-IN")}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const shareUrl = `https://www.geneticbreeds.com/share/pet/${ad._id || ad.id}`;
+                        const shareText = `${ad.breed ? ad.breed + " - " : ""}${ad.title || "Pet Ad"} - ₹${Number(ad.price || 0).toLocaleString("en-IN")}`;
+                        if (navigator.share) {
+                          try {
+                            await navigator.share({ title: ad.title || "Pet Ad", text: shareText, url: shareUrl });
+                            return;
+                          } catch (err) {
+                            if (err?.name === "AbortError") return;
+                          }
+                        }
+                        try {
+                          await navigator.clipboard.writeText(shareUrl);
+                          window.alert("Link copied to clipboard!");
+                        } catch {
+                          window.prompt("Copy this link:", shareUrl);
+                        }
+                      }}
+                      style={{
+                        padding: "8px 14px",
+                        borderRadius: "8px",
+                        border: "none",
+                        background: "#fef9c3",
+                        color: "#854d0e",
+                        fontWeight: "700",
+                        fontSize: "13px",
+                        cursor: "pointer",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      Share
+                    </button>
                   </div>
 
                   <div
