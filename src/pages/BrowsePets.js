@@ -49,6 +49,23 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
   }, []);
 
   useEffect(() => {
+    const handleScroll = () => {
+      sessionStorage.setItem("gb_browse_scroll", String(window.scrollY));
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      const saved = sessionStorage.getItem("gb_browse_scroll");
+      if (saved) {
+        window.scrollTo(0, Number(saved));
+      }
+    }
+  }, [loading]);
+
+  useEffect(() => {
     const closeShareMenu = () => setActiveShareId(null);
     window.addEventListener("click", closeShareMenu);
     return () => window.removeEventListener("click", closeShareMenu);
