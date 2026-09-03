@@ -845,18 +845,23 @@ export default function Chat() {
                         type="button"
                         onClick={() => setShowShareMenu((prev) => !prev)}
                         style={{
-                          padding: "8px 14px",
-                          borderRadius: "8px",
-                          border: "none",
-                          background: "#fef9c3",
-                          color: "#854d0e",
-                          fontWeight: "700",
-                          fontSize: "13px",
+                          width: "38px",
+                          height: "38px",
+                          borderRadius: "999px",
+                          border: "1px solid #e5e7eb",
+                          background: "#fff",
+                          color: "#374151",
+                          fontSize: "16px",
+                          fontWeight: "800",
                           cursor: "pointer",
-                          whiteSpace: "nowrap",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          boxShadow: "0 4px 10px rgba(0,0,0,0.08)",
                         }}
+                        title="Share"
                       >
-                        Share
+                        ↗
                       </button>
                       {showShareMenu && (
                         <div
