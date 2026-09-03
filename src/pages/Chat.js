@@ -557,7 +557,31 @@ export default function Chat() {
   }, [messages, loading]);
 
   if (loading) {
-    return <div style={{ padding: "100px 20px" }}>Loading chat...</div>;
+    return (
+      <div
+        style={{
+          height: "calc(100dvh - 74px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "#f7f7f9",
+        }}
+      >
+        <div
+          style={{
+            padding: "16px 28px",
+            borderRadius: "14px",
+            background: "linear-gradient(135deg, #b3122a, #7a0016)",
+            color: "#fff",
+            fontWeight: "700",
+            fontSize: "15px",
+            boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+          }}
+        >
+          Loading chat...
+        </div>
+      </div>
+    );
   }
 
   if (!chat || !ad) {
