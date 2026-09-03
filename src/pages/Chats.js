@@ -236,8 +236,8 @@ export default function Chats() {
                       lineHeight: "1.2",
                     }}
                   >
+                    {ad.breed ? `${ad.breed} • ` : ""}
                     {ad.title || "Pet Ad"}
-                    {ad.breed ? ` • ${ad.breed}` : ""}
                   </h3>
                 </div>
 
