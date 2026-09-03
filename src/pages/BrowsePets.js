@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} }) {
   const [ads, setAds] = useState([]);
@@ -130,6 +130,22 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
   const currentItems = filtered.slice(startIndex, startIndex + itemsPerPage);
 
   const getAdId = (ad) => ad._id || ad.id;
+  const navigate = useNavigate();
+  const handleViewDetails = async (adId) => {
+    try {
+      const token = localStorage.getItem("gb_token");
+      const res = await fetch("https://genetic-breeds-backend.onrender.com/api/chat/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ adId }),
+      });
+      const data = await res.json();
+      if (data.chat?._id) navigate(`/chat/${data.chat._id}`);
+      else navigate("/chats");
+    } catch {
+      navigate("/chats");
+    }
+  };
   const getAdTitle = (ad) => ad.title || ad.breed || "Pet Ad";
   const getAdLocation = (ad) => { const parts = [ad.city, ad.state].filter(Boolean); return parts.length > 0 ? parts.join(", ") : ad.location || "Location"; };
   const getAdImage = (ad) =>
@@ -873,8 +889,9 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                         Sold Out
                       </span>
                     ) : (
-                      <Link
-                        to={`/pet/${getAdId(p)}`}
+                      <button
+                        type="button"
+                        onClick={() => handleViewDetails(getAdId(p))}
                         style={{
                           display: "inline-flex",
                           alignItems: "center",
@@ -882,6 +899,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                           gap: "8px",
                           padding: "11px 16px",
                           borderRadius: "12px",
+                          border: "none",
                           background: "linear-gradient(135deg, #7a0016, #b3122a)",
                           color: "#fff",
                           textDecoration: "none",
@@ -889,10 +907,11 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                           fontSize: "13px",
                           boxShadow: "0 10px 22px rgba(122,0,22,0.18)",
                           minWidth: "142px",
+                          cursor: "pointer",
                         }}
                       >
                         View Details <span style={{ fontSize: "14px" }}>→</span>
-                      </Link>
+                      </button>
                     )}
 
                     <div

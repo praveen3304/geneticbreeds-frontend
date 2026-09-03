@@ -5,7 +5,7 @@ import { Toaster } from "react-hot-toast";
 import PawAnimation from "./components/PawAnimation";
 import toast from "react-hot-toast";
 
-import PetDetails from "./pages/PetDetails";
+import PetRedirect from "./pages/PetRedirect";
 import Chat from "./pages/Chat";
 import Chats from "./pages/Chats";
 import Wishlist from "./pages/Wishlist";
@@ -211,7 +211,7 @@ export default function App() {
           <Route path="/chats" element={isAuthed ? <Chats /> : <Navigate to="/" replace />} />
           <Route path="/contact" element={isAuthed ? <Contact /> : <Navigate to="/" replace />} />
           <Route path="/about" element={<About />} />
-          <Route path="/pet/:id" element={<PetDetails />} />
+          <Route path="/pet/:id" element={<PetRedirect />} />
           <Route path="/chat/:id" element={<Chat />} />
           <Route path="/seller/:sellerId" element={<SellerProfile />} />
 

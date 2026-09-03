@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Wishlist({ wishlist = [], toggleWishlist = () => {} }) {
   const [localItems, setLocalItems] = useState([]);
@@ -7,6 +7,22 @@ export default function Wishlist({ wishlist = [], toggleWishlist = () => {} }) {
   const [activeShareId, setActiveShareId] = useState(null);
 
   const getAdId = (ad) => ad?._id || ad?.id;
+  const navigate = useNavigate();
+  const handleViewDetails = async (adId) => {
+    try {
+      const token = localStorage.getItem("gb_token");
+      const res = await fetch("https://genetic-breeds-backend.onrender.com/api/chat/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ adId }),
+      });
+      const data = await res.json();
+      if (data.chat?._id) navigate(`/chat/${data.chat._id}`);
+      else navigate("/chats");
+    } catch {
+      navigate("/chats");
+    }
+  };
   const getAdTitle = (ad) => ad?.title || ad?.breed || "Pet Ad";
   const getAdImage = (ad) =>
     ad?.images && ad.images.length > 0
@@ -634,22 +650,25 @@ export default function Wishlist({ wishlist = [], toggleWishlist = () => {} }) {
                         flexWrap: "wrap",
                       }}
                     >
-                      <Link
-                        to={`/pet/${getAdId(p)}`}
+                      <button
+                        type="button"
+                        onClick={() => handleViewDetails(getAdId(p))}
                         style={{
                           display: "inline-block",
                           padding: "10px 14px",
                           borderRadius: "10px",
+                          border: "none",
                           background: "linear-gradient(135deg, #7a0016, #b3122a)",
                           color: "#fff",
                           textDecoration: "none",
                           fontWeight: "700",
                           fontSize: "13px",
                           boxShadow: "0 8px 18px rgba(122,0,22,0.18)",
+                          cursor: "pointer",
                         }}
                       >
                         View Details
-                      </Link>
+                      </button>
                     </div>
                   </div>
                 </div>
