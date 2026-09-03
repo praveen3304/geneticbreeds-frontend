@@ -1144,6 +1144,10 @@ export default function Chat() {
           >
             {isMobile && (
               <div
+                onClick={() => {
+                  setActiveTab("details");
+                  setShowMobilePanel(true);
+                }}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -1151,6 +1155,7 @@ export default function Chat() {
                   padding: "8px 14px",
                   background: "#fff5f5",
                   borderBottom: "1px solid #f3d6d6",
+                  cursor: "pointer",
                 }}
               >
                 <img
