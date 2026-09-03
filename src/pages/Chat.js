@@ -880,6 +880,8 @@ export default function Chat() {
                             flexDirection: "column",
                             gap: "8px",
                             minWidth: "160px",
+                            maxHeight: "70vh",
+                            overflowY: "auto",
                           }}
                         >
                           <button
