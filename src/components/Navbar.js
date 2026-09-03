@@ -1211,7 +1211,8 @@ toast.success(
 
   return (
     <>
-      <div style={navStyle}>
+      <div style={{ ...navStyle, position: "sticky", top: 0 }}>
+        <div style={navLogoStyle}>GeneticBreeds</div>
         <div style={navLeftStyle}>
           {isAuthed && (
             <button
@@ -2240,6 +2241,18 @@ const navStyle = {
   top: 0,
   zIndex: 1200,
   boxShadow: "0 8px 24px rgba(127, 29, 29, 0.22)",
+};
+const navLogoStyle = {
+  position: "absolute",
+  left: "50%",
+  top: "50%",
+  transform: "translate(-50%, -50%)",
+  color: "#fff",
+  fontWeight: "800",
+  fontSize: "18px",
+  letterSpacing: "0.3px",
+  whiteSpace: "nowrap",
+  pointerEvents: "none",
 };
 
 const navLeftStyle = {
