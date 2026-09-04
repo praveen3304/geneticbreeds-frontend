@@ -2248,8 +2248,8 @@ const navLogoStyle = {
   left: "50%",
   top: "50%",
   transform: "translate(-50%, -50%)",
-  height: "30px",
-  maxWidth: "160px",
+  height: "52px",
+  maxWidth: "280px",
   objectFit: "contain",
   pointerEvents: "none",
 };
