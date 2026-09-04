@@ -262,27 +262,17 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
           </Link>
         </div>
 
-        {isMobile ? (
-          <div style={{ display: "flex", justifyContent: "center", margin: "2px 0 6px" }}>
-            <img src={logo} alt="GeneticBreeds" style={{ height: "56px", maxWidth: "260px", objectFit: "contain" }} />
-          </div>
-        ) : (
-          <h1
-            className="hero-title"
+        <div style={{ display: "flex", justifyContent: "center", margin: "2px 0 6px" }}>
+          <img
+            src={logo}
+            alt="GeneticBreeds"
             style={{
-              margin: "2px 0 6px",
-              textAlign: "center",
-              fontSize: "42px",
-              lineHeight: "1.05",
-              color: "#2c1a5a",
-              fontWeight: "800",
-              letterSpacing: "-0.8px",
-              fontFamily: "Georgia, 'Times New Roman', serif",
+              height: isMobile ? "80px" : "70px",
+              maxWidth: isMobile ? "340px" : "300px",
+              objectFit: "contain",
             }}
-          >
-            Browse Pets
-          </h1>
-        )}
+          />
+        </div>
 
         <p
           className="hero-sub"
