@@ -233,17 +233,12 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
         style={{
           background: "linear-gradient(135deg, #fff4c7, #f7d774)",
           borderRadius: "22px",
-          padding: isMobile ? "22px 24px 20px" : "18px 24px 20px",
+          padding: "18px 24px 20px",
           marginBottom: "18px",
           boxShadow: "0 10px 24px rgba(160, 120, 20, 0.10)",
           border: "1px solid rgba(194, 150, 50, 0.16)",
         }}
       >
-        {isMobile && (
-          <div style={{ display: "flex", justifyContent: "center", marginBottom: "10px" }}>
-            <img src={logo} alt="GeneticBreeds" style={{ height: "56px", maxWidth: "260px", objectFit: "contain" }} />
-          </div>
-        )}
         <div
           style={{
             display: "flex",
@@ -267,21 +262,27 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
           </Link>
         </div>
 
-        <h1
-          className="hero-title"
-          style={{
-            margin: "2px 0 6px",
-            textAlign: "center",
-            fontSize: "42px",
-            lineHeight: "1.05",
-            color: "#2c1a5a",
-            fontWeight: "800",
-            letterSpacing: "-0.8px",
-            fontFamily: "Georgia, 'Times New Roman', serif",
-          }}
-        >
-          Browse Pets
-        </h1>
+        {isMobile ? (
+          <div style={{ display: "flex", justifyContent: "center", margin: "2px 0 6px" }}>
+            <img src={logo} alt="GeneticBreeds" style={{ height: "56px", maxWidth: "260px", objectFit: "contain" }} />
+          </div>
+        ) : (
+          <h1
+            className="hero-title"
+            style={{
+              margin: "2px 0 6px",
+              textAlign: "center",
+              fontSize: "42px",
+              lineHeight: "1.05",
+              color: "#2c1a5a",
+              fontWeight: "800",
+              letterSpacing: "-0.8px",
+              fontFamily: "Georgia, 'Times New Roman', serif",
+            }}
+          >
+            Browse Pets
+          </h1>
+        )}
 
         <p
           className="hero-sub"
