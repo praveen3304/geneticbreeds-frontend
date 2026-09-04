@@ -2263,7 +2263,7 @@ const mobileLogoBarStyle = {
   justifyContent: "center",
   alignItems: "center",
   padding: "8px 0",
-  background: "linear-gradient(135deg, #6b0f1a 0%, #b91327 55%, #d32f2f 100%)",
+  background: "#fff",
 };
 const mobileLogoImgStyle = {
   height: "40px",
