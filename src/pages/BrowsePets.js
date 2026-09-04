@@ -267,8 +267,8 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
             src={logo}
             alt="GeneticBreeds"
             style={{
-              height: isMobile ? "80px" : "70px",
-              maxWidth: isMobile ? "340px" : "300px",
+              height: isMobile ? "80px" : "110px",
+              maxWidth: isMobile ? "340px" : "480px",
               objectFit: "contain",
             }}
           />
