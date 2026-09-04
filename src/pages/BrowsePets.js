@@ -233,7 +233,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
         style={{
           background: "linear-gradient(135deg, #fff4c7, #f7d774)",
           borderRadius: "22px",
-          padding: isMobile ? "34px 24px 20px" : "18px 24px 20px",
+          padding: isMobile ? "22px 24px 20px" : "18px 24px 20px",
           marginBottom: "18px",
           boxShadow: "0 10px 24px rgba(160, 120, 20, 0.10)",
           border: "1px solid rgba(194, 150, 50, 0.16)",
@@ -241,7 +241,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
       >
         {isMobile && (
           <div style={{ display: "flex", justifyContent: "center", marginBottom: "10px" }}>
-            <img src={logo} alt="GeneticBreeds" style={{ height: "40px", maxWidth: "220px", objectFit: "contain" }} />
+            <img src={logo} alt="GeneticBreeds" style={{ height: "56px", maxWidth: "260px", objectFit: "contain" }} />
           </div>
         )}
         <div
