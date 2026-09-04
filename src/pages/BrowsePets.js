@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import logo from "../assets/logo-text.png";
 
 export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} }) {
   const [ads, setAds] = useState([]);
@@ -232,12 +233,17 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
         style={{
           background: "linear-gradient(135deg, #fff4c7, #f7d774)",
           borderRadius: "22px",
-          padding: "18px 24px 20px",
+          padding: isMobile ? "34px 24px 20px" : "18px 24px 20px",
           marginBottom: "18px",
           boxShadow: "0 10px 24px rgba(160, 120, 20, 0.10)",
           border: "1px solid rgba(194, 150, 50, 0.16)",
         }}
       >
+        {isMobile && (
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: "10px" }}>
+            <img src={logo} alt="GeneticBreeds" style={{ height: "40px", maxWidth: "220px", objectFit: "contain" }} />
+          </div>
+        )}
         <div
           style={{
             display: "flex",

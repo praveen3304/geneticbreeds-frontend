@@ -1483,11 +1483,6 @@ toast.success(
           )}
         </div>
       </div>
-      {isMobile && (
-        <div style={mobileLogoBarStyle}>
-          <img src={logo} alt="GeneticBreeds" style={mobileLogoImgStyle} />
-        </div>
-      )}
 
       {drawerOpen && <div style={overlayStyle} onClick={closeDrawer} />}
 
