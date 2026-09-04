@@ -1213,7 +1213,6 @@ toast.success(
   return (
     <>
       <div style={{ ...navStyle, position: "sticky", top: 0 }}>
-        {!isMobile && <img src={logo} alt="GeneticBreeds" style={navLogoStyle} />}
         <div style={navLeftStyle}>
           {isAuthed && (
             <button
