@@ -1213,7 +1213,7 @@ toast.success(
   return (
     <>
       <div style={{ ...navStyle, position: "sticky", top: 0 }}>
-        <img src={logo} alt="GeneticBreeds" style={navLogoStyle} />
+        {!isMobile && <img src={logo} alt="GeneticBreeds" style={navLogoStyle} />}
         <div style={navLeftStyle}>
           {isAuthed && (
             <button
@@ -1483,6 +1483,11 @@ toast.success(
           )}
         </div>
       </div>
+      {isMobile && (
+        <div style={mobileLogoBarStyle}>
+          <img src={logo} alt="GeneticBreeds" style={mobileLogoImgStyle} />
+        </div>
+      )}
 
       {drawerOpen && <div style={overlayStyle} onClick={closeDrawer} />}
 
@@ -2248,10 +2253,22 @@ const navLogoStyle = {
   left: "50%",
   top: "50%",
   transform: "translate(-50%, -50%)",
-  height: "52px",
-  maxWidth: "280px",
+  height: "68px",
+  maxWidth: "360px",
   objectFit: "contain",
   pointerEvents: "none",
+};
+const mobileLogoBarStyle = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  padding: "8px 0",
+  background: "linear-gradient(135deg, #6b0f1a 0%, #b91327 55%, #d32f2f 100%)",
+};
+const mobileLogoImgStyle = {
+  height: "40px",
+  maxWidth: "220px",
+  objectFit: "contain",
 };
 
 const navLeftStyle = {
