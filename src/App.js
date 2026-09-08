@@ -6,6 +6,7 @@ import PawAnimation from "./components/PawAnimation";
 import toast from "react-hot-toast";
 
 import PetRedirect from "./pages/PetRedirect";
+import PetLicensing from "./pages/PetLicensing";
 import Chat from "./pages/Chat";
 import Chats from "./pages/Chats";
 import Wishlist from "./pages/Wishlist";
@@ -211,6 +212,7 @@ export default function App() {
           <Route path="/chats" element={isAuthed ? <Chats /> : <Navigate to="/" replace />} />
           <Route path="/contact" element={isAuthed ? <Contact /> : <Navigate to="/" replace />} />
           <Route path="/about" element={<About />} />
+          <Route path="/pet-licensing" element={<PetLicensing />} />
           <Route path="/pet/:id" element={<PetRedirect />} />
           <Route path="/chat/:id" element={<Chat />} />
           <Route path="/seller/:sellerId" element={<SellerProfile />} />

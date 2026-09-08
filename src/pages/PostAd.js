@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import cityPetLicensing from "../data/cityPetLicensing";
 import { startPayment } from "../utils/startPayment";
 import {
   checkBannedBreedFrontend,
@@ -83,6 +84,15 @@ const MEMBERSHIP_PLANS = {
 };
 
 export default function PostAd() {
+  const [licenceCityQuery, setLicenceCityQuery] = useState("");
+  const [licenceCityResult, setLicenceCityResult] = useState(null);
+  const [licenceCitySearched, setLicenceCitySearched] = useState(false);
+  const handleLicenceCitySearch = () => {
+    const q = licenceCityQuery.trim().toLowerCase();
+    const match = cityPetLicensing.find((c) => c.city.toLowerCase() === q);
+    setLicenceCityResult(match || null);
+    setLicenceCitySearched(true);
+  };
 
 const [isMobile, setIsMobile] = React.useState(window.innerWidth < 768);
 React.useEffect(() => {
@@ -1314,6 +1324,67 @@ if (options?.error) {
                   • State Animal Welfare Board<br />
                   • Municipal Corporation / Local Authority<br />
                   • Animal Husbandry Department
+                </div>
+
+                <div style={{ marginTop: "18px", paddingTop: "14px", borderTop: "1px solid #f0e0a0" }}>
+                  <strong style={{ display: "block", fontSize: "15px", marginBottom: "8px", color: "#111827" }}>
+                    Find Your City's Pet Registration Office
+                  </strong>
+                  <div style={{ display: "flex", gap: "8px" }}>
+                    <input
+                      type="text"
+                      value={licenceCityQuery}
+                      onChange={(e) => setLicenceCityQuery(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") handleLicenceCitySearch();
+                      }}
+                      placeholder="e.g. Chennai"
+                      style={{
+                        flex: 1,
+                        padding: "10px 12px",
+                        borderRadius: "8px",
+                        border: "1px solid #ddd",
+                        fontSize: "13px",
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleLicenceCitySearch}
+                      style={{
+                        padding: "10px 16px",
+                        borderRadius: "8px",
+                        border: "none",
+                        background: "linear-gradient(135deg, #b3122a, #7a0016)",
+                        color: "#fff",
+                        fontWeight: "700",
+                        cursor: "pointer",
+                        fontSize: "13px",
+                      }}
+                    >
+                      Search
+                    </button>
+                  </div>
+                  {licenceCitySearched && licenceCityResult && (
+                    <div style={{ marginTop: "12px", padding: "12px", borderRadius: "8px", background: "#fff", border: "1px solid #eee" }}>
+                      <div style={{ fontSize: "11px", color: "#888" }}>{licenceCityResult.state}</div>
+                      <div style={{ fontSize: "14px", fontWeight: "700", color: "#1f2559", marginBottom: "6px" }}>
+                        {licenceCityResult.authority}
+                      </div>
+                      <a
+                        href={licenceCityResult.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{ color: "#7a0016", fontWeight: "700", fontSize: "13px", textDecoration: "none" }}
+                      >
+                        Visit Official Website
+                      </a>
+                    </div>
+                  )}
+                  {licenceCitySearched && !licenceCityResult && (
+                    <div style={{ marginTop: "12px", padding: "12px", borderRadius: "8px", background: "#fff", border: "1px solid #eee", fontSize: "13px", color: "#7f1d1d" }}>
+                      Not listed yet for this city. Try your State Animal Welfare Board above.
+                    </div>
+                  )}
                 </div>
               </div>
             )}
