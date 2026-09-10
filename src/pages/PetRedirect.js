@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import SellerAdView from "./SellerAdView";
 
 export default function PetRedirect() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [error, setError] = useState(false);
+  const [isOwnAd, setIsOwnAd] = useState(false);
 
   useEffect(() => {
     const startChat = async () => {
@@ -18,6 +20,8 @@ export default function PetRedirect() {
         const data = await res.json();
         if (data.chat?._id) {
           navigate(`/chat/${data.chat._id}`, { replace: true });
+        } else if (data.error === "You cannot chat with your own ad") {
+          setIsOwnAd(true);
         } else {
           setError(true);
         }
@@ -27,6 +31,10 @@ export default function PetRedirect() {
     };
     startChat();
   }, [id, navigate]);
+
+  if (isOwnAd) {
+    return <SellerAdView adId={id} />;
+  }
 
   if (error) {
     return (
