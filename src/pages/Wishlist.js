@@ -8,20 +8,8 @@ export default function Wishlist({ wishlist = [], toggleWishlist = () => {} }) {
 
   const getAdId = (ad) => ad?._id || ad?.id;
   const navigate = useNavigate();
-  const handleViewDetails = async (adId) => {
-    try {
-      const token = localStorage.getItem("gb_token");
-      const res = await fetch("https://genetic-breeds-backend.onrender.com/api/chat/start", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ adId }),
-      });
-      const data = await res.json();
-      if (data.chat?._id) navigate(`/chat/${data.chat._id}`);
-      else navigate("/chats");
-    } catch {
-      navigate("/chats");
-    }
+  const handleViewDetails = (adId) => {
+    navigate(`/pet/${adId}`);
   };
   const getAdTitle = (ad) => ad?.title || ad?.breed || "Pet Ad";
   const getAdImage = (ad) =>
