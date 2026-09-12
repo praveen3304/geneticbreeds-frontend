@@ -1297,7 +1297,7 @@ if (options?.error) {
           </div>
 
           <div style={sideCardStyle}>
-            <div style={{ background: "#fff1f2", border: "1px solid #dc2626", padding: "14px", borderRadius: "12px", marginBottom: country === "India" ? "14px" : "0", color: "#7f1d1d", fontWeight: "600", lineHeight: "1.6", fontSize: "13px" }}>
+            <div style={{ background: "#fff1f2", border: "1px solid #dc2626", padding: "14px", borderRadius: "12px", marginBottom: isIndiaUser ? "14px" : "0", color: "#7f1d1d", fontWeight: "600", lineHeight: "1.6", fontSize: "13px" }}>
               <strong>Important Notice:</strong>
               <br />
               Unlicensed users can post up to 5 ads within a 5-month period.
@@ -1307,7 +1307,7 @@ if (options?.error) {
               Licensed sellers get higher trust visibility and better buyer reach.
             </div>
 
-            {country === "India" && (
+            {isIndiaUser && (
               <div style={{ background: "linear-gradient(135deg, #fff8dc, #fff4c7)", border: "1px solid #f7d774", padding: "14px", borderRadius: "12px", lineHeight: "1.6", fontSize: "13px" }}>
                 <strong style={{ display: "block", fontSize: "16px", marginBottom: "6px", color: "#111827" }}>
                   Apply for Licence (India)

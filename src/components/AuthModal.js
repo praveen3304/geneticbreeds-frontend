@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { COUNTRIES } from "../utils/countries";
 
 const API_BASE_URL = "https://genetic-breeds-backend.onrender.com";
 
@@ -261,13 +262,17 @@ export default function AuthModal({ type, onClose, onSuccess }) {
 
                   <div style={fieldStyle}>
                     <label style={labelStyle}>Country *</label>
-                    <input
-                      placeholder="Enter country"
+                    <select
                       required
                       value={form.country}
                       onChange={(e) => updateField("country", e.target.value)}
                       style={inputStyle}
-                    />
+                    >
+                      <option value="">Select country</option>
+                      {COUNTRIES.map((c) => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </select>
                   </div>
 
                   <div style={fieldStyle}>
