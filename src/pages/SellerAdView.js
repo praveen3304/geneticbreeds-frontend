@@ -10,6 +10,11 @@ export default function SellerAdView({ adId }) {
   const currentUserId = JSON.parse(localStorage.getItem("gb_user") || "null")?._id;
 
   useEffect(() => {
+    document.body.classList.add("chat-page");
+    return () => document.body.classList.remove("chat-page");
+  }, []);
+
+  useEffect(() => {
     const load = async () => {
       try {
         const [adRes, chatRes] = await Promise.all([
