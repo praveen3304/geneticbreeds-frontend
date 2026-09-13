@@ -151,6 +151,14 @@ export default function Chat() {
     setActiveTabState(tab);
   };
   const [showMobilePanel, setShowMobilePanel] = useState(false);
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [averageRating, setAverageRating] = useState(0);
+  const [totalReviews, setTotalReviews] = useState(0);
+  const [myRating, setMyRating] = useState(0);
+  const [myComment, setMyComment] = useState("");
+  const [submittingReview, setSubmittingReview] = useState(false);
+  const [reviewError, setReviewError] = useState("");
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
   const getShareLink = () => `https://www.geneticbreeds.com/share/pet/${ad?._id || ad?.id}`;
@@ -353,6 +361,75 @@ export default function Chat() {
     };
     fetchSellerAds();
   }, [activeTab, sellerObjectId]);
+
+  useEffect(() => {
+    if (!sellerObjectId) return;
+    const loadReviews = async () => {
+      try {
+        setReviewsLoading(true);
+        const res = await apiFetch(`/api/reviews/seller/${sellerObjectId}`);
+        const data = await res.json();
+        setReviews(data.reviews || []);
+        setAverageRating(data.averageRating || 0);
+        setTotalReviews(data.totalReviews || 0);
+      } catch (err) {
+        console.error("loadReviews error:", err);
+      } finally {
+        setReviewsLoading(false);
+      }
+    };
+    loadReviews();
+  }, [activeTab, sellerObjectId]);
+
+  const myExistingReview = reviews.find(
+    (r) => String(r.reviewerId?._id || r.reviewerId) === String(currentUserId)
+  );
+  const isSeller = String(currentUserId) === String(sellerObjectId);
+
+  const handleSubmitReview = async () => {
+    if (!myRating) {
+      setReviewError("Please select a star rating");
+      return;
+    }
+    setSubmittingReview(true);
+    setReviewError("");
+    try {
+      const res = await apiFetch(`/api/reviews`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ chatId: id, rating: myRating, comment: myComment }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setReviewError(data.error || "Failed to submit review");
+        return;
+      }
+      setReviews((prev) => [data.review, ...prev]);
+      setTotalReviews((prev) => prev + 1);
+      setAverageRating((prev) =>
+        Number((((prev * totalReviews) + myRating) / (totalReviews + 1)).toFixed(1))
+      );
+      setMyRating(0);
+      setMyComment("");
+    } catch (err) {
+      setReviewError("Something went wrong. Try again.");
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
+
+  const renderStars = (value, size = "16px") => (
+    <span style={{ display: "inline-flex", gap: "2px" }}>
+      {[1, 2, 3, 4, 5].map((n) => (
+        <span key={n} style={{ fontSize: size, color: n <= Math.round(value) ? "#f59e0b" : "#e5e7eb" }}>
+          ★
+        </span>
+      ))}
+    </span>
+  );
 
   const images = useMemo(() => {
     if (ad?.images?.length) return ad.images;
@@ -829,6 +906,27 @@ export default function Chat() {
                   >
                     {ad.title || ad.breed || "Pet Ad"}
                   </h2>
+                  <div
+                    onClick={() => {
+                      setActiveTab("seller");
+                      if (isMobile) setShowMobilePanel(true);
+                    }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      marginBottom: "10px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {renderStars(averageRating, "16px")}
+                    <span style={{ fontSize: "13px", fontWeight: "700", color: "#111827" }}>
+                      {averageRating || "0.0"}
+                    </span>
+                    <span style={{ fontSize: "12px", color: "#6b7280" }}>
+                      ({totalReviews} {totalReviews === 1 ? "review" : "reviews"})
+                    </span>
+                  </div>
 
                   <div
                     style={{
@@ -1009,6 +1107,24 @@ export default function Chat() {
 
                   <div
                     style={{
+                      background: "#fff7ed",
+                      border: "1px solid #fdba74",
+                      borderRadius: "10px",
+                      padding: "10px 12px",
+                      marginBottom: "14px",
+                      fontSize: "12px",
+                      lineHeight: "1.5",
+                      color: "#7c2d12",
+                    }}
+                  >
+                    <strong>⚠️ Safety Alert for Buyers:</strong> GeneticBreeds is a P2P classifieds directory.
+                    We do not process payments for live animals, nor do we verify seller licensing.
+                    Always inspect the animal’s health and the seller’s registration papers in person.
+                    Never send online advances or booking tokens before physical verification.
+                  </div>
+
+                  <div
+                    style={{
                       display: "grid",
                       gridTemplateColumns: "1fr 1fr",
                       gap: "6px 12px",
@@ -1075,6 +1191,113 @@ export default function Chat() {
                         </div>
                       )}
                     </div>
+                  </div>
+                  <div
+                    style={{
+                      padding: "16px",
+                      borderRadius: "16px",
+                      background: "#f9fafb",
+                      border: "1px solid #e5e7eb",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "4px" }}>
+                      {renderStars(averageRating, "18px")}
+                      <span style={{ fontSize: "15px", fontWeight: "800", color: "#111827" }}>
+                        {averageRating || "0.0"}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: "12px", color: "#6b7280", marginBottom: "14px" }}>
+                      {totalReviews} {totalReviews === 1 ? "review" : "reviews"}
+                    </div>
+
+                    {!isSeller && !myExistingReview && (
+                      <div style={{ marginBottom: "14px", paddingTop: "12px", borderTop: "1px solid #e5e7eb" }}>
+                        <div style={{ fontSize: "13px", fontWeight: "700", color: "#374151", marginBottom: "8px" }}>
+                          Rate this seller
+                        </div>
+                        <div style={{ display: "flex", gap: "4px", marginBottom: "8px" }}>
+                          {[1, 2, 3, 4, 5].map((n) => (
+                            <span
+                              key={n}
+                              onClick={() => setMyRating(n)}
+                              style={{
+                                fontSize: "24px",
+                                cursor: "pointer",
+                                color: n <= myRating ? "#f59e0b" : "#e5e7eb",
+                              }}
+                            >
+                              ★
+                            </span>
+                          ))}
+                        </div>
+                        <textarea
+                          value={myComment}
+                          onChange={(e) => setMyComment(e.target.value)}
+                          placeholder="Share details about your experience (optional)"
+                          rows={3}
+                          style={{
+                            width: "100%",
+                            padding: "10px",
+                            borderRadius: "10px",
+                            border: "1px solid #e5e7eb",
+                            fontSize: "13px",
+                            boxSizing: "border-box",
+                            resize: "vertical",
+                            marginBottom: "8px",
+                          }}
+                        />
+                        {reviewError && (
+                          <div style={{ fontSize: "12px", color: "#b3122a", marginBottom: "8px" }}>
+                            {reviewError}
+                          </div>
+                        )}
+                        <button
+                          type="button"
+                          onClick={handleSubmitReview}
+                          disabled={submittingReview}
+                          style={{
+                            padding: "10px 18px",
+                            borderRadius: "999px",
+                            border: "none",
+                            background: "linear-gradient(135deg, #b3122a, #7a0016)",
+                            color: "#fff",
+                            fontWeight: "700",
+                            fontSize: "13px",
+                            cursor: submittingReview ? "not-allowed" : "pointer",
+                            opacity: submittingReview ? 0.7 : 1,
+                          }}
+                        >
+                          {submittingReview ? "Submitting..." : "Submit Review"}
+                        </button>
+                      </div>
+                    )}
+
+                    {reviewsLoading ? (
+                      <div style={{ fontSize: "13px", color: "#6b7280" }}>Loading reviews...</div>
+                    ) : reviews.length === 0 ? (
+                      <div style={{ fontSize: "13px", color: "#6b7280" }}>No reviews yet.</div>
+                    ) : (
+                      <div style={{ display: "grid", gap: "12px", paddingTop: "12px", borderTop: "1px solid #e5e7eb" }}>
+                        {reviews.map((r) => (
+                          <div key={r._id} style={{ paddingBottom: "10px", borderBottom: "1px solid #f0f0f0" }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <span style={{ fontSize: "13px", fontWeight: "700", color: "#111827" }}>
+                                {r.reviewerId?.name || "User"}
+                              </span>
+                              <span style={{ fontSize: "11px", color: "#9ca3af" }}>
+                                {new Date(r.createdAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
+                              </span>
+                            </div>
+                            {renderStars(r.rating, "13px")}
+                            {r.comment && (
+                              <div style={{ fontSize: "13px", color: "#374151", marginTop: "4px" }}>
+                                {r.comment}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                   <div>
                     <div style={{ fontSize: "13px", fontWeight: "700", color: "#374151", marginBottom: "10px" }}>
