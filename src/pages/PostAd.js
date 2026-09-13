@@ -142,6 +142,7 @@ React.useEffect(() => {
   const [submitting, setSubmitting] = useState(false);
   const [titleError, setTitleError] = useState("");
   const [formError, setFormError] = useState("");
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [publishOptions, setPublishOptions] = useState(null);
   const [publishOptionsLoading, setPublishOptionsLoading] = useState(false);
   const [publishModalOpen, setPublishModalOpen] = useState(false);
@@ -638,6 +639,11 @@ React.useEffect(() => {
     if (submitLock.current || submitting || publishOptionsLoading) return;
 
     setFormError("");
+
+    if (!agreedToTerms) {
+      setFormError("You must agree to the Seller Declaration & Agreement before posting.");
+      return;
+    }
 
     // ── Title phone number check
     const digitsOnly = form.title.replace(/\D/g, "");
@@ -1269,6 +1275,39 @@ if (options?.error) {
                     </>
                   )}
                 </div>
+              </div>
+
+              <div
+                style={{
+                  background: "#f8fafc",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: "10px",
+                  padding: "12px 14px",
+                  marginBottom: "14px",
+                  fontSize: "12px",
+                  lineHeight: "1.6",
+                  color: "#334155",
+                }}
+              >
+                <label style={{ display: "flex", gap: "10px", alignItems: "flex-start", cursor: "pointer" }}>
+                  <input
+                    type="checkbox"
+                    checked={agreedToTerms}
+                    onChange={(e) => setAgreedToTerms(e.target.checked)}
+                    style={{ marginTop: "3px", flexShrink: 0 }}
+                  />
+                  <span>
+                    <strong>Seller Declaration & Agreement</strong> — By checking this box, I declare that: (1) I am legally
+                    authorized to rehome or trade this animal, and if operating as a commercial breeder, I possess a valid
+                    registration from my respective State Animal Welfare Board; (2) this listing does not violate the Prevention
+                    of Cruelty to Animals Act, 1960, the Pet Shop Rules, 2018, or the Wildlife Protection Act, 1972 (no protected
+                    Indian wildlife is being listed); (3) I acknowledge that GeneticBreeds is a pure digital intermediary and
+                    classifieds directory that does not own, inspect, or verify the health, legitimacy, or legal status of the
+                    animals listed; (4) GeneticBreeds reserves the right to instantly remove this listing and terminate my
+                    account without a refund if any terms are violated or if a valid legal complaint is received, and that all
+                    transaction risks are entirely between me and the buyer.
+                  </span>
+                </label>
               </div>
 
               {formError ? <div style={localFormErrorStyle}>{formError}</div> : null}
