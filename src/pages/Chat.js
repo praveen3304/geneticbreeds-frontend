@@ -853,7 +853,7 @@ export default function Chat() {
 
 
 
-            <div style={{ padding: "16px", flex: 1, minHeight: 0 }}>
+            <div style={{ padding: "16px", flex: 1, minHeight: 0, overflowY: "auto" }}>
               {activeTab === "details" && (
                 <>
                   <div
