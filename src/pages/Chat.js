@@ -907,28 +907,6 @@ export default function Chat() {
                     {ad.title || ad.breed || "Pet Ad"}
                   </h2>
                   <div
-                    onClick={() => {
-                      setActiveTab("seller");
-                      if (isMobile) setShowMobilePanel(true);
-                    }}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "8px",
-                      marginBottom: "10px",
-                      cursor: "pointer",
-                    }}
-                  >
-                    {renderStars(averageRating, "16px")}
-                    <span style={{ fontSize: "13px", fontWeight: "700", color: "#111827" }}>
-                      {averageRating || "0.0"}
-                    </span>
-                    <span style={{ fontSize: "12px", color: "#6b7280" }}>
-                      ({totalReviews} {totalReviews === 1 ? "review" : "reviews"})
-                    </span>
-                  </div>
-
-                  <div
                     style={{
                       display: "flex",
                       alignItems: "center",
@@ -1107,24 +1085,6 @@ export default function Chat() {
 
                   <div
                     style={{
-                      background: "#fff7ed",
-                      border: "1px solid #fdba74",
-                      borderRadius: "10px",
-                      padding: "10px 12px",
-                      marginBottom: "14px",
-                      fontSize: "12px",
-                      lineHeight: "1.5",
-                      color: "#7c2d12",
-                    }}
-                  >
-                    <strong>⚠️ Safety Alert for Buyers:</strong> GeneticBreeds is a P2P classifieds directory.
-                    We do not process payments for live animals, nor do we verify seller licensing.
-                    Always inspect the animal’s health and the seller’s registration papers in person.
-                    Never send online advances or booking tokens before physical verification.
-                  </div>
-
-                  <div
-                    style={{
                       display: "grid",
                       gridTemplateColumns: "1fr 1fr",
                       gap: "6px 12px",
@@ -1141,6 +1101,24 @@ export default function Chat() {
                       <strong>Posted:</strong>{" "}
                       {ad.createdAt ? new Date(ad.createdAt).toLocaleDateString() : "-"}
                     </p>
+                  </div>
+
+                  <div
+                    style={{
+                      background: "#fff7ed",
+                      border: "1px solid #fdba74",
+                      borderRadius: "10px",
+                      padding: "10px 12px",
+                      marginBottom: "14px",
+                      fontSize: "12px",
+                      lineHeight: "1.5",
+                      color: "#7c2d12",
+                    }}
+                  >
+                    <strong>⚠️ Safety Alert for Buyers:</strong> GeneticBreeds is a P2P classifieds directory.
+                    We do not process payments for live animals, nor do we verify seller licensing.
+                    Always inspect the animal’s health and the seller’s registration papers in person.
+                    Never send online advances or booking tokens before physical verification.
                   </div>
 
                 </>
