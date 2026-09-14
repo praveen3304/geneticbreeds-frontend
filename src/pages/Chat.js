@@ -1435,8 +1435,16 @@ export default function Chat() {
               }}
             >
               <div>
-                <div style={{ fontSize: "24px", fontWeight: "800" }}>
-                  {otherPartyName}
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <div style={{ fontSize: "24px", fontWeight: "800" }}>
+                    {otherPartyName}
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                    {renderStars(averageRating, "14px")}
+                    <span style={{ fontSize: "12px", opacity: 0.92, fontWeight: "700" }}>
+                      {averageRating || "0.0"}
+                    </span>
+                  </div>
                 </div>
                 <div style={{ fontSize: "13px", marginTop: "4px", opacity: 0.92 }}>
                   User ID: {otherPartyUserCode || "Not available"}
