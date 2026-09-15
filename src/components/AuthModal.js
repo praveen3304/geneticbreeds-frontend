@@ -380,27 +380,27 @@ export default function AuthModal({ type, onClose, onSuccess }) {
                       </button>
                     </div>
                   </div>
-                </div>
 
-                <div style={termsCheckboxWrapStyle}>
-                  <label style={termsCheckboxLabelStyle}>
-                    <input
-                      type="checkbox"
-                      checked={agreedToTerms}
-                      onChange={(e) => setAgreedToTerms(e.target.checked)}
-                      required
-                    />
-                    <span>
-                      I agree to the{" "}
-                      <a href="/terms" target="_blank" rel="noopener noreferrer">
-                        Terms & Conditions
-                      </a>{" "}
-                      and{" "}
-                      <a href="/terms" target="_blank" rel="noopener noreferrer">
-                        Privacy Policy
-                      </a>
-                    </span>
-                  </label>
+                  <div style={termsCheckboxWrapStyle}>
+                    <label style={termsCheckboxLabelStyle}>
+                      <input
+                        type="checkbox"
+                        checked={agreedToTerms}
+                        onChange={(e) => setAgreedToTerms(e.target.checked)}
+                        required
+                      />
+                      <span>
+                        I agree to the{" "}
+                        <a href="/terms" target="_blank" rel="noopener noreferrer">
+                          Terms & Conditions
+                        </a>{" "}
+                        and{" "}
+                        <a href="/terms" target="_blank" rel="noopener noreferrer">
+                          Privacy Policy
+                        </a>
+                      </span>
+                    </label>
+                  </div>
                 </div>
               )}
 
