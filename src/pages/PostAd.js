@@ -1143,6 +1143,8 @@ if (options?.error) {
                       <option value="Birds">Birds</option>
                       <option value="Horse">Horse</option>
                       <option value="Cow">Cow</option>
+                      <option value="Goat">Goat</option>
+                      <option value="Fish">Fish</option>
                       <option value="Exotics">Exotics</option>
                       <option value="Other">Other</option>
                     </select>
