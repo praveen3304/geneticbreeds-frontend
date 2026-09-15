@@ -87,7 +87,7 @@ const INDIA_SECTIONS = [
       },
       {
         title: "13. Governing Law & Disputes",
-        content: `These Terms & Conditions are governed by and construed in accordance with the laws of India. Any disputes arising from the use of this platform shall be subject to the exclusive jurisdiction of the competent courts in India.\n\nIn the event of a dispute, we encourage users to first contact us at geneticbreeds@gmail.com to seek an amicable resolution before pursuing legal action.`,
+        content: `These Terms & Conditions are governed by and construed in accordance with the laws of India. Any disputes arising from the use of this platform shall be subject to the exclusive jurisdiction of the competent courts in Chennai, Tamil Nadu, India.\n\nIn the event of a dispute, we encourage users to first contact us at geneticbreeds@gmail.com to seek an amicable resolution before pursuing legal action.\n\nIf a dispute cannot be resolved amicably within 30 days, it shall be referred to and finally resolved by arbitration under the Arbitration and Conciliation Act, 1996. The arbitration shall be conducted by a sole arbitrator appointed mutually by both parties, seated in Chennai, India, and conducted in the English language. The arbitral award shall be final and binding on both parties.`,
       },
       {
         title: "14. Exotic & Rare Animals Policy",
@@ -120,6 +120,10 @@ const INDIA_SECTIONS = [
       {
         title: "21. Contact",
         content: `For questions about these Terms & Conditions, please contact us at:\n\nEmail: geneticbreeds@gmail.com\n\nWe aim to respond to all enquiries within 3–5 business days.`,
+      },
+      {
+        title: "22. Grievance Officer",
+        content: `In accordance with the Information Technology Act, 2000 and the rules made thereunder, including the Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules, 2021, the details of the Grievance Officer are provided below:\n\nGrievance Officer\nEmail: geneticbreeds@gmail.com\n\nThe Grievance Officer will acknowledge complaints within 24 hours and endeavour to resolve them within 15 days of receipt, in accordance with applicable law.`,
       },
     ],
   },
@@ -323,7 +327,7 @@ const INTERNATIONAL_SECTIONS = [
       },
       {
         title: "13. Governing Law & Disputes",
-        content: `These Terms & Conditions are governed by applicable law. Users are responsible for complying with the laws of their own country when using this platform.\n\nIn the event of a dispute, we encourage users to first contact us at geneticbreeds@gmail.com to seek an amicable resolution. If a resolution cannot be reached, disputes may be referred to binding arbitration or the appropriate legal jurisdiction as agreed upon by both parties.`,
+        content: `These Terms & Conditions are governed by the laws of India. Users are also responsible for complying with the laws of their own country when using this platform.\n\nIn the event of a dispute, we encourage users to first contact us at geneticbreeds@gmail.com to seek an amicable resolution. If a resolution cannot be reached within 30 days, the dispute shall be referred to and finally resolved by binding arbitration under the Arbitration and Conciliation Act, 1996 (India), conducted by a sole arbitrator appointed mutually by both parties, seated in Chennai, India, in the English language. The arbitral award shall be final and binding on both parties, subject to applicable local consumer protection laws that cannot be waived by agreement.`,
       },
       {
         title: "14. Exotic & Rare Animals Policy",
