@@ -28,6 +28,7 @@ export default function AuthModal({ type, onClose, onSuccess }) {
   const [submitting, setSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -83,6 +84,11 @@ export default function AuthModal({ type, onClose, onSuccess }) {
       if (isRegister) {
         if (form.password !== form.confirmPassword) {
           setError("Passwords do not match.");
+          return;
+        }
+
+        if (!agreedToTerms) {
+          setError("Please agree to the Terms & Conditions and Privacy Policy.");
           return;
         }
 
@@ -375,6 +381,27 @@ export default function AuthModal({ type, onClose, onSuccess }) {
                     </div>
                   </div>
                 </div>
+
+                <div style={termsCheckboxWrapStyle}>
+                  <label style={termsCheckboxLabelStyle}>
+                    <input
+                      type="checkbox"
+                      checked={agreedToTerms}
+                      onChange={(e) => setAgreedToTerms(e.target.checked)}
+                      required
+                    />
+                    <span>
+                      I agree to the{" "}
+                      <a href="/terms" target="_blank" rel="noopener noreferrer">
+                        Terms & Conditions
+                      </a>{" "}
+                      and{" "}
+                      <a href="/terms" target="_blank" rel="noopener noreferrer">
+                        Privacy Policy
+                      </a>
+                    </span>
+                  </label>
+                </div>
               )}
 
               <button type="submit" disabled={submitting} style={submitButtonStyle}>
@@ -544,6 +571,20 @@ const inputStyle = {
   color: "#111827",
   outline: "none",
   boxSizing: "border-box",
+};
+
+const termsCheckboxWrapStyle = {
+  marginTop: "10px",
+  marginBottom: "4px",
+};
+
+const termsCheckboxLabelStyle = {
+  display: "flex",
+  alignItems: "flex-start",
+  gap: "8px",
+  fontSize: "13px",
+  color: "#374151",
+  cursor: "pointer",
 };
 
 const passwordWrapStyle = {
