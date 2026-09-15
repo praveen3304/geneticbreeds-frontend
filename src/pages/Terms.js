@@ -601,7 +601,7 @@ export default function LegalPage() {
                 cursor: "pointer",
               }}
             >
-              {copied ? "Copied!" : "Copy Full Terms Text"}
+              {copied ? "Copied!" : "Copy All Legal Text (All Tabs)"}
             </button>
           )}
         </div>
