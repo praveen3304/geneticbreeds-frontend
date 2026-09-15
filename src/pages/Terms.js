@@ -510,6 +510,7 @@ export default function LegalPage() {
   const [activeTab, setActiveTab] = useState("terms");
   const [openItems, setOpenItems] = useState({});
   const [scrolled, setScrolled] = useState(false);
+  const [copied, setCopied] = useState(false);
   const contentRef = useRef(null);
 
   useEffect(() => {
@@ -519,6 +520,21 @@ export default function LegalPage() {
   }, []);
 
   const LEGAL_SECTIONS = region === "india" ? INDIA_SECTIONS : INTERNATIONAL_SECTIONS;
+  const handleCopyTerms = () => {
+    const fullText = LEGAL_SECTIONS
+      .map(
+        (section) =>
+          section.label + "\n" + "=".repeat(section.label.length) + "\n\n" +
+          section.items
+            .map((item) => item.title + "\n" + item.content)
+            .join("\n\n")
+      )
+      .join("\n\n\n");
+    navigator.clipboard.writeText(fullText).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
 
   useEffect(() => {
     const section = LEGAL_SECTIONS.find((s) => s.id === activeTab);
@@ -566,6 +582,24 @@ export default function LegalPage() {
               : region === "india" ? "🇮🇳 Terms for Indian users" : "🌍 International Terms"
             }
           </p>
+          {isAdmin && (
+            <button
+              onClick={handleCopyTerms}
+              style={{
+                marginTop: "10px",
+                padding: "6px 14px",
+                fontSize: "12px",
+                fontWeight: "700",
+                borderRadius: "8px",
+                border: "1px solid rgba(255,255,255,0.4)",
+                background: "rgba(255,255,255,0.12)",
+                color: "#fff",
+                cursor: "pointer",
+              }}
+            >
+              {copied ? "Copied!" : "Copy Full Terms Text"}
+            </button>
+          )}
         </div>
       </div>
 
