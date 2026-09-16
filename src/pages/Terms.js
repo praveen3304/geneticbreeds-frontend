@@ -249,7 +249,7 @@ const INDIA_SECTIONS = [
       },
       {
         title: "5. Eligible Refund Cases",
-        content: `Refunds will only be considered in the following cases:\n• Double payment charged due to a verified technical error\n• Payment successfully deducted but service not delivered due to our system error\n• Unauthorised transaction reported to us within 24 hours of occurrence\n\nAll refund requests are subject to investigation and verification by our team.`,
+        content: `Refunds will only be considered in the following cases:\n• Double payment charged due to a verified technical error\n• Payment successfully deducted but service not delivered due to our system error\n• Unauthorised transaction reported to us within 7 days of occurrence\n\nAll refund requests are subject to investigation and verification by our team.`,
       },
       {
         title: "6. How to Request a Refund",
@@ -489,7 +489,7 @@ const INTERNATIONAL_SECTIONS = [
       },
       {
         title: "5. Eligible Refund Cases",
-        content: `Refunds will only be considered in the following cases:\n• Double payment charged due to a verified technical error\n• Payment successfully deducted but service not delivered due to our system error\n• Unauthorised transaction reported to us within 24 hours of occurrence\n\nAll refund requests are subject to investigation and verification by our team.`,
+        content: `Refunds will only be considered in the following cases:\n• Double payment charged due to a verified technical error\n• Payment successfully deducted but service not delivered due to our system error\n• Unauthorised transaction reported to us within 7 days of occurrence\n\nAll refund requests are subject to investigation and verification by our team.`,
       },
       {
         title: "6. How to Request a Refund",
