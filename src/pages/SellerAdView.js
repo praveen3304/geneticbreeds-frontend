@@ -87,7 +87,7 @@ export default function SellerAdView({ adId }) {
             </div>
             <h2 style={{ margin: "0 0 6px", fontSize: "20px", color: "#1f2559" }}>{ad.title || ad.breed || "Pet Ad"}</h2>
             <div style={{ fontSize: "18px", fontWeight: "800", color: "#b3122a", marginBottom: "10px" }}>
-              {ad.price ? `â‚¹${Number(ad.price).toLocaleString("en-IN")}` : ""}
+              {ad.price ? `₹${Number(ad.price).toLocaleString("en-IN")}` : ""}
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px 12px", fontSize: "13px", color: "#374151" }}>
               <div><strong>Breed:</strong> {ad.breed || "-"}</div>
@@ -107,7 +107,7 @@ export default function SellerAdView({ adId }) {
               onClick={() => navigate(-1)}
               style={{ padding: "8px 12px", borderRadius: "10px", border: "none", background: "rgba(255,255,255,0.14)", color: "#fff", fontWeight: "900", fontSize: "18px", cursor: "pointer" }}
             >
-              â†
+              ←
             </button>
           </div>
           <div style={{ flex: 1, overflowY: "auto", padding: "10px" }}>
