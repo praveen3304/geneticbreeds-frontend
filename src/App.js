@@ -221,13 +221,7 @@ export default function App() {
         </Routes>
       </div>
 
-      {/* 🔥 FOOTER FIXED */}
-      <footer style={{ textAlign: "center", padding: "20px", marginTop: "40px", background: "#0f172a" }}>
-        <Link to="/terms">Terms</Link> |{" "}
-        <Link to="/privacy">Privacy</Link> |{" "}
-        <Link to="/disclaimer">Disclaimer</Link> |{" "}
-        <Link to="/refund">Refund</Link>
-      </footer>
+
     </>
   );
 }
