@@ -984,8 +984,8 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
 
       <footer
         style={{
-          marginTop: "42px",
-          padding: "30px",
+          marginTop: "24px",
+          padding: "14px",
           background: "linear-gradient(135deg, #1f2937, #6b7280)",
           color: "white",
           textAlign: "center",
@@ -993,13 +993,13 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
           boxShadow: "0 -10px 30px rgba(0,0,0,0.25)",
         }}
       >
-        <div style={{ marginBottom: "10px" }}>
-          <a href="/about" style={{ color: "#fde68a", margin: "0 15px" }}>About</a>
-          <a href="/contact" style={{ color: "#fde68a", margin: "0 15px" }}>Contact</a>
-          <a href="/terms" style={{ color: "#fde68a", margin: "0 15px" }}>Terms & Conditions</a>
+        <div style={{ marginBottom: "6px", fontSize: "13px" }}>
+          <a href="/about" style={{ color: "#fde68a", margin: "0 10px" }}>About</a>
+          <a href="/contact" style={{ color: "#fde68a", margin: "0 10px" }}>Contact</a>
+          <a href="/terms" style={{ color: "#fde68a", margin: "0 10px" }}>Terms & Conditions</a>
         </div>
 
-        <div style={{ fontSize: "14px", opacity: 0.9 }}>
+        <div style={{ fontSize: "11px", opacity: 0.9 }}>
           © 2026 Genetic Breeds Pet Marketplace. All rights reserved.
         </div>
       </footer>
