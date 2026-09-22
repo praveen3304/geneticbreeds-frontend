@@ -22,15 +22,16 @@ if (typeof document !== "undefined") {
           gap: 12px !important;
         }
         .myads-imagewrap {
-          width: 100% !important;
+          width: 130px !important;
+          flex-shrink: 0 !important;
         }
         .myads-image {
-          width: 100% !important;
-          height: 200px !important;
+          width: 130px !important;
+          height: 130px !important;
         }
         .myads-noimage {
-          width: 100% !important;
-          height: 200px !important;
+          width: 130px !important;
+          height: 130px !important;
         }
         .myads-infogrid {
           grid-template-columns: repeat(2, 1fr) !important;
@@ -564,6 +565,7 @@ export default function MyAds() {
 
               return (
                 <div key={ad._id} style={cardStyle} className="myads-card">
+                  <div style={topSectionStyle} className="myads-topsection">
                   <div style={mediaColumnStyle}>
                     {ad.images && ad.images.length > 0 ? (
                       <div style={imageWrapStyle} className="myads-imagewrap">
@@ -639,6 +641,8 @@ export default function MyAds() {
                         </div>
                       </div>
                     </div>
+
+                    </div></div>
 
                     {ad.boostActive ? (
                       <div style={boostInfoCardStyle}>
@@ -738,7 +742,6 @@ export default function MyAds() {
                         {isActionLoading ? "Processing..." : "Delete"}
                       </button>
                     </div>
-                  </div>
                 </div>
               );
             })}
@@ -1086,9 +1089,16 @@ const cardStyle = {
   background: "#fff",
   position: "relative",
   display: "flex",
+  flexDirection: "column",
   gap: "18px",
   alignItems: "flex-start",
   boxShadow: "0 16px 40px rgba(15, 23, 42, 0.06)",
+};
+
+const topSectionStyle = {
+  display: "flex",
+  gap: "18px",
+  alignItems: "flex-start",
 };
 
 const mediaColumnStyle = {

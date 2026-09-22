@@ -1528,15 +1528,16 @@ body.landing-page {
     gap: 12px !important;
   }
   .myads-card .myads-imagewrap {
-    width: 100% !important;
+    width: 130px !important;
+    flex-shrink: 0 !important;
   }
   .myads-card .myads-imagewrap img {
-    width: 100% !important;
-    height: 200px !important;
+    width: 130px !important;
+    height: 130px !important;
   }
   .myads-noimage {
-    width: 100% !important;
-    height: 160px !important;
+    width: 130px !important;
+    height: 130px !important;
     box-sizing: border-box !important;
   }
   .myads-infogrid {
@@ -1574,15 +1575,16 @@ body.landing-page {
     gap: 12px !important;
   }
   .myads-card .myads-imagewrap {
-    width: 100% !important;
+    width: 130px !important;
+    flex-shrink: 0 !important;
   }
   .myads-card .myads-imagewrap img {
-    width: 100% !important;
-    height: 200px !important;
+    width: 130px !important;
+    height: 130px !important;
   }
   .myads-noimage {
-    width: 100% !important;
-    height: 160px !important;
+    width: 130px !important;
+    height: 130px !important;
     box-sizing: border-box !important;
   }
   .myads-infogrid {
@@ -1613,12 +1615,12 @@ body.landing-page {
 }
 @media (max-width: 768px) {
   .myads-imagewrap {
-    width: 100% !important;
-    height: 200px !important;
+    width: 130px !important;
+    height: 130px !important;
   }
   .myads-imagewrap img {
-    width: 100% !important;
-    height: 200px !important;
+    width: 130px !important;
+    height: 130px !important;
     object-fit: cover !important;
   }
 }
