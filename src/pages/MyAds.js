@@ -37,10 +37,15 @@ if (typeof document !== "undefined") {
           grid-template-columns: repeat(2, 1fr) !important;
         }
         .myads-actions {
-          flex-direction: column !important;
+          flex-direction: row !important;
+          gap: 8px !important;
         }
         .myads-actions button {
-          width: 100% !important;
+          flex: 1 !important;
+          width: auto !important;
+          min-width: 0 !important;
+          padding: 10px 4px !important;
+          font-size: 11px !important;
           text-align: center !important;
         }
         .myads-selectiongrid {
