@@ -44,8 +44,13 @@ if (typeof document !== "undefined") {
           flex: 1 !important;
           width: auto !important;
           min-width: 0 !important;
-          padding: 10px 4px !important;
-          font-size: 11px !important;
+          padding: 9px 2px !important;
+          font-size: 9px !important;
+          font-weight: 700 !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+          letter-spacing: -0.2px !important;
           text-align: center !important;
         }
         .myads-selectiongrid {
