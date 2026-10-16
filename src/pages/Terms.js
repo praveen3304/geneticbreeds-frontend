@@ -577,7 +577,7 @@ export default function LegalPage() {
           <p style={heroSubStyle}>
             Everything you need to know about using Genetic Breeds safely and legally.
           </p>
-          <p style={heroUpdatedStyle}>Last updated: April 2026</p>
+          
 
           {/* ── Region Note ── */}
           <p style={regionNoteStyle}>
@@ -800,7 +800,7 @@ function AccordionItem({ title, content, isOpen, onToggle, color, bg, border, in
 
 // ─── STYLES ───────────────────────────────────────────────────────────────────
 const pageStyle = { minHeight: "100vh", background: "#f8fafc", fontFamily: "'Georgia', 'Times New Roman', serif" };
-const heroStyle = { background: "linear-gradient(135deg, #7f1d1d 0%, #b91c1c 50%, #dc2626 100%)", padding: "60px 24px 50px", textAlign: "center", position: "relative", overflow: "hidden" };
+const heroStyle = { background: "linear-gradient(135deg, #7f1d1d 0%, #b91c1c 50%, #dc2626 100%)", padding: "28px 24px 22px", textAlign: "center", position: "relative", overflow: "hidden" };
 const heroInnerStyle = { maxWidth: "700px", margin: "0 auto", position: "relative", zIndex: 1 };
 const heroBadgeStyle = { display: "inline-block", background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.25)", borderRadius: "999px", padding: "6px 16px", fontSize: "11px", fontWeight: "700", letterSpacing: "1px", color: "#fff", marginBottom: "16px" };
 const heroTitleStyle = { margin: 0, fontSize: "clamp(28px, 5vw, 48px)", fontWeight: "900", color: "#fff", lineHeight: 1.1, fontFamily: "'Georgia', serif" };
