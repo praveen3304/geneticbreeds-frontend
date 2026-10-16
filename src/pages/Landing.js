@@ -28,6 +28,7 @@ export default function Landing({ onLogin, onRegister }) {
           ))}
         </div>
       </div>
+      <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 10, background: "#ffffff", borderTop: "1px solid #e5e7eb", padding: "8px 12px", display: "flex", flexWrap: "wrap", gap: "14px", justifyContent: "center", fontSize: "12px" }}><a href="/terms" style={{ color: "#6b7280", textDecoration: "none" }}>Terms &amp; Conditions</a><a href="/privacy" style={{ color: "#6b7280", textDecoration: "none" }}>Privacy Policy</a><a href="/refund" style={{ color: "#6b7280", textDecoration: "none" }}>Refund Policy</a><a href="/disclaimer" style={{ color: "#6b7280", textDecoration: "none" }}>Disclaimer</a><a href="/contact" style={{ color: "#6b7280", textDecoration: "none" }}>Contact Us</a></div>
       {!isMobile && <div style={{ width: "1px", background: "#e5e7eb", flexShrink: 0 }} />}
       <div style={{ flex: isMobile ? "unset" : "0 0 420px", background: "#ffffff", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: isMobile ? "16px 20px" : "60px 48px" }}>
         <div style={{ width: "100%", maxWidth: "340px" }}>

@@ -210,7 +210,7 @@ export default function App() {
           <Route path="/wishlist" element={isAuthed ? <Wishlist wishlist={wishlist} toggleWishlist={toggleWishlist} /> : <Navigate to="/" replace />} />
           <Route path="/post" element={isAuthed ? <PostAd /> : <Navigate to="/" replace />} />
           <Route path="/chats" element={isAuthed ? <Chats /> : <Navigate to="/" replace />} />
-          <Route path="/contact" element={isAuthed ? <Contact /> : <Navigate to="/" replace />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/about" element={<About />} />
           <Route path="/pet-licensing" element={<PetLicensing />} />
           <Route path="/pet/:id" element={<PetRedirect />} />
