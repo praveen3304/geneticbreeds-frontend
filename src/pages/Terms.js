@@ -583,7 +583,7 @@ export default function LegalPage() {
           <p style={regionNoteStyle}>
             {isAdmin
               ? `👑 Admin view — ${region === "india" ? "🇮🇳 Indian Terms" : "🌍 International Terms"} (change via Payment Mode in your profile)`
-              : region === "india" ? "🇮🇳 Terms for Indian users" : "🌍 International Terms"
+              : ""
             }
           </p>
           {isAdmin && (
