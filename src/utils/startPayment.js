@@ -1,3 +1,8 @@
+import { startUpiPayment } from "./startUpiPayment";
+
+// Set to false to go back to the Razorpay popup
+const USE_MANUAL_UPI = true;
+
 export const startPayment = async ({
   token,
   paymentFor,
@@ -5,9 +10,14 @@ export const startPayment = async ({
   boostDays = null,
   adId = null,
   onSuccess = null,
+  onSubmitted = null,
   onError = null,
 }) => {
   try {
+    if (USE_MANUAL_UPI) {
+      return await startUpiPayment({ token, paymentFor, planKey, boostDays, adId, onSubmitted, onError });
+    }
+
     const API_BASE = "https://genetic-breeds-backend.onrender.com/api";
 
     const storedUser = (() => {

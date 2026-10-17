@@ -92,6 +92,10 @@ export default function AdminNav() {
           Users
         </Link>
 
+        <Link to="/admin/upi-payments" style={linkStyle("/admin/upi-payments")}>
+          UPI Payments
+        </Link>
+
         <Link to="/admin/licences" style={linkStyle("/admin/licences")}>
           Licences
         </Link>

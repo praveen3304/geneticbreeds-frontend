@@ -180,6 +180,7 @@ export default function Plans() {
         token,
         paymentFor: "membership",
         planKey,
+        onSubmitted: () => { setBuyingPlan(""); },
         onSuccess: async () => {
           try {
             await fetchCredits();
