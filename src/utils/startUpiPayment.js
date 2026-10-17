@@ -23,7 +23,7 @@ const copyText = async (text) => {
   }
 };
 
-const showUpiModal = ({ token, upi, paymentFor }) =>
+const showUpiModal = ({ token, upi, paymentFor, onSubmitted }) =>
   new Promise((resolve) => {
     const overlay = make("div", {
       position: "fixed",
@@ -77,15 +77,20 @@ const showUpiModal = ({ token, upi, paymentFor }) =>
       boxSizing: "border-box",
     });
 
-    const renderDone = (data) => {
+    const renderDone = (data, problem = "") => {
       card.textContent = "";
-      card.appendChild(make("h3", { margin: "0 0 10px", fontSize: "18px" }, "Payment submitted"));
-      const doneText =
-        paymentFor === "membership"
-          ? "Thank you. Your plan will be activated after we verify your payment. After that, you can post ads using your plan credits."
-          : paymentFor === "boost"
-          ? "Thank you. Your boost will start after we verify your payment."
-          : "Thank you. We will verify your payment and activate it shortly.";
+      card.appendChild(
+        make("h3", { margin: "0 0 10px", fontSize: "18px" }, problem ? "Payment received" : "Payment submitted")
+      );
+      const doneText = problem
+        ? `We received your transaction ID, but something went wrong: ${problem} Please contact us with the reference below and we will fix it.`
+        : paymentFor === "membership"
+        ? "Thank you. Your plan will be activated after we verify your payment. After that, you can post ads using your plan credits."
+        : paymentFor === "boost"
+        ? "Thank you. Your boost will start after we verify your payment."
+        : paymentFor === "ad"
+        ? "Thank you. Your ad has been saved and will go live after we verify your payment."
+        : "Thank you. We will verify your payment and activate it shortly.";
       card.appendChild(
         make(
           "p",
@@ -234,7 +239,17 @@ const showUpiModal = ({ token, upi, paymentFor }) =>
           if (!response.ok) {
             throw new Error(data.message || data.error || "Could not submit the transaction ID");
           }
-          renderDone(data);
+          let problem = "";
+          if (typeof onSubmitted === "function") {
+            submit.textContent = "Finishing...";
+            try {
+              await onSubmitted(data);
+            } catch (callbackError) {
+              console.error("onSubmitted error:", callbackError);
+              problem = callbackError?.message || "Please try again.";
+            }
+          }
+          renderDone(data, problem);
         } catch (error) {
           errorBox.textContent = error.message || "Something went wrong. Try again.";
           submit.disabled = false;
@@ -278,15 +293,6 @@ export const startUpiPayment = async ({
     }
   };
 
-  if (paymentFor === "ad") {
-    fail(
-      new Error(
-        "Paying for a single ad by UPI is not available yet. Please buy a membership plan."
-      )
-    );
-    return;
-  }
-
   let outcome;
 
   try {
@@ -308,7 +314,7 @@ export const startUpiPayment = async ({
       throw new Error("Invalid UPI payment response");
     }
 
-    outcome = await showUpiModal({ token, upi: data.upiPayment, paymentFor });
+    outcome = await showUpiModal({ token, upi: data.upiPayment, paymentFor, onSubmitted });
   } catch (error) {
     console.error("startUpiPayment error:", error);
     fail(error);
@@ -316,9 +322,7 @@ export const startUpiPayment = async ({
   }
 
   if (outcome && outcome.status === "submitted") {
-    if (typeof onSubmitted === "function") {
-      await onSubmitted(outcome.data);
-    }
+    // onSubmitted already ran inside the popup, right after the transaction ID was accepted.
     return;
   }
 

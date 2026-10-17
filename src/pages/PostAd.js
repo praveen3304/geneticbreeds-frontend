@@ -523,7 +523,7 @@ React.useEffect(() => {
     );
   };
 
-  const finalizeSuccessfulPublish = () => {
+  const finalizeSuccessfulPublish = (successMessage = "Pet posted successfully.") => {
     localStorage.removeItem(DRAFT_KEY);
     resetFormState();
     setPublishModalOpen(false);
@@ -532,7 +532,7 @@ React.useEffect(() => {
     setSelectedMembershipPlan("");
     setSelectedBoostDays(0);
     setBoostModeOpen(false);
-    setInlineMessage("success", "Pet posted successfully.");
+    setInlineMessage("success", successMessage);
     navigate("/my-ads");
   };
 
@@ -556,16 +556,25 @@ React.useEffect(() => {
   };
 
   const handleDirectPublish = async () => {
+    if (
+      normalizeNumber(selectedBoostPlan?.days, 0) > 0 ||
+      Number(selectedBoostDays || 0) > 0
+    ) {
+      throw new Error(
+        "Boost can be added after your ad is live. Please choose No Boost to continue."
+      );
+    }
     const token = localStorage.getItem("gb_token");
     await startPayment({
       token,
       paymentFor: "ad",
-      onSuccess: async (verifyData) => {
-        const paymentId = verifyData?.payment?._id || null;
-        const data = await submitAd({ paymentId, publishMethod: "pay_now" });
+      onSubmitted: async (submitData) => {
+        const paymentId = submitData?.paymentId || null;
+        const data = await submitAd({ paymentId, publishMethod: "upi_pending" });
         if (data.error) throw new Error(data.error || "Failed to post pet");
-        const createdAdId = extractCreatedAdId(data);
-        await handleBoostAfterPublish(createdAdId);
+        finalizeSuccessfulPublish(
+          "Payment submitted. Your ad will go live after we verify your payment."
+        );
       },
       onError: (error) => { throw error || new Error("Payment failed"); },
     });
