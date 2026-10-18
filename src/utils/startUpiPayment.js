@@ -1,3 +1,5 @@
+import { upiQrDataUrl } from "./upiQr";
+
 const API_BASE = "https://genetic-breeds-backend.onrender.com/api";
 const THEME = "#7a0016";
 
@@ -118,7 +120,36 @@ const showUpiModal = ({ token, upi, paymentFor, onSubmitted }) =>
         make("div", { fontSize: "26px", fontWeight: "800", color: THEME, margin: "4px 0 12px" }, formatAmount(upi.amount))
       );
 
-      card.appendChild(make("div", { fontSize: "12px", color: "#6b7280" }, "Pay to this UPI ID"));
+      const qrWrap = make("div", {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        margin: "4px 0 12px",
+      });
+      try {
+        const qrImg = make("img", {
+          width: "200px",
+          height: "200px",
+          borderRadius: "8px",
+          border: "1px solid #e5e7eb",
+          background: "#ffffff",
+        });
+        qrImg.alt = "UPI QR code";
+        qrImg.src = upiQrDataUrl(upi.upiLink);
+        qrWrap.appendChild(qrImg);
+        qrWrap.appendChild(
+          make(
+            "div",
+            { fontSize: "12px", color: "#6b7280", marginTop: "6px", textAlign: "center" },
+            "Scan with any UPI app (GPay, PhonePe, Paytm)"
+          )
+        );
+      } catch (qrError) {
+        console.error("QR code error:", qrError);
+      }
+      card.appendChild(qrWrap);
+
+      card.appendChild(make("div", { fontSize: "12px", color: "#6b7280" }, "Or pay to this UPI ID"));
       const idRow = make("div", {
         display: "flex",
         gap: "8px",
@@ -172,7 +203,7 @@ const showUpiModal = ({ token, upi, paymentFor, onSubmitted }) =>
         make(
           "p",
           { fontSize: "12px", color: "#6b7280", margin: "10px 0 0", lineHeight: "1.5" },
-          "On a computer? Pay from your phone using the UPI ID above. The name shown in your UPI app will be the owner of Genetic Breeds."
+          "On a phone? Tap the button above. On a computer? Scan the QR code with your phone. The name shown in your UPI app will be the owner of Genetic Breeds."
         )
       );
       card.appendChild(
