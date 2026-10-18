@@ -44,10 +44,10 @@ const showUpiModal = ({ token, upi, paymentFor, onSubmitted }) =>
     const card = make("div", {
       background: "#ffffff",
       borderRadius: "16px",
-      padding: "22px",
+      padding: "16px",
       width: "100%",
       maxWidth: "380px",
-      maxHeight: "92vh",
+      maxHeight: "96vh",
       overflowY: "auto",
       fontFamily: "sans-serif",
       color: "#111827",
@@ -115,21 +115,33 @@ const showUpiModal = ({ token, upi, paymentFor, onSubmitted }) =>
     const renderForm = () => {
       card.textContent = "";
 
-      card.appendChild(make("h3", { margin: "0 0 4px", fontSize: "18px" }, "Pay by UPI"));
-      card.appendChild(
-        make("div", { fontSize: "26px", fontWeight: "800", color: THEME, margin: "4px 0 12px" }, formatAmount(upi.amount))
-      );
+      const compact = typeof window !== "undefined" && window.innerWidth < 600;
+      const qrSize = compact ? 120 : 150;
 
+      // Title and amount on one line
+      const header = make("div", {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "baseline",
+        marginBottom: "8px",
+      });
+      header.appendChild(make("h3", { margin: "0", fontSize: "17px" }, "Pay by UPI"));
+      header.appendChild(
+        make("div", { fontSize: "24px", fontWeight: "800", color: THEME }, formatAmount(upi.amount))
+      );
+      card.appendChild(header);
+
+      // Small QR code
       const qrWrap = make("div", {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        margin: "4px 0 12px",
+        margin: "0 0 8px",
       });
       try {
         const qrImg = make("img", {
-          width: "200px",
-          height: "200px",
+          width: `${qrSize}px`,
+          height: `${qrSize}px`,
           borderRadius: "8px",
           border: "1px solid #e5e7eb",
           background: "#ffffff",
@@ -140,7 +152,7 @@ const showUpiModal = ({ token, upi, paymentFor, onSubmitted }) =>
         qrWrap.appendChild(
           make(
             "div",
-            { fontSize: "12px", color: "#6b7280", marginTop: "6px", textAlign: "center" },
+            { fontSize: "11px", color: "#6b7280", marginTop: "4px", textAlign: "center" },
             "Scan with any UPI app (GPay, PhonePe, Paytm)"
           )
         );
@@ -149,22 +161,29 @@ const showUpiModal = ({ token, upi, paymentFor, onSubmitted }) =>
       }
       card.appendChild(qrWrap);
 
-      card.appendChild(make("div", { fontSize: "12px", color: "#6b7280" }, "Or pay to this UPI ID"));
-      const idRow = make("div", {
-        display: "flex",
-        gap: "8px",
-        alignItems: "center",
-        margin: "4px 0 8px",
-      });
+      // Open the UPI app (phones)
+      const payLink = make(
+        "a",
+        { ...buttonStyle(true), marginTop: "0", padding: "10px" },
+        "Open UPI app to pay"
+      );
+      payLink.href = upi.upiLink;
+      card.appendChild(payLink);
+
+      // UPI ID as a compact fallback
+      card.appendChild(
+        make("div", { fontSize: "11px", color: "#6b7280", margin: "10px 0 3px" }, "Or pay to this UPI ID")
+      );
+      const idRow = make("div", { display: "flex", gap: "8px", alignItems: "center" });
       idRow.appendChild(
         make(
           "div",
           {
             flex: "1",
-            padding: "10px",
+            padding: "8px 10px",
             background: "#f3f4f6",
             borderRadius: "8px",
-            fontSize: "14px",
+            fontSize: "13px",
             fontWeight: "700",
             wordBreak: "break-all",
           },
@@ -174,7 +193,7 @@ const showUpiModal = ({ token, upi, paymentFor, onSubmitted }) =>
       const copyBtn = make(
         "button",
         {
-          padding: "10px 12px",
+          padding: "8px 10px",
           borderRadius: "8px",
           border: `1.5px solid ${THEME}`,
           background: "transparent",
@@ -195,36 +214,18 @@ const showUpiModal = ({ token, upi, paymentFor, onSubmitted }) =>
       idRow.appendChild(copyBtn);
       card.appendChild(idRow);
 
-      const payLink = make("a", buttonStyle(true), "Open UPI app to pay");
-      payLink.href = upi.upiLink;
-      card.appendChild(payLink);
-
-      card.appendChild(
-        make(
-          "p",
-          { fontSize: "12px", color: "#6b7280", margin: "10px 0 0", lineHeight: "1.5" },
-          "On a phone? Tap the button above. On a computer? Scan the QR code with your phone. The name shown in your UPI app will be the owner of Genetic Breeds."
-        )
-      );
-      card.appendChild(
-        make(
-          "p",
-          { fontSize: "12px", color: "#6b7280", margin: "6px 0 0" },
-          `If your app allows a note, write: ${upi.reference}`
-        )
-      );
-
+      // Transaction ID right below, visible without scrolling
       card.appendChild(
         make(
           "div",
-          { fontSize: "13px", fontWeight: "700", margin: "16px 0 6px" },
+          { fontSize: "13px", fontWeight: "700", margin: "12px 0 5px" },
           "After paying, enter the UPI transaction ID"
         )
       );
       const input = make("input", {
         width: "100%",
         boxSizing: "border-box",
-        padding: "11px",
+        padding: "10px",
         borderRadius: "8px",
         border: "1.5px solid #d1d5db",
         fontSize: "15px",
@@ -242,12 +243,16 @@ const showUpiModal = ({ token, upi, paymentFor, onSubmitted }) =>
       const errorBox = make("div", {
         color: "#b91c1c",
         fontSize: "12px",
-        marginTop: "6px",
-        minHeight: "16px",
+        marginTop: "4px",
+        minHeight: "14px",
       });
       card.appendChild(errorBox);
 
-      const submit = make("button", buttonStyle(true), "Submit transaction ID");
+      const submit = make(
+        "button",
+        { ...buttonStyle(true), marginTop: "4px", padding: "11px" },
+        "Submit transaction ID"
+      );
       submit.onclick = async () => {
         errorBox.textContent = "";
         const utr = input.value.trim();
@@ -289,15 +294,20 @@ const showUpiModal = ({ token, upi, paymentFor, onSubmitted }) =>
       };
       card.appendChild(submit);
 
+      // One short note below
       card.appendChild(
         make(
           "p",
-          { fontSize: "11px", color: "#9ca3af", margin: "8px 0 0", textAlign: "center" },
-          "Keep this window open until you have submitted the transaction ID."
+          { fontSize: "11px", color: "#6b7280", margin: "8px 0 0", lineHeight: "1.4" },
+          `On a phone, tap the button above; on a computer, scan the QR with your phone. The payee name shown will be the owner of Genetic Breeds. Payment note (if asked): ${upi.reference}. Keep this window open until you submit the transaction ID.`
         )
       );
 
-      const cancel = make("button", buttonStyle(false), "Cancel");
+      const cancel = make(
+        "button",
+        { ...buttonStyle(false), marginTop: "8px", padding: "9px" },
+        "Cancel"
+      );
       cancel.onclick = () => closeModal({ status: "cancelled" });
       card.appendChild(cancel);
     };
