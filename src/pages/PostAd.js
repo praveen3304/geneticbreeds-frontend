@@ -583,16 +583,27 @@ React.useEffect(() => {
   const handleMembershipPurchaseAndPublish = async () => {
     const token = localStorage.getItem("gb_token");
     if (!selectedMembershipPlan) throw new Error("Please select a membership plan first.");
+    if (
+      normalizeNumber(selectedBoostPlan?.days, 0) > 0 ||
+      Number(selectedBoostDays || 0) > 0
+    ) {
+      throw new Error(
+        "Boost can be added after your ad is live. Please choose No Boost to continue."
+      );
+    }
     await startPayment({
       token,
       paymentFor: "membership",
       planKey: selectedMembershipPlan,
-      onSuccess: async (verifyData) => {
-        const paymentId = verifyData?.payment?._id || null;
-        const data = await submitAd({ paymentId, publishMethod: "membership_credit" });
-        if (data.error) throw new Error(data.error || "Failed to post pet using membership");
-        const createdAdId = extractCreatedAdId(data);
-        await handleBoostAfterPublish(createdAdId);
+      doneMessage:
+        "Thank you. Your plan and your ad are under review and will go live once your payment is verified. You can track it in My Ads.",
+      onSubmitted: async (submitData) => {
+        const paymentId = submitData?.paymentId || null;
+        const data = await submitAd({ paymentId, publishMethod: "upi_pending" });
+        if (data.error) throw new Error(data.error || "Failed to post pet");
+        finalizeSuccessfulPublish(
+          "Payment submitted. Your plan and your ad will go live once we verify your payment."
+        );
       },
       onError: (error) => { throw error || new Error("Membership payment failed"); },
     });

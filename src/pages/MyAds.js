@@ -654,6 +654,23 @@ export default function MyAds() {
 
                     </div></div>
 
+                    {String(ad.status || "").toLowerCase() === "pending" && (
+                      <div
+                        style={{
+                          margin: "10px 0 0",
+                          padding: "10px 12px",
+                          borderRadius: "10px",
+                          background: "#fffbeb",
+                          border: "1px solid #fde68a",
+                          color: "#92400e",
+                          fontSize: "13px",
+                          fontWeight: "600",
+                        }}
+                      >
+                        Under review. This ad will go live once your payment is verified.
+                      </div>
+                    )}
+
                     {ad.boostActive ? (
                       <div style={boostInfoCardStyle}>
                         <div style={boostInfoTitleStyle}>Boost Active</div>

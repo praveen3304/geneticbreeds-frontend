@@ -25,7 +25,7 @@ const copyText = async (text) => {
   }
 };
 
-const showUpiModal = ({ token, upi, paymentFor, onSubmitted }) =>
+const showUpiModal = ({ token, upi, paymentFor, onSubmitted, doneMessage }) =>
   new Promise((resolve) => {
     const overlay = make("div", {
       position: "fixed",
@@ -86,6 +86,8 @@ const showUpiModal = ({ token, upi, paymentFor, onSubmitted }) =>
       );
       const doneText = problem
         ? `We received your transaction ID, but something went wrong: ${problem} Please contact us with the reference below and we will fix it.`
+        : doneMessage
+        ? doneMessage
         : paymentFor === "membership"
         ? "Thank you. Your plan will be activated after we verify your payment. After that, you can post ads using your plan credits."
         : paymentFor === "boost"
@@ -322,6 +324,7 @@ export const startUpiPayment = async ({
   boostDays = null,
   adId = null,
   onSubmitted = null,
+  doneMessage = null,
   onError = null,
 }) => {
   // Note: the caller's onError may throw on purpose (PostAd.js does), so it is
@@ -355,7 +358,13 @@ export const startUpiPayment = async ({
       throw new Error("Invalid UPI payment response");
     }
 
-    outcome = await showUpiModal({ token, upi: data.upiPayment, paymentFor, onSubmitted });
+    outcome = await showUpiModal({
+      token,
+      upi: data.upiPayment,
+      paymentFor,
+      onSubmitted,
+      doneMessage,
+    });
   } catch (error) {
     console.error("startUpiPayment error:", error);
     fail(error);
