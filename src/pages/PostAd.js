@@ -675,6 +675,23 @@ if (result.banned) {
 }
 
     // ── Image check
+    // Mandatory location and seller details (Licence is optional)
+    const missingFields = [
+      ["State", form.state],
+      ["City", form.city],
+      ["Pincode", form.pincode],
+      ["Location", form.location],
+      ["Owner Name", form.ownerName],
+      ["Phone", form.phone],
+    ]
+      .filter(([, value]) => !String(value || "").trim())
+      .map(([label]) => label);
+
+    if (missingFields.length > 0) {
+      setFormError(`Please fill in: ${missingFields.join(", ")}.`);
+      return;
+    }
+
     if (!form.images || form.images.length === 0) {
       setFormError("Please upload at least one image before posting.");
       return;
@@ -1229,19 +1246,19 @@ if (options?.error) {
                   </div>
                   <div style={fieldStyle}>
                     <label style={labelStyle}>State</label>
-                    <input type="text" name="state" placeholder="Tamil Nadu" value={form.state} onChange={handleChange} style={inputStyle} />
+                    <input type="text" name="state" placeholder="Tamil Nadu" value={form.state} onChange={handleChange} required style={inputStyle} />
                   </div>
                   <div style={fieldStyle}>
                     <label style={labelStyle}>City</label>
-                    <input type="text" name="city" placeholder="Chennai" value={form.city} onChange={handleChange} style={inputStyle} />
+                    <input type="text" name="city" placeholder="Chennai" value={form.city} onChange={handleChange} required style={inputStyle} />
                   </div>
                   <div style={fieldStyle}>
                     <label style={labelStyle}>Pincode</label>
-                    <input type="text" name="pincode" placeholder="600001" value={form.pincode} onChange={handleChange} style={inputStyle} />
+                    <input type="text" name="pincode" placeholder="600001" value={form.pincode} onChange={handleChange} required style={inputStyle} />
                   </div>
                   <div style={{ ...fieldStyle, gridColumn: "1 / -1" }}>
                     <label style={labelStyle}>Location</label>
-                    <input type="text" name="location" placeholder="Street / Area / Nearby landmark" value={form.location} onChange={handleChange} style={inputStyle} />
+                    <input type="text" name="location" placeholder="Street / Area / Nearby landmark" value={form.location} onChange={handleChange} required style={inputStyle} />
                   </div>
                 </div>
               </div>
@@ -1251,11 +1268,11 @@ if (options?.error) {
                 <div style={gridStyle}>
                   <div style={fieldStyle}>
                     <label style={labelStyle}>Owner Name</label>
-                    <input type="text" name="ownerName" placeholder="Your full name" value={form.ownerName} onChange={handleChange} style={inputStyle} />
+                    <input type="text" name="ownerName" placeholder="Your full name" value={form.ownerName} onChange={handleChange} required style={inputStyle} />
                   </div>
                   <div style={fieldStyle}>
                     <label style={labelStyle}>Phone</label>
-                    <input type="text" name="phone" placeholder="+91 9876543210" value={form.phone} onChange={handleChange} style={inputStyle} />
+                    <input type="text" name="phone" placeholder="+91 9876543210" value={form.phone} onChange={handleChange} required style={inputStyle} />
                   </div>
                   <div style={{ ...fieldStyle, gridColumn: "1 / -1" }}>
                     <label style={labelStyle}>Licence</label>
