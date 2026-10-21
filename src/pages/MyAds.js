@@ -735,7 +735,7 @@ export default function MyAds() {
                         </button>
                       )}
 
-                      {String(ad.status || "").toLowerCase() !== "sold" && (
+                      {!["sold", "pending"].includes(String(ad.status || "").toLowerCase()) && (
                         <button
                           type="button"
                           onClick={() => handleMarkSold(ad._id)}
