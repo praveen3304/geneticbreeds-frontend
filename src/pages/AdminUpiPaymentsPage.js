@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import AdminNav from "../components/AdminNav";
 
 const API_BASE_URL = "https://genetic-breeds-backend.onrender.com";
+const THEME = "#7a0016";
+const RUPEE = "\u20B9";
 
 const boxStyle = {
   background: "#fff",
@@ -11,15 +13,8 @@ const boxStyle = {
   marginBottom: "12px",
 };
 
-const rowStyle = {
-  display: "flex",
-  gap: "8px",
-  flexWrap: "wrap",
-  fontSize: "14px",
-  marginBottom: "6px",
-};
-
-const labelStyle = { color: "#6b7280", minWidth: "90px" };
+const labelStyle = { fontSize: "11px", color: "#6b7280", marginBottom: "2px" };
+const valueStyle = { fontSize: "14px", fontWeight: "600", color: "#111827", wordBreak: "break-word" };
 
 const buttonStyle = (bg, disabled) => ({
   padding: "10px 18px",
@@ -46,56 +41,151 @@ const describePayment = (item) => {
     return `Membership: ${item.planName || "plan"}`;
   }
   if (item.paymentFor === "boost") return "Ad boost";
+  if (item.paymentFor === "ad") return "Single ad";
   return item.paymentFor || "Payment";
 };
+
+const joinParts = (...parts) => parts.filter(Boolean).join(", ");
+
+function Detail({ label, value }) {
+  return (
+    <div style={{ minWidth: "120px", flex: "1 1 120px" }}>
+      <div style={labelStyle}>{label}</div>
+      <div style={valueStyle}>{value || "-"}</div>
+    </div>
+  );
+}
+
+function AdBlock({ ad, paymentFor }) {
+  if (!ad) {
+    return (
+      <div
+        style={{
+          background: "#f9fafb",
+          border: "1px dashed #d1d5db",
+          borderRadius: "10px",
+          padding: "12px",
+          fontSize: "13px",
+          color: "#6b7280",
+          marginBottom: "12px",
+        }}
+      >
+        {paymentFor === "membership"
+          ? "No ad is attached to this payment (plan purchase only)."
+          : "No ad details found for this payment."}
+      </div>
+    );
+  }
+
+  const photo = ad.images && ad.images.length > 0 ? ad.images[0] : "";
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        gap: "14px",
+        flexWrap: "wrap",
+        marginBottom: "12px",
+        padding: "12px",
+        background: "#fffdf7",
+        border: "1px solid #fde68a",
+        borderRadius: "12px",
+      }}
+    >
+      {photo ? (
+        <img
+          src={photo}
+          alt={ad.title || "Ad"}
+          style={{ width: "120px", height: "120px", objectFit: "cover", borderRadius: "12px" }}
+        />
+      ) : (
+        <div
+          style={{
+            width: "120px",
+            height: "120px",
+            borderRadius: "12px",
+            background: "#f3f4f6",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "12px",
+            color: "#6b7280",
+          }}
+        >
+          No image
+        </div>
+      )}
+
+      <div style={{ flex: "1 1 260px", minWidth: "0" }}>
+        <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
+          <div style={{ fontWeight: "800", fontSize: "16px" }}>{ad.title || "Untitled"}</div>
+          <span
+            style={{
+              fontSize: "11px",
+              fontWeight: "700",
+              padding: "3px 8px",
+              borderRadius: "999px",
+              background: "#fef3c7",
+              color: "#92400e",
+            }}
+          >
+            {ad.status || "no status"}
+          </span>
+        </div>
+        <div style={{ fontSize: "12px", color: "#6b7280", margin: "2px 0 10px" }}>
+          Ad code: <strong>{ad.adCode || "N/A"}</strong>
+        </div>
+
+        <div style={{ display: "flex", gap: "10px 16px", flexWrap: "wrap" }}>
+          <Detail label="Breed" value={ad.breed} />
+          <Detail label="Category" value={ad.category} />
+          <Detail label="Gender" value={ad.gender} />
+          <Detail label="Age" value={ad.age} />
+          <Detail label="Price" value={ad.price ? `${RUPEE}${Number(ad.price).toLocaleString("en-IN")}` : ""} />
+          <Detail label="Owner name" value={ad.ownerName} />
+          <Detail label="Phone" value={ad.phone} />
+          <Detail label="Location" value={joinParts(ad.location, ad.city, ad.state, ad.pincode, ad.country)} />
+          <Detail label="Licence" value={ad.licence} />
+          <Detail label="Certificate" value={ad.certificate} />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function PaymentCard({ item, adInfo, busy, onApprove, onReject }) {
   const canAct = item.status === "verification_pending";
 
   return (
     <div style={boxStyle}>
-      <div style={{ fontWeight: "800", fontSize: "16px", marginBottom: "8px" }}>
-        {item.currency} {item.amount} - {describePayment(item)}
-      </div>
-      <div style={rowStyle}>
-        <span style={labelStyle}>UTR</span>
-        <strong>{item.utr || "not submitted"}</strong>
-      </div>
-      <div style={rowStyle}>
-        <span style={labelStyle}>User</span>
-        <span>
-          {item.user?.name || "Unknown"} ({item.user?.email || "no email"})
-        </span>
-      </div>
-      <div style={rowStyle}>
-        <span style={labelStyle}>Reference</span>
-        <span>{item.reference}</span>
-      </div>
-      <div style={rowStyle}>
-        <span style={labelStyle}>Status</span>
-        <span>
-          {item.status} / {item.verificationStatus}
-        </span>
-      </div>
-      <div style={rowStyle}>
-        <span style={labelStyle}>Created</span>
-        <span>{formatDate(item.createdAt)}</span>
-      </div>
-      {adInfo ? (
-        <div style={rowStyle}>
-          <span style={labelStyle}>Ad</span>
-          <span>
-            {adInfo.title || "Untitled"} ({adInfo.status || "no status"})
-          </span>
+      <AdBlock ad={adInfo} paymentFor={item.paymentFor} />
+
+      <div
+        style={{
+          background: "#f0f9ff",
+          border: "1px solid #bae6fd",
+          borderRadius: "12px",
+          padding: "12px",
+        }}
+      >
+        <div style={{ fontWeight: "800", fontSize: "15px", marginBottom: "8px" }}>
+          Payment: {item.currency} {item.amount} - {describePayment(item)}
         </div>
-      ) : null}
+        <div style={{ display: "flex", gap: "10px 16px", flexWrap: "wrap" }}>
+          <Detail label="UTR" value={item.utr || "not submitted"} />
+          <Detail label="Reference" value={item.reference} />
+          <Detail label="User" value={`${item.user?.name || "Unknown"} (${item.user?.email || "no email"})`} />
+          <Detail label="Status" value={`${item.status} / ${item.verificationStatus}`} />
+          <Detail label="Created" value={formatDate(item.createdAt)} />
+        </div>
+      </div>
 
       {canAct ? (
         <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
           <button
             type="button"
             disabled={busy}
-            onClick={() => onApprove(item)}
+            onClick={() => onApprove(item, adInfo)}
             style={buttonStyle("#15803d", busy)}
           >
             {busy ? "Working..." : "Approve"}
@@ -103,7 +193,7 @@ function PaymentCard({ item, adInfo, busy, onApprove, onReject }) {
           <button
             type="button"
             disabled={busy}
-            onClick={() => onReject(item)}
+            onClick={() => onReject(item, adInfo)}
             style={buttonStyle("#b91c1c", busy)}
           >
             Reject
@@ -128,13 +218,14 @@ export default function AdminUpiPaymentsPage() {
   const [searching, setSearching] = useState(false);
   const [busyId, setBusyId] = useState("");
   const [message, setMessage] = useState({ type: "", text: "" });
+  const [dialog, setDialog] = useState(null);
+  const [reason, setReason] = useState("No matching credit in bank");
 
   const loadPending = useCallback(async () => {
     try {
-      const res = await fetch(
-        `${API_BASE_URL}/api/payments/admin/upi/pending`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const res = await fetch(`${API_BASE_URL}/api/payments/admin/upi/pending`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || data.message || "Failed to load");
       setPending(data.payments || []);
@@ -197,37 +288,39 @@ export default function AdminUpiPaymentsPage() {
     }
   };
 
-  const approve = async (item) => {
-    const ok = window.confirm(
-      `Approve ${item.currency} ${item.amount} from ${item.user?.name || "this user"}?\n\n` +
-        `Only approve if you can see UTR ${item.utr} for this exact amount in your bank account.`
-    );
-    if (!ok) return;
-    setBusyId(item.paymentId);
-    await callAction("approve", { paymentId: item.paymentId }, `Approved UTR ${item.utr}`);
+  const openApprove = (item, adInfo) => setDialog({ type: "approve", item, adInfo });
+
+  const openReject = (item, adInfo) => {
+    setReason("No matching credit in bank");
+    setDialog({ type: "reject", item, adInfo });
   };
 
-  const reject = async (item) => {
-    const reason = window.prompt(
-      "Reason for rejecting (the user is not shown this):",
-      "No matching credit in bank"
-    );
-    if (reason === null) return;
+  const confirmDialog = async () => {
+    if (!dialog) return;
+    const { type, item } = dialog;
+    setDialog(null);
     setBusyId(item.paymentId);
-    await callAction(
-      "reject",
-      { paymentId: item.paymentId, reason },
-      `Rejected UTR ${item.utr}`
-    );
+    if (type === "approve") {
+      await callAction("approve", { paymentId: item.paymentId }, `Approved UTR ${item.utr}`);
+    } else {
+      await callAction(
+        "reject",
+        { paymentId: item.paymentId, reason },
+        `Rejected UTR ${item.utr}`
+      );
+    }
   };
+
+  const dialogItem = dialog ? dialog.item : null;
+  const dialogAd = dialog ? dialog.adInfo : null;
 
   return (
     <div style={{ padding: 20 }}>
       <AdminNav />
       <h1>UPI Payments</h1>
       <p style={{ color: "#6b7280", marginTop: 0 }}>
-        Approve a payment only after you can see the same UTR and the same amount in your bank
-        account.
+        Review the ad and the payment together. Approve only if the ad is fine to publish and you can
+        see the same UTR and the same amount in your bank account.
       </p>
 
       <div style={{ ...boxStyle, display: "flex", gap: "10px", flexWrap: "wrap" }}>
@@ -254,7 +347,7 @@ export default function AdminUpiPaymentsPage() {
           type="button"
           onClick={search}
           disabled={searching}
-          style={buttonStyle("#7a0016", searching)}
+          style={buttonStyle(THEME, searching)}
         >
           {searching ? "Searching..." : "Search"}
         </button>
@@ -279,8 +372,8 @@ export default function AdminUpiPaymentsPage() {
             item={searchResult.payment}
             adInfo={searchResult.ad}
             busy={busyId === searchResult.payment.paymentId}
-            onApprove={approve}
-            onReject={reject}
+            onApprove={openApprove}
+            onReject={openReject}
           />
         </div>
       ) : null}
@@ -295,13 +388,112 @@ export default function AdminUpiPaymentsPage() {
           <PaymentCard
             key={item.paymentId}
             item={item}
-            adInfo={null}
+            adInfo={item.ad || null}
             busy={busyId === item.paymentId}
-            onApprove={approve}
-            onReject={reject}
+            onApprove={openApprove}
+            onReject={openReject}
           />
         ))
       )}
+
+      {dialog ? (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.55)",
+            zIndex: 10000,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "16px",
+          }}
+        >
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: "16px",
+              padding: "20px",
+              width: "100%",
+              maxWidth: "420px",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
+            }}
+          >
+            <h3 style={{ margin: "0 0 8px" }}>
+              {dialog.type === "approve" ? "Approve this payment?" : "Reject this payment?"}
+            </h3>
+            <p style={{ margin: "0 0 6px", fontSize: "14px" }}>
+              <strong>
+                {dialogItem.currency} {dialogItem.amount}
+              </strong>{" "}
+              from {dialogItem.user?.name || "this user"} - {describePayment(dialogItem)}
+            </p>
+            <p style={{ margin: "0 0 10px", fontSize: "13px", color: "#6b7280" }}>
+              UTR {dialogItem.utr}
+              {dialogAd ? ` - Ad: ${dialogAd.title || "Untitled"} (${dialogAd.adCode || "no code"})` : ""}
+            </p>
+
+            {dialog.type === "approve" ? (
+              <div
+                style={{
+                  background: "#fffbeb",
+                  border: "1px solid #fde68a",
+                  borderRadius: "10px",
+                  padding: "10px 12px",
+                  fontSize: "13px",
+                  color: "#92400e",
+                  marginBottom: "14px",
+                }}
+              >
+                Approve only if you can see this UTR for exactly this amount in your bank account
+                {dialogAd ? ", and the ad details look fine to publish." : "."}
+              </div>
+            ) : (
+              <div style={{ marginBottom: "14px" }}>
+                <div style={labelStyle}>Reason (the user is not shown this)</div>
+                <textarea
+                  value={reason}
+                  onChange={(e) => setReason(e.target.value)}
+                  rows={3}
+                  style={{
+                    width: "100%",
+                    boxSizing: "border-box",
+                    padding: "10px",
+                    borderRadius: "8px",
+                    border: "1.5px solid #d1d5db",
+                    fontSize: "14px",
+                  }}
+                />
+              </div>
+            )}
+
+            <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
+              <button
+                type="button"
+                onClick={() => setDialog(null)}
+                style={{
+                  ...buttonStyle("#6b7280", false),
+                  background: "#fff",
+                  color: "#374151",
+                  border: "1.5px solid #d1d5db",
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmDialog}
+                style={buttonStyle(dialog.type === "approve" ? "#15803d" : "#b91c1c", false)}
+              >
+                {dialog.type === "approve" ? "Approve" : "Reject"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
