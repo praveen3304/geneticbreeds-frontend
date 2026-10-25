@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { startPayment } from "../utils/startPayment";
 
 const API_BASE_URL = "https://genetic-breeds-backend.onrender.com";
 
@@ -364,6 +365,31 @@ export default function MyAds() {
       });
 
       const data = await res.json();
+
+      if (!res.ok && /payment is required/i.test(String(data.error || ""))) {
+        // No boost credits left: pay for this boost by UPI instead
+        setActionLoadingId("");
+        setBoostModal({ open: false, ad: null, selectedDays: 7 });
+
+        await startPayment({
+          token,
+          paymentFor: "boost",
+          boostDays: days,
+          adId: ad._id,
+          onSubmitted: async () => {
+            setInlineMessage(
+              "success",
+              "Payment submitted. Your boost will start once we verify your payment."
+            );
+          },
+          onError: (error) => {
+            if (error && error.message !== "Payment cancelled") {
+              setInlineMessage("error", error.message || "Payment failed");
+            }
+          },
+        });
+        return;
+      }
 
       if (!res.ok) {
         setInlineMessage("error", data.error || "Failed to boost ad");
