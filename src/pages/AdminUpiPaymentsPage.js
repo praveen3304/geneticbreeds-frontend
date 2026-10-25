@@ -37,11 +37,14 @@ const formatDate = (value) => {
 };
 
 const describePayment = (item) => {
+  const boostNote =
+    item.paymentFor !== "boost" && item.boostDays > 0 ? ` + ${item.boostDays}-day boost` : "";
+
   if (item.paymentFor === "membership") {
-    return `Membership: ${item.planName || "plan"}`;
+    return `Membership: ${item.planName || "plan"}${boostNote}`;
   }
   if (item.paymentFor === "boost") return "Ad boost";
-  if (item.paymentFor === "ad") return "Single ad";
+  if (item.paymentFor === "ad") return `Single ad${boostNote}`;
   return item.paymentFor || "Payment";
 };
 

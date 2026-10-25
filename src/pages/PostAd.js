@@ -304,7 +304,7 @@ React.useEffect(() => {
             ? `Offer ${payNowCurrency} ${formatAmount(payNowAmount)}`
             : "Instant payment publishing",
         originalAmount: payNowOriginalAmount > 0 ? payNowOriginalAmount : null,
-        description: "Publish this ad instantly using direct payment.",
+        description: "Pay by UPI. Your ad goes live once your payment is verified.",
         available: true,
         accent: "#b91c1c",
         bg: "#fff7f7",
@@ -333,17 +333,6 @@ React.useEffect(() => {
         accent: "#7c3aed",
         bg: "#f5f3ff",
         border: "#ddd6fe",
-      },
-      {
-        key: "buy_membership",
-        title: "Buy Membership",
-        subtitle: "Get post credits and boost credits",
-        originalAmount: null,
-        description: "Best option for regular breeders and repeat sellers.",
-        available: true,
-        accent: "#a16207",
-        bg: "#fffbeb",
-        border: "#fde68a",
       },
     ];
   }, [publishOptions, isIndiaUser]);
@@ -556,18 +545,11 @@ React.useEffect(() => {
   };
 
   const handleDirectPublish = async () => {
-    if (
-      normalizeNumber(selectedBoostPlan?.days, 0) > 0 ||
-      Number(selectedBoostDays || 0) > 0
-    ) {
-      throw new Error(
-        "Boost can be added after your ad is live. Please choose No Boost to continue."
-      );
-    }
     const token = localStorage.getItem("gb_token");
     await startPayment({
       token,
       paymentFor: "ad",
+      boostDays: Number(selectedBoostDays || 0),
       onSubmitted: async (submitData) => {
         const paymentId = submitData?.paymentId || null;
         const data = await submitAd({ paymentId, publishMethod: "upi_pending" });
@@ -1540,6 +1522,18 @@ if (options?.error) {
                       );
                     })}
                   </div>
+                </div>
+
+                <div style={{ fontSize: "13px", color: "#6b7280", margin: "4px 2px 10px" }}>
+                  Posting often?{" "}
+                  <a
+                    href="/plans"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ color: "#7a0016", fontWeight: "700" }}
+                  >
+                    See membership plans
+                  </a>
                 </div>
 
                 {selectedPublishMethod === "buy_membership" && (
