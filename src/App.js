@@ -21,6 +21,7 @@ import AdminUsersPage from "./pages/AdminUsersPage";
 import AdminUpiPaymentsPage from "./pages/AdminUpiPaymentsPage";
 import AdminLicencesPage from "./pages/AdminLicencesPage";
 import Plans from "./pages/Plans";
+import PaymentNoticePopup from "./components/PaymentNoticePopup";
 import Profile from "./pages/Profile";
 import Landing from "./pages/Landing";
 import BrowsePets from "./pages/BrowsePets";
@@ -165,6 +166,7 @@ export default function App() {
     <>
       <Toaster position="top-right" />
       <PawAnimation />
+      <PaymentNoticePopup token={token} />
 
 {location.pathname !== "/" && (
         <Navbar

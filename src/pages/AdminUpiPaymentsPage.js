@@ -211,6 +211,15 @@ function PaymentCard({ item, adInfo, busy, onApprove, onReject }) {
   );
 }
 
+// Ready-made reasons. The text chosen here is what the customer reads.
+const REJECT_REASONS = [
+  "We could not find your payment in our bank account.",
+  "The amount you paid does not match the amount required.",
+  "The transaction ID you entered is not valid.",
+  "Your ad could not be approved because it does not meet our listing rules.",
+  "Other (see the details below).",
+];
+
 export default function AdminUpiPaymentsPage() {
   const token = localStorage.getItem("gb_token");
 
@@ -222,7 +231,8 @@ export default function AdminUpiPaymentsPage() {
   const [busyId, setBusyId] = useState("");
   const [message, setMessage] = useState({ type: "", text: "" });
   const [dialog, setDialog] = useState(null);
-  const [reason, setReason] = useState("No matching credit in bank");
+  const [reasonChoice, setReasonChoice] = useState(REJECT_REASONS[0]);
+  const [reasonDetails, setReasonDetails] = useState("");
 
   const loadPending = useCallback(async () => {
     try {
@@ -294,7 +304,8 @@ export default function AdminUpiPaymentsPage() {
   const openApprove = (item, adInfo) => setDialog({ type: "approve", item, adInfo });
 
   const openReject = (item, adInfo) => {
-    setReason("No matching credit in bank");
+    setReasonChoice(REJECT_REASONS[0]);
+    setReasonDetails("");
     setDialog({ type: "reject", item, adInfo });
   };
 
@@ -308,7 +319,10 @@ export default function AdminUpiPaymentsPage() {
     } else {
       await callAction(
         "reject",
-        { paymentId: item.paymentId, reason },
+        {
+          paymentId: item.paymentId,
+          reason: `${reasonChoice}${reasonDetails.trim() ? ` ${reasonDetails.trim()}` : ""}`,
+        },
         `Rejected UTR ${item.utr}`
       );
     }
@@ -456,10 +470,31 @@ export default function AdminUpiPaymentsPage() {
               </div>
             ) : (
               <div style={{ marginBottom: "14px" }}>
-                <div style={labelStyle}>Reason (the user is not shown this)</div>
+                <div style={labelStyle}>Reason shown to the user</div>
+                <select
+                  value={reasonChoice}
+                  onChange={(e) => setReasonChoice(e.target.value)}
+                  style={{
+                    width: "100%",
+                    boxSizing: "border-box",
+                    padding: "10px",
+                    borderRadius: "8px",
+                    border: "1.5px solid #d1d5db",
+                    fontSize: "14px",
+                    marginBottom: "8px",
+                    background: "#fff",
+                  }}
+                >
+                  {REJECT_REASONS.map((r) => (
+                    <option key={r} value={r}>
+                      {r}
+                    </option>
+                  ))}
+                </select>
+                <div style={labelStyle}>More details (optional, the user sees this too)</div>
                 <textarea
-                  value={reason}
-                  onChange={(e) => setReason(e.target.value)}
+                  value={reasonDetails}
+                  onChange={(e) => setReasonDetails(e.target.value)}
                   rows={3}
                   style={{
                     width: "100%",
