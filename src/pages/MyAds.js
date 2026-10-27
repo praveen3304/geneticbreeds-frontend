@@ -680,6 +680,36 @@ export default function MyAds() {
 
                     </div></div>
 
+                    {ad.status === "Rejected" && (
+                      <div
+                        style={{
+                          margin: "12px 0",
+                          padding: "12px 14px",
+                          borderRadius: "12px",
+                          background: "#fef2f2",
+                          border: "1px solid #fecaca",
+                          color: "#7f1d1d",
+                          fontSize: "14px",
+                          lineHeight: 1.5,
+                        }}
+                      >
+                        <div style={{ fontWeight: 700, marginBottom: "4px" }}>
+                          Why this ad was not approved
+                        </div>
+                        <div>{ad.rejectionReason || "This ad was not approved."}</div>
+                        <div style={{ marginTop: "6px" }}>
+                          If you have already paid or have a question, please email{" "}
+                          <a
+                            href="mailto:geneticbreeds@gmail.com"
+                            style={{ color: "#991b1b", fontWeight: 700 }}
+                          >
+                            geneticbreeds@gmail.com
+                          </a>{" "}
+                          with your transaction ID and we will sort it out.
+                        </div>
+                      </div>
+                    )}
+
                     {String(ad.status || "").toLowerCase() === "pending" && (
                       <div
                         style={{
