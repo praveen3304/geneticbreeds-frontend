@@ -116,12 +116,27 @@ const downloadCsv = (groups) => {
   URL.revokeObjectURL(url);
 };
 
+// Ready-made reasons. The text chosen here is what the customer reads.
+const REJECT_REASONS = [
+  "We could not find your payment in our bank account.",
+  "The amount you paid does not match the amount required.",
+  "The transaction ID you entered is not valid.",
+  "Your ad could not be approved because it does not meet our listing rules.",
+  "Other (see the details below).",
+];
+
+const isWaiting = (payment) =>
+  payment.status === "verification_pending" && !!payment.txn;
+
 export default function AdminDailyPostsPage() {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState({});
   const [search, setSearch] = useState("");
   const [statusTab, setStatusTab] = useState("all");
+  const [rejectDialog, setRejectDialog] = useState(null);
+  const [rejectReason, setRejectReason] = useState(REJECT_REASONS[0]);
+  const [rejectDetails, setRejectDetails] = useState("");
 
   const token = localStorage.getItem("gb_token");
   const isMobile = window.innerWidth < 768;
@@ -188,6 +203,65 @@ export default function AdminDailyPostsPage() {
     }
   };
 
+  const callUpi = async (action, body) => {
+    const res = await fetch(API_BASE_URL + "/api/payments/admin/upi/" + action, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.message || "Request failed");
+    return data;
+  };
+
+  const handleUpiApprove = async (pet) => {
+    const payment = pet.paymentDetails || {};
+    const ok = window.confirm(
+      "Approve this payment?\n\nTransaction ID: " +
+        payment.txn +
+        "\n\nOnly approve after you have seen this credit in the bank account."
+    );
+    if (!ok) return;
+
+    try {
+      setActionLoading((prev) => ({ ...prev, [pet._id + "approve"]: true }));
+      await callUpi("approve", { paymentId: payment._id });
+      fetchDailyPosts();
+    } catch (err) {
+      window.alert(err.message || "Approval failed");
+    } finally {
+      setActionLoading((prev) => ({ ...prev, [pet._id + "approve"]: false }));
+    }
+  };
+
+  const openReject = (pet) => {
+    setRejectReason(REJECT_REASONS[0]);
+    setRejectDetails("");
+    setRejectDialog(pet);
+  };
+
+  const confirmReject = async () => {
+    const pet = rejectDialog;
+    if (!pet) return;
+    const payment = pet.paymentDetails || {};
+    const reason =
+      rejectReason + (rejectDetails.trim() ? " " + rejectDetails.trim() : "");
+
+    try {
+      setActionLoading((prev) => ({ ...prev, [pet._id + "reject"]: true }));
+      await callUpi("reject", { paymentId: payment._id, reason });
+      setRejectDialog(null);
+      fetchDailyPosts();
+    } catch (err) {
+      window.alert(err.message || "Rejection failed");
+    } finally {
+      setActionLoading((prev) => ({ ...prev, [pet._id + "reject"]: false }));
+    }
+  };
+
   const filteredGroups = useMemo(() => {
     const keyword = search.trim().toLowerCase();
 
@@ -243,6 +317,89 @@ export default function AdminDailyPostsPage() {
   return (
     <div style={{ background: "#f9fafb", minHeight: "100vh" }}>
       <AdminNav />
+
+      {rejectDialog && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.45)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+            padding: "16px",
+          }}
+        >
+          <div
+            style={{
+              ...cardStyle,
+              padding: "20px",
+              width: "100%",
+              maxWidth: "460px",
+            }}
+          >
+            <h3 style={{ margin: "0 0 6px", color: "#111827" }}>Reject payment</h3>
+            <p style={{ margin: "0 0 14px", color: "#6b7280", fontSize: "13px" }}>
+              {rejectDialog.title} - UTR {rejectDialog.paymentDetails?.txn}
+            </p>
+
+            <div style={labelStyle}>Reason shown to the user</div>
+            <select
+              value={rejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
+              style={{
+                width: "100%",
+                boxSizing: "border-box",
+                padding: "10px",
+                borderRadius: "8px",
+                border: "1.5px solid #d1d5db",
+                fontSize: "14px",
+                marginBottom: "10px",
+                background: "#fff",
+              }}
+            >
+              {REJECT_REASONS.map((r) => (
+                <option key={r} value={r}>
+                  {r}
+                </option>
+              ))}
+            </select>
+
+            <div style={labelStyle}>More details (optional, the user sees this too)</div>
+            <textarea
+              value={rejectDetails}
+              onChange={(e) => setRejectDetails(e.target.value)}
+              rows={3}
+              style={{
+                width: "100%",
+                boxSizing: "border-box",
+                padding: "10px",
+                borderRadius: "8px",
+                border: "1.5px solid #d1d5db",
+                fontSize: "14px",
+                marginBottom: "14px",
+              }}
+            />
+
+            <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
+              <button
+                onClick={() => setRejectDialog(null)}
+                style={{ ...actionBtnStyle, background: "#e5e7eb", color: "#374151" }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmReject}
+                disabled={!!actionLoading[rejectDialog._id + "reject"]}
+                style={{ ...actionBtnStyle, background: "#b91c1c", color: "#fff" }}
+              >
+                {actionLoading[rejectDialog._id + "reject"] ? "Rejecting..." : "Reject payment"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div style={{ padding: "20px", maxWidth: "1400px", margin: "0 auto" }}>
         <div
@@ -581,19 +738,10 @@ export default function AdminDailyPostsPage() {
                             </div>
 
                             <div>
-                              <div style={labelStyle}>Amount</div>
+                              <div style={labelStyle}>Platform Fee</div>
                               <div style={valueStyle}>
                                 {payment.totalAmount || payment.amount || payment.baseAmount
                                   ? `${payment.currency || "INR"} ${payment.totalAmount || payment.amount || payment.baseAmount}`
-                                  : "N/A"}
-                              </div>
-                            </div>
-
-                            <div>
-                              <div style={labelStyle}>Platform Fee</div>
-                              <div style={valueStyle}>
-                                {payment.platformFee !== undefined && payment.platformFee !== null
-                                  ? `${payment.currency || "INR"} ${payment.platformFee}`
                                   : "N/A"}
                               </div>
                             </div>
@@ -667,8 +815,26 @@ export default function AdminDailyPostsPage() {
                           minWidth: "120px",
                         }}
                       >
+                        {isWaiting(payment) && (
+                          <button
+                            onClick={() => handleUpiApprove(pet)}
+                            disabled={!!actionLoading[pet._id + "approve"]}
+                            style={{
+                              ...actionBtnStyle,
+                              background: "#dcfce7",
+                              color: "#166534",
+                            }}
+                          >
+                            {actionLoading[pet._id + "approve"] ? "Approving..." : "Approve"}
+                          </button>
+                        )}
+
                         <button
-                          onClick={() => handleAction(pet._id, "reject")}
+                          onClick={() =>
+                            isWaiting(payment)
+                              ? openReject(pet)
+                              : handleAction(pet._id, "reject")
+                          }
                           disabled={!!actionLoading[pet._id + "reject"]}
                           style={{
                             ...actionBtnStyle,
