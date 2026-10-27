@@ -518,8 +518,6 @@ export default function AdminDailyPostsPage() {
               {(group.pets || []).map((pet) => {
                 const payment = pet.paymentDetails || {};
                 const owner = pet.userId || {};
-                const featured =
-                  pet.isFeatured || pet.featuredUntil ? "Yes" : "No";
 
                 return (
                   <div
@@ -624,11 +622,6 @@ export default function AdminDailyPostsPage() {
                               {pet.price ? `₹${pet.price}` : "N/A"}
                             </div>
                           </div>
-
-                          <div>
-                            <div style={labelStyle}>Publish Method</div>
-                            <div style={valueStyle}>{pet.publishMethod || "N/A"}</div>
-                          </div>
                         </div>
 
                         <div
@@ -682,11 +675,6 @@ export default function AdminDailyPostsPage() {
                           <div>
                             <div style={labelStyle}>Email</div>
                             <div style={valueStyle}>{owner.email || "N/A"}</div>
-                          </div>
-
-                          <div>
-                            <div style={labelStyle}>Featured</div>
-                            <div style={valueStyle}>{featured}</div>
                           </div>
                         </div>
 
