@@ -749,27 +749,8 @@ export default function AdminDailyPostsPage() {
                           <div>
                             <div style={labelStyle}>Price</div>
                             <div style={valueStyle}>
-                              {pet.price ? `₹${pet.price}` : "N/A"}
+                              {pet.price ? "\u20B9" + pet.price : "N/A"}
                             </div>
-                          </div>
-                        </div>
-
-                        <div
-                          style={{
-                            display: "grid",
-                            gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))",
-                            gap: "12px",
-                            marginBottom: "12px",
-                          }}
-                        >
-                          <div>
-                            <div style={labelStyle}>Owner</div>
-                            <div style={valueStyle}>{pet.ownerName || owner.name || "N/A"}</div>
-                          </div>
-
-                          <div>
-                            <div style={labelStyle}>Phone</div>
-                            <div style={valueStyle}>{pet.phone || owner.phone || "N/A"}</div>
                           </div>
 
                           <div>
@@ -782,9 +763,6 @@ export default function AdminDailyPostsPage() {
 
                         <div
                           style={{
-                            display: "grid",
-                            gridTemplateColumns: isMobile ? "repeat(2, minmax(0, 1fr))" : "repeat(4, minmax(0, 1fr))",
-                            gap: "12px",
                             marginBottom: "12px",
                             padding: "12px",
                             borderRadius: "12px",
@@ -792,19 +770,36 @@ export default function AdminDailyPostsPage() {
                             border: "1px solid #e5e7eb",
                           }}
                         >
-                          <div>
-                            <div style={labelStyle}>User Name</div>
-                            <div style={valueStyle}>{owner.name || "N/A"}</div>
+                          <div style={{ fontWeight: 700, color: "#374151", marginBottom: "10px" }}>
+                            Seller
                           </div>
 
-                          <div>
-                            <div style={labelStyle}>User Code</div>
-                            <div style={valueStyle}>{owner.userCode || "N/A"}</div>
-                          </div>
+                          <div
+                            style={{
+                              display: "grid",
+                              gridTemplateColumns: isMobile ? "repeat(2, minmax(0, 1fr))" : "repeat(4, minmax(0, 1fr))",
+                              gap: "12px",
+                            }}
+                          >
+                            <div>
+                              <div style={labelStyle}>Name</div>
+                              <div style={valueStyle}>{owner.name || pet.ownerName || "N/A"}</div>
+                            </div>
 
-                          <div>
-                            <div style={labelStyle}>Email</div>
-                            <div style={valueStyle}>{owner.email || "N/A"}</div>
+                            <div>
+                              <div style={labelStyle}>User Code</div>
+                              <div style={valueStyle}>{owner.userCode || "N/A"}</div>
+                            </div>
+
+                            <div>
+                              <div style={labelStyle}>Phone</div>
+                              <div style={valueStyle}>{pet.phone || owner.phone || "N/A"}</div>
+                            </div>
+
+                            <div>
+                              <div style={labelStyle}>Email</div>
+                              <div style={{ ...valueStyle, wordBreak: "break-word" }}>{owner.email || "N/A"}</div>
+                            </div>
                           </div>
                         </div>
 
@@ -816,68 +811,70 @@ export default function AdminDailyPostsPage() {
                             border: "1px solid #bfdbfe",
                           }}
                         >
-                          <div
-                            style={{
-                              fontWeight: 700,
-                              color: "#1d4ed8",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            Payment Details
+                          <div style={{ fontWeight: 700, color: "#1d4ed8", marginBottom: "10px" }}>
+                            Payment
                           </div>
 
-                          <div
-                            style={{
-                              display: "grid",
-                              gridTemplateColumns: isMobile ? "repeat(2, minmax(0, 1fr))" : "repeat(4, minmax(0, 1fr))",
-                              gap: "12px",
-                            }}
-                          >
-                            <div>
-                              <div style={labelStyle}>Payment ID</div>
-                              <div style={valueStyle}>{payment.paymentId || payment._id || "N/A"}</div>
-                            </div>
+                          {payment._id || payment.paymentId ? (
+                            <div
+                              style={{
+                                display: "grid",
+                                gridTemplateColumns: isMobile ? "repeat(2, minmax(0, 1fr))" : "repeat(4, minmax(0, 1fr))",
+                                gap: "12px",
+                              }}
+                            >
+                              <div>
+                                <div style={labelStyle}>Transaction ID (UTR)</div>
+                                <div style={{ ...valueStyle, wordBreak: "break-all" }}>{payment.txn || "N/A"}</div>
+                              </div>
 
-                            <div>
-                              <div style={labelStyle}>Payment For</div>
-                              <div style={valueStyle}>{payment.paymentFor || "N/A"}</div>
-                            </div>
+                              <div>
+                                <div style={labelStyle}>Payment For</div>
+                                <div style={valueStyle}>{payment.paymentFor || "N/A"}</div>
+                              </div>
 
-                            <div>
-                              <div style={labelStyle}>Transaction ID (UTR)</div>
-                              <div style={valueStyle}>{payment.txn || "N/A"}</div>
-                            </div>
+                              <div>
+                                <div style={labelStyle}>Platform Fee</div>
+                                <div style={valueStyle}>
+                                  {payment.totalAmount || payment.amount || payment.baseAmount
+                                    ? (payment.currency || "INR") + " " + (payment.totalAmount || payment.amount || payment.baseAmount)
+                                    : "N/A"}
+                                </div>
+                              </div>
 
-                            <div>
-                              <div style={labelStyle}>Status</div>
-                              <div style={valueStyle}>
-                                {payment.status || payment.verificationStatus || "N/A"}
+                              <div>
+                                <div style={labelStyle}>Status</div>
+                                <div style={valueStyle}>
+                                  {payment.status || payment.verificationStatus || "N/A"}
+                                </div>
+                              </div>
+
+                              <div>
+                                <div style={labelStyle}>Request Received</div>
+                                <div style={valueStyle}>{receivedAt(payment)}</div>
+                              </div>
+
+                              <div>
+                                <div style={labelStyle}>Paid At</div>
+                                <div style={valueStyle}>
+                                  {payment.paidAt
+                                    ? new Date(payment.paidAt).toLocaleString()
+                                    : "N/A"}
+                                </div>
+                              </div>
+
+                              <div>
+                                <div style={labelStyle}>Payment ID</div>
+                                <div style={{ ...valueStyle, wordBreak: "break-all" }}>
+                                  {payment.paymentId || payment._id}
+                                </div>
                               </div>
                             </div>
-
-                            <div>
-                              <div style={labelStyle}>Platform Fee</div>
-                              <div style={valueStyle}>
-                                {payment.totalAmount || payment.amount || payment.baseAmount
-                                  ? `${payment.currency || "INR"} ${payment.totalAmount || payment.amount || payment.baseAmount}`
-                                  : "N/A"}
-                              </div>
+                          ) : (
+                            <div style={{ color: "#6b7280", fontSize: "14px" }}>
+                              No payment recorded for this ad.
                             </div>
-
-                            <div>
-                              <div style={labelStyle}>Request Received</div>
-                              <div style={valueStyle}>{receivedAt(payment)}</div>
-                            </div>
-
-                            <div>
-                              <div style={labelStyle}>Paid At</div>
-                              <div style={valueStyle}>
-                                {payment.paidAt
-                                  ? new Date(payment.paidAt).toLocaleString()
-                                  : "N/A"}
-                              </div>
-                            </div>
-                          </div>
+                          )}
                         </div>
 
                         {pet.isFeatured || pet.featuredUntil ? (
