@@ -29,11 +29,99 @@ const actionBtnStyle = {
   fontWeight: 600,
 };
 
+const matchesStatusTab = (pet, tab) => {
+  if (tab === "all") return true;
+  const payStatus = pet.paymentDetails && pet.paymentDetails.status;
+  const waiting = payStatus === "verification_pending";
+  if (tab === "pending") return pet.status === "Pending" || waiting;
+  if (tab === "approved") return pet.status === "Live" && !waiting;
+  return true;
+};
+
+const receivedAt = (payment) => {
+  const t = payment.utrSubmittedAt || payment.updatedAt || payment.createdAt;
+  return t ? new Date(t).toLocaleString() : "N/A";
+};
+
+const csvCell = (value) => {
+  const s = value === undefined || value === null ? "" : String(value);
+  return '"' + s.replace(/"/g, '""') + '"';
+};
+
+// Keeps long numbers (transaction ID, phone) as text in Excel.
+const csvText = (value) => {
+  const s = value === undefined || value === null ? "" : String(value);
+  return s ? '="' + s.replace(/"/g, '""') + '"' : '""';
+};
+
+const downloadCsv = (groups) => {
+  const header = [
+    "Post Date",
+    "Ad Code",
+    "Title",
+    "Breed",
+    "Category",
+    "Price",
+    "Ad Status",
+    "Owner",
+    "Phone",
+    "Email",
+    "Payment For",
+    "Payment Status",
+    "Amount",
+    "Transaction ID",
+    "Request Received",
+    "Paid At",
+  ];
+  const lines = [header.map(csvCell).join(",")];
+
+  groups.forEach((group) => {
+    (group.pets || []).forEach((pet) => {
+      const p = pet.paymentDetails || {};
+      const u = pet.userId || {};
+      const amount = p.totalAmount || p.amount || p.baseAmount;
+      lines.push(
+        [
+          csvCell(group.date),
+          csvCell(pet.adCode),
+          csvCell(pet.title),
+          csvCell(pet.breed),
+          csvCell(pet.category),
+          csvCell(pet.price),
+          csvCell(pet.status),
+          csvCell(pet.ownerName || u.name),
+          csvText(pet.phone),
+          csvCell(u.email),
+          csvCell(p.paymentFor),
+          csvCell(p.status || p.verificationStatus),
+          csvCell(amount ? (p.currency || "INR") + " " + amount : ""),
+          csvText(p.txn),
+          csvCell(p._id ? receivedAt(p) : ""),
+          csvCell(p.paidAt ? new Date(p.paidAt).toLocaleString() : ""),
+        ].join(",")
+      );
+    });
+  });
+
+  const blob = new Blob(["\uFEFF" + lines.join("\r\n")], {
+    type: "text/csv;charset=utf-8;",
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "daily-posts-" + new Date().toISOString().slice(0, 10) + ".csv";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
 export default function AdminDailyPostsPage() {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState({});
   const [search, setSearch] = useState("");
+  const [statusTab, setStatusTab] = useState("all");
 
   const token = localStorage.getItem("gb_token");
   const isMobile = window.innerWidth < 768;
@@ -101,14 +189,16 @@ export default function AdminDailyPostsPage() {
   };
 
   const filteredGroups = useMemo(() => {
-    if (!search.trim()) return groups;
+    const keyword = search.trim().toLowerCase();
 
-    const keyword = search.toLowerCase();
+    
 
     return groups
       .map((group) => ({
         ...group,
         pets: (group.pets || []).filter((pet) => {
+          if (!matchesStatusTab(pet, statusTab)) return false;
+          if (!keyword) return true;
           const joined = [
             pet.title,
             pet.adCode,
@@ -129,6 +219,7 @@ export default function AdminDailyPostsPage() {
             pet.paymentDetails?.gateway,
             pet.paymentDetails?.paymentFor,
             pet.paymentDetails?.status,
+            pet.paymentDetails?.txn,
           ]
             .filter(Boolean)
             .join(" ")
@@ -138,7 +229,7 @@ export default function AdminDailyPostsPage() {
         }),
       }))
       .filter((group) => group.pets.length > 0);
-  }, [groups, search]);
+  }, [groups, search, statusTab]);
 
   const totalPosts = filteredGroups.reduce(
     (sum, group) => sum + (group.pets?.length || 0),
@@ -190,7 +281,7 @@ export default function AdminDailyPostsPage() {
 
             <input
               type="text"
-              placeholder="Search title, ad code, user, payment..."
+              placeholder="Search title, ad code, user, transaction ID..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               style={{
@@ -202,6 +293,46 @@ export default function AdminDailyPostsPage() {
               }}
             />
           </div>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            gap: "10px",
+            flexWrap: "wrap",
+            alignItems: "center",
+            marginBottom: "16px",
+          }}
+        >
+          {[
+            ["pending", "Pending"],
+            ["approved", "Approved"],
+            ["all", "All"],
+          ].map(([key, label]) => (
+            <button
+              key={key}
+              onClick={() => setStatusTab(key)}
+              style={{
+                ...actionBtnStyle,
+                background: statusTab === key ? "#1d4ed8" : "#e5e7eb",
+                color: statusTab === key ? "#fff" : "#374151",
+              }}
+            >
+              {label}
+            </button>
+          ))}
+
+          <button
+            onClick={() => downloadCsv(filteredGroups)}
+            style={{
+              ...actionBtnStyle,
+              background: "#dcfce7",
+              color: "#166534",
+              marginLeft: "auto",
+            }}
+          >
+            Download Excel (CSV)
+          </button>
         </div>
 
         {filteredGroups.length === 0 && (
@@ -438,8 +569,8 @@ export default function AdminDailyPostsPage() {
                             </div>
 
                             <div>
-                              <div style={labelStyle}>Gateway</div>
-                              <div style={valueStyle}>{payment.gateway || "N/A"}</div>
+                              <div style={labelStyle}>Transaction ID (UTR)</div>
+                              <div style={valueStyle}>{payment.txn || "N/A"}</div>
                             </div>
 
                             <div>
@@ -468,8 +599,8 @@ export default function AdminDailyPostsPage() {
                             </div>
 
                             <div>
-                              <div style={labelStyle}>Gateway Payment ID</div>
-                              <div style={valueStyle}>{payment.gatewayPaymentId || "N/A"}</div>
+                              <div style={labelStyle}>Request Received</div>
+                              <div style={valueStyle}>{receivedAt(payment)}</div>
                             </div>
 
                             <div>
