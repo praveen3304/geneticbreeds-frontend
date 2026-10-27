@@ -665,18 +665,65 @@ export default function AdminDailyPostsPage() {
                         alignItems: "start",
                       }}
                     >
-                      <img
-                        src={pet.images?.[0] || ""}
-                        alt="pet"
-                        style={{
-                          width: "120px",
-                          height: "120px",
-                          objectFit: "cover",
-                          borderRadius: "14px",
-                          background: "#f3f4f6",
-                          border: "1px solid #e5e7eb",
-                        }}
-                      />
+                      <div>
+                        <a
+                          href={pet.images?.[0] || undefined}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <img
+                            src={pet.images?.[0] || ""}
+                            alt="pet"
+                            style={{
+                              width: "120px",
+                              height: "120px",
+                              objectFit: "cover",
+                              borderRadius: "14px",
+                              background: "#f3f4f6",
+                              border: "1px solid #e5e7eb",
+                            }}
+                          />
+                        </a>
+
+                        {Array.isArray(pet.images) && pet.images.length > 1 && (
+                          <div
+                            style={{
+                              display: "flex",
+                              flexWrap: "wrap",
+                              gap: "6px",
+                              marginTop: "8px",
+                              width: "120px",
+                            }}
+                          >
+                            {pet.images.slice(1).map((url, i) => (
+                              <a
+                                key={i}
+                                href={url}
+                                target="_blank"
+                                rel="noreferrer"
+                                title={"Photo " + (i + 2)}
+                              >
+                                <img
+                                  src={url}
+                                  alt={"pet " + (i + 2)}
+                                  style={{
+                                    width: "36px",
+                                    height: "36px",
+                                    objectFit: "cover",
+                                    borderRadius: "8px",
+                                    border: "1px solid #e5e7eb",
+                                    background: "#f3f4f6",
+                                  }}
+                                />
+                              </a>
+                            ))}
+                          </div>
+                        )}
+
+                        <div style={{ marginTop: "6px", fontSize: "12px", color: "#6b7280" }}>
+                          {Array.isArray(pet.images) ? pet.images.length : 0} photo(s)
+                        </div>
+                      </div>
 
                       <div>
                         <div
@@ -869,6 +916,15 @@ export default function AdminDailyPostsPage() {
                                   {payment.paymentId || payment._id}
                                 </div>
                               </div>
+
+                              {payment.failureReason || pet.rejectionReason ? (
+                                <div style={{ gridColumn: "1 / -1" }}>
+                                  <div style={labelStyle}>Rejection reason</div>
+                                  <div style={{ ...valueStyle, color: "#b91c1c" }}>
+                                    {payment.failureReason || pet.rejectionReason}
+                                  </div>
+                                </div>
+                              ) : null}
                             </div>
                           ) : (
                             <div style={{ color: "#6b7280", fontSize: "14px" }}>
