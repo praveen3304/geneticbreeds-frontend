@@ -137,6 +137,7 @@ export default function AdminDailyPostsPage() {
   const [rejectDialog, setRejectDialog] = useState(null);
   const [rejectReason, setRejectReason] = useState(REJECT_REASONS[0]);
   const [rejectDetails, setRejectDetails] = useState("");
+  const [orphanPayments, setOrphanPayments] = useState([]);
 
   const token = localStorage.getItem("gb_token");
   const isMobile = window.innerWidth < 768;
@@ -152,6 +153,18 @@ export default function AdminDailyPostsPage() {
 
       const data = await res.json();
       setGroups(Array.isArray(data) ? data : []);
+
+      try {
+        const pr = await fetch(API_BASE_URL + "/api/payments/admin/upi/pending", {
+          headers: { Authorization: "Bearer " + token },
+        });
+        const pd = await pr.json();
+        setOrphanPayments(
+          Array.isArray(pd.payments) ? pd.payments.filter((p) => !p.adId) : []
+        );
+      } catch (e) {
+        setOrphanPayments([]);
+      }
     } catch (err) {
       console.error(err);
       setGroups([]);
@@ -304,6 +317,22 @@ export default function AdminDailyPostsPage() {
       }))
       .filter((group) => group.pets.length > 0);
   }, [groups, search, statusTab]);
+
+  const toPayPet = (p) => ({
+    _id: "pay-" + p.paymentId,
+    title: p.planName || p.paymentFor,
+    paymentDetails: { _id: p.paymentId, txn: p.utr },
+  });
+
+  const visibleOrphans = orphanPayments.filter((p) => {
+    const kw = search.trim().toLowerCase();
+    if (!kw) return true;
+    return [p.utr, p.user && p.user.name, p.user && p.user.email, p.planName, p.paymentFor]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase()
+      .includes(kw);
+  });
 
   const totalPosts = filteredGroups.reduce(
     (sum, group) => sum + (group.pets?.length || 0),
@@ -491,6 +520,107 @@ export default function AdminDailyPostsPage() {
             Download Excel (CSV)
           </button>
         </div>
+
+        {statusTab !== "approved" && visibleOrphans.length > 0 && (
+          <div
+            style={{
+              ...cardStyle,
+              padding: "16px",
+              marginBottom: "20px",
+              background: "#fffbeb",
+              border: "1px solid #fde68a",
+            }}
+          >
+            <div style={{ fontWeight: 700, color: "#92400e", marginBottom: "10px" }}>
+              Payments without an ad ({visibleOrphans.length})
+            </div>
+
+            <div style={{ display: "grid", gap: "12px" }}>
+              {visibleOrphans.map((p) => (
+                <div
+                  key={p.paymentId}
+                  style={{
+                    ...cardStyle,
+                    padding: "14px",
+                    display: "flex",
+                    gap: "16px",
+                    flexWrap: "wrap",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: isMobile
+                        ? "repeat(2, minmax(0, 1fr))"
+                        : "repeat(4, minmax(0, 1fr))",
+                      gap: "12px",
+                      flex: 1,
+                      minWidth: "260px",
+                    }}
+                  >
+                    <div>
+                      <div style={labelStyle}>Buyer</div>
+                      <div style={valueStyle}>{(p.user && p.user.name) || "N/A"}</div>
+                      <div style={labelStyle}>{(p.user && p.user.email) || ""}</div>
+                    </div>
+
+                    <div>
+                      <div style={labelStyle}>Payment For</div>
+                      <div style={valueStyle}>
+                        {p.paymentFor}
+                        {p.planName ? " - " + p.planName : ""}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div style={labelStyle}>Transaction ID (UTR)</div>
+                      <div style={valueStyle}>{p.utr || "N/A"}</div>
+                    </div>
+
+                    <div>
+                      <div style={labelStyle}>Platform Fee</div>
+                      <div style={valueStyle}>
+                        {(p.currency || "INR") + " " + p.amount}
+                      </div>
+                      <div style={labelStyle}>
+                        {p.createdAt ? new Date(p.createdAt).toLocaleString() : ""}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", gap: "10px" }}>
+                    <button
+                      onClick={() => handleUpiApprove(toPayPet(p))}
+                      disabled={!!actionLoading["pay-" + p.paymentId + "approve"]}
+                      style={{
+                        ...actionBtnStyle,
+                        background: "#dcfce7",
+                        color: "#166534",
+                      }}
+                    >
+                      {actionLoading["pay-" + p.paymentId + "approve"]
+                        ? "Approving..."
+                        : "Approve"}
+                    </button>
+
+                    <button
+                      onClick={() => openReject(toPayPet(p))}
+                      style={{
+                        ...actionBtnStyle,
+                        background: "#fee2e2",
+                        color: "#b91c1c",
+                      }}
+                    >
+                      Reject
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {filteredGroups.length === 0 && (
           <div style={{ ...cardStyle, padding: "20px" }}>
