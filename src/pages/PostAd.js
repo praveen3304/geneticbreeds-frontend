@@ -198,11 +198,11 @@ React.useEffect(() => {
   }, [imagePreviews]);
 
   const currencySymbol =
-    country === "India"
-      ? "₹"
-      : country === "UK"
-      ? "£"
-      : country === "UAE"
+    normalizedCountry === "india"
+      ? "\u20B9"
+      : normalizedCountry === "uk"
+      ? "\u00A3"
+      : normalizedCountry === "uae"
       ? "AED"
       : "$";
 
@@ -1192,7 +1192,6 @@ if (options?.error) {
                     <input
                       type="text"
                       name="breed"
-                      placeholder="Rajapalayam, Labrador..."
                       value={form.breed}
                       onChange={handleChange}
                       required
@@ -1211,7 +1210,7 @@ if (options?.error) {
 
                   <div style={fieldStyle}>
                     <label style={labelStyle}>Age</label>
-                    <input type="text" name="age" placeholder="8 months" value={form.age} onChange={handleChange} required style={inputStyle} />
+                    <input type="text" name="age" value={form.age} onChange={handleChange} required style={inputStyle} />
                   </div>
 
                   <div style={{ ...fieldStyle, gridColumn: "1 / -1" }}>
@@ -1219,7 +1218,6 @@ if (options?.error) {
                     <input
                       type="text"
                       name="title"
-                      placeholder="Healthy Rajapalayam puppy for sale"
                       value={form.title}
                       onChange={handleChange}
                       required
@@ -1234,7 +1232,7 @@ if (options?.error) {
 
                   <div style={fieldStyle}>
                     <label style={labelStyle}>Price ({currencySymbol})</label>
-                    <input type="number" name="price" placeholder="20000" value={form.price} onChange={handleChange} required style={inputStyle} />
+                    <input type="number" name="price" value={form.price} onChange={handleChange} required style={inputStyle} />
                   </div>
 
                   <div style={fieldStyle}>
@@ -1257,15 +1255,15 @@ if (options?.error) {
                   </div>
                   <div style={fieldStyle}>
                     <label style={labelStyle}>State</label>
-                    <input type="text" name="state" placeholder="Tamil Nadu" value={form.state} onChange={handleChange} required style={inputStyle} />
+                    <input type="text" name="state" value={form.state} onChange={handleChange} required style={inputStyle} />
                   </div>
                   <div style={fieldStyle}>
                     <label style={labelStyle}>City</label>
-                    <input type="text" name="city" placeholder="Chennai" value={form.city} onChange={handleChange} required style={inputStyle} />
+                    <input type="text" name="city" value={form.city} onChange={handleChange} required style={inputStyle} />
                   </div>
                   <div style={fieldStyle}>
                     <label style={labelStyle}>Pincode</label>
-                    <input type="text" name="pincode" placeholder="600001" value={form.pincode} onChange={handleChange} required style={inputStyle} />
+                    <input type="text" name="pincode" value={form.pincode} onChange={handleChange} required style={inputStyle} />
                   </div>
                   <div style={{ ...fieldStyle, gridColumn: "1 / -1" }}>
                     <label style={labelStyle}>Location</label>
@@ -1283,7 +1281,7 @@ if (options?.error) {
                   </div>
                   <div style={fieldStyle}>
                     <label style={labelStyle}>Phone</label>
-                    <input type="text" name="phone" placeholder="+91 9876543210" value={form.phone} onChange={handleChange} required style={inputStyle} />
+                    <input type="text" name="phone" value={form.phone} onChange={handleChange} required style={inputStyle} />
                   </div>
                   <div style={{ ...fieldStyle, gridColumn: "1 / -1" }}>
                     <label style={labelStyle}>Licence</label>
