@@ -18,7 +18,6 @@ import Navbar from "./components/Navbar";
 import AuthModal from "./components/AuthModal";
 import AdminReferralsPage from "./pages/AdminReferralsPage";
 import AdminUsersPage from "./pages/AdminUsersPage";
-import AdminUpiPaymentsPage from "./pages/AdminUpiPaymentsPage";
 import AdminLicencesPage from "./pages/AdminLicencesPage";
 import Plans from "./pages/Plans";
 import PaymentNoticePopup from "./components/PaymentNoticePopup";
@@ -195,7 +194,7 @@ export default function App() {
           <Route path="/admin/daily-posts" element={isAuthed && isAdmin ? <AdminDailyPostsPage /> : <Navigate to="/" replace />} />
           <Route path="/admin/referrals" element={isAuthed && isAdmin ? <AdminReferralsPage /> : <Navigate to="/" replace />} />
           <Route path="/admin/users" element={isAuthed && isAdmin ? <AdminUsersPage /> : <Navigate to="/" replace />} />
-          <Route path="/admin/upi-payments" element={isAuthed && isAdmin ? <AdminUpiPaymentsPage /> : <Navigate to="/" replace />} />
+          <Route path="/admin/upi-payments" element={isAuthed && isAdmin ? <Navigate to="/admin/daily-posts" replace /> : <Navigate to="/" replace />} />
           <Route path="/admin/licences" element={isAuthed && isAdmin ? <AdminLicencesPage /> : <Navigate to="/" replace />} />
           <Route path="/admin" element={isAuthed && isAdmin ? <AdminPetsPage /> : <Navigate to="/" replace />} />
 
