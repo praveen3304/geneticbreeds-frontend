@@ -9,6 +9,7 @@ export const startPayment = async ({
   planKey = null,
   boostDays = null,
   adId = null,
+  useWallet = false,
   onSuccess = null,
   onSubmitted = null,
   doneMessage = null,
@@ -16,7 +17,7 @@ export const startPayment = async ({
 }) => {
   try {
     if (USE_MANUAL_UPI) {
-      return await startUpiPayment({ token, paymentFor, planKey, boostDays, adId, onSubmitted, doneMessage, onError });
+      return await startUpiPayment({ token, paymentFor, planKey, boostDays, adId, useWallet, onSubmitted, doneMessage, onError });
     }
 
     const API_BASE = "https://genetic-breeds-backend.onrender.com/api";

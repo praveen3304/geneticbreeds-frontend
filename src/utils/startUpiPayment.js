@@ -133,6 +133,24 @@ const showUpiModal = ({ token, upi, paymentFor, onSubmitted, doneMessage }) =>
       );
       card.appendChild(header);
 
+      if (Number(upi.walletUsed) > 0) {
+        card.appendChild(
+          make(
+            "div",
+            {
+              fontSize: "12px",
+              color: "#166534",
+              background: "#f0fdf4",
+              border: "1px solid #bbf7d0",
+              padding: "6px 8px",
+              borderRadius: "8px",
+              marginBottom: "8px",
+            },
+            "Wallet credit of " + formatAmount(upi.walletUsed) + " has been applied. Pay the amount shown above by UPI."
+          )
+        );
+      }
+
       // Small QR code
       const qrWrap = make("div", {
         display: "flex",
@@ -323,6 +341,7 @@ export const startUpiPayment = async ({
   planKey = null,
   boostDays = null,
   adId = null,
+  useWallet = false,
   onSubmitted = null,
   doneMessage = null,
   onError = null,
@@ -346,7 +365,7 @@ export const startUpiPayment = async ({
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ paymentFor, planKey, boostDays, adId }),
+      body: JSON.stringify({ paymentFor, planKey, boostDays, adId, useWallet }),
     });
 
     const data = await response.json();

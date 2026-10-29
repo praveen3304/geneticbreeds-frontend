@@ -147,6 +147,7 @@ React.useEffect(() => {
   const [publishOptionsLoading, setPublishOptionsLoading] = useState(false);
   const [publishModalOpen, setPublishModalOpen] = useState(false);
   const [selectedPublishMethod, setSelectedPublishMethod] = useState("pay_now");
+  const [useWallet, setUseWallet] = useState(true);
   const [selectedMembershipPlan, setSelectedMembershipPlan] = useState("");
   const [selectedBoostDays, setSelectedBoostDays] = useState(0);
   const [boostModeOpen, setBoostModeOpen] = useState(false);
@@ -287,6 +288,13 @@ React.useEffect(() => {
     return boostPlans.find((plan) => plan.days === selectedBoostDays) || boostPlans[0] || null;
   }, [boostPlans, selectedBoostDays]);
 
+  const freePostAvailable = !!(publishOptions && publishOptions.freePostAvailable);
+
+  // A user who still has their free post gets it preselected, so they do not pay by accident.
+  useEffect(() => {
+    if (freePostAvailable) setSelectedPublishMethod("free_post");
+  }, [freePostAvailable]);
+
   const publishMethods = useMemo(() => {
     if (!publishOptions) return [];
     const payNowCurrency = normalizeCurrency(
@@ -311,13 +319,13 @@ React.useEffect(() => {
         border: "#fecaca",
       },
       {
-        key: "referral_credit",
-        title: "Post Via Referral",
+        key: "free_post",
+        title: "Free Post",
         subtitle: "",
         originalAmount: null,
-        description: "",
-        available: (publishOptions.referralCredits || 0) > 0,
-        unavailableMessage: "No referral code available. Continue with Pay Now.",
+        description: "Your first ad is free.",
+        available: publishOptions.freePostAvailable === true,
+        unavailableMessage: "Your free post has already been used. Continue with Pay Now.",
         accent: "#1d4ed8",
         bg: "#eff6ff",
         border: "#bfdbfe",
@@ -381,6 +389,15 @@ React.useEffect(() => {
     }
     return amount;
   }, [checkoutAmount, selectedBoostPlan]);
+
+  // Wallet credit: reduces what is paid by UPI (single-ad payments, India only)
+  const walletBalance = Math.floor(normalizeNumber(publishOptions?.walletBalance, 0));
+  const walletApplied =
+    selectedPublishMethod === "pay_now" && useWallet && checkoutAmount.currency === "INR"
+      ? Math.min(walletBalance, Math.floor(normalizeNumber(checkoutAmount.amount, 0)))
+      : 0;
+  const walletCoversAll = walletApplied > 0 && walletApplied >= normalizeNumber(totalPayable, 0);
+  const payableAfterWallet = Math.max(normalizeNumber(totalPayable, 0) - walletApplied, 0);
 
   const setInlineMessage = (type, text) => {
     setUiMessage({ type, text });
@@ -564,10 +581,16 @@ React.useEffect(() => {
         "Boost can be added after your ad is live. Please choose No Boost to continue."
       );
     }
+    if (walletCoversAll) {
+      await handleCreditPublish("wallet_pay");
+      return;
+    }
+
     const token = localStorage.getItem("gb_token");
     await startPayment({
       token,
       paymentFor: "ad",
+      useWallet: walletApplied > 0,
       onSubmitted: async (submitData) => {
         const paymentId = submitData?.paymentId || null;
         const data = await submitAd({ paymentId, publishMethod: "upi_pending" });
@@ -638,8 +661,8 @@ React.useEffect(() => {
         await handleMembershipPurchaseAndPublish();
       } else if (selectedPublishMethod === "membership_credit") {
         await handleCreditPublish("membership_credit");
-      } else if (selectedPublishMethod === "referral_credit") {
-        await handleCreditPublish("referral_credit");
+      } else if (selectedPublishMethod === "free_post") {
+        await handleCreditPublish("free_post");
       } else {
         throw new Error("Invalid publish method selected");
       }
@@ -1508,7 +1531,7 @@ if (options?.error) {
                           onClick={() => {
                             if (!method.available) {
                               setPublishActionError(method.unavailableMessage || "This option is not available.");
-                              if (method.key === "referral_credit") setSelectedPublishMethod("pay_now");
+                              if (method.key === "free_post") setSelectedPublishMethod("pay_now");
                               return;
                             }
                             setSelectedPublishMethod(method.key);
@@ -1673,10 +1696,22 @@ if (options?.error) {
                       </span>
                     </div>
                   ) : null}
+                  {selectedPublishMethod === "pay_now" && walletBalance > 0 && checkoutAmount.currency === "INR" ? (
+                    <label style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "#166534", fontWeight: "800", cursor: "pointer" }}>
+                      <input type="checkbox" checked={useWallet} onChange={(e) => setUseWallet(e.target.checked)} />
+                      Use my wallet credit ({"\u20B9"}{walletBalance} available)
+                    </label>
+                  ) : null}
+                  {walletApplied > 0 ? (
+                    <div style={{ display: "flex", justifyContent: "space-between", gap: "12px" }}>
+                      <span style={{ fontSize: "13px", color: "#166534", fontWeight: "700" }}>Wallet credit</span>
+                      <span style={{ fontSize: "14px", color: "#166534", fontWeight: "900" }}>- {checkoutAmount.currency} {formatAmount(walletApplied)}</span>
+                    </div>
+                  ) : null}
                   <div style={{ height: "1px", background: "#e5e7eb", margin: "2px 0" }} />
                   <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", alignItems: "center" }}>
-                    <span style={{ fontSize: "15px", color: "#111827", fontWeight: "900" }}>Total Payable</span>
-                    <span style={{ fontSize: "24px", color: "#111827", fontWeight: "900" }}>{checkoutAmount.currency} {formatAmount(totalPayable)}</span>
+                    <span style={{ fontSize: "15px", color: "#111827", fontWeight: "900" }}>{walletApplied > 0 && !walletCoversAll ? "Pay by UPI" : "Total Payable"}</span>
+                    <span style={{ fontSize: "24px", color: "#111827", fontWeight: "900" }}>{checkoutAmount.currency} {formatAmount(payableAfterWallet)}</span>
                   </div>
                 </div>
 
@@ -1692,7 +1727,7 @@ if (options?.error) {
                       : selectedPublishMethod === "buy_membership"
                       ? "Proceed To Membership Payment"
                       : selectedPublishMethod === "pay_now"
-                      ? "Pay & Publish"
+                      ? (walletCoversAll ? "Publish with wallet credit" : "Pay & Publish")
                       : "Continue & Publish"}
                   </button>
                   <button type="button" onClick={closePublishModal} style={{ ...secondaryButtonStyle, width: "100%", padding: "12px 16px" }}>

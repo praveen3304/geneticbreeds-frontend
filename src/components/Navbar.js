@@ -279,6 +279,22 @@ export default function Navbar({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
   const [user, setUser] = useState(null);
+  const [wallet, setWallet] = useState(null);
+
+  // Load the wallet when the Referral panel is opened
+  useEffect(() => {
+    if (activeSection !== "referral" || !user) return;
+    const walletToken = localStorage.getItem("gb_token");
+    if (!walletToken) return;
+    fetch(API_BASE_URL + "/api/payments/wallet", {
+      headers: { Authorization: "Bearer " + walletToken },
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d) setWallet(d);
+      })
+      .catch(() => {});
+  }, [activeSection, user]);
   const [membership, setMembership] = useState(null);
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [loadingMembership, setLoadingMembership] = useState(false);
@@ -340,9 +356,10 @@ const isIndiaUser =
 
   const referralShareText = useMemo(() => {
     const code = user?.referralCode || "";
-    return `Join Genetic Breeds using my referral code: ${code} and get rewarded! Each successful referral gives you 1 free pet ad post.`;
+    return `Join Genetic Breeds using my referral code: ${code} and get rewarded! You earn 25 rupees of wallet credit when your friend posts their first ad.`;
   }, [user]);
 
+  // eslint-disable-next-line no-unused-vars
   const usedReferralAdsCount = useMemo(() => {
     const credits = Array.isArray(user?.referralCredits)
       ? user.referralCredits
@@ -350,6 +367,7 @@ const isIndiaUser =
     return credits.filter((credit) => credit?.used === true).length;
   }, [user]);
 
+  // eslint-disable-next-line no-unused-vars
   const availableReferralAdsCount = useMemo(() => {
     const credits = Array.isArray(user?.referralCredits)
       ? user.referralCredits
@@ -363,6 +381,7 @@ const isIndiaUser =
     }).length;
   }, [user]);
 
+  // eslint-disable-next-line no-unused-vars
   const nextReferralExpiry = useMemo(() => {
     const credits = Array.isArray(user?.referralCredits)
       ? user.referralCredits
@@ -1854,7 +1873,7 @@ toast.success(
                           <div style={sectionBadgeStyle}>REFERRAL</div>
                           <h3 style={sectionTitleStyle}>Referral Details</h3>
                           <p style={sectionDescStyle}>
-                            Copy or share your unique referral code.
+                            Copy or share your unique referral code. Earn wallet credit when friends you invite post their first ad.
                           </p>
                         </div>
                       </div>
@@ -1886,27 +1905,43 @@ toast.success(
 
                       <div style={statsGridStyle}>
                         <div style={miniStatCardStyle}>
-                          <div style={miniStatLabelStyle}>Free Ads</div>
-                          <div style={miniStatValueStyle}>{user.freePosts || 0}</div>
+                          <div style={miniStatLabelStyle}>Wallet Balance</div>
+                          <div style={miniStatValueStyle}>{"\u20B9"}{wallet ? wallet.balance : "..."}</div>
                         </div>
 
                         <div style={miniStatCardStyle}>
-                          <div style={miniStatLabelStyle}>Referral Ads Used</div>
-                          <div style={miniStatValueStyle}>{usedReferralAdsCount}</div>
+                          <div style={miniStatLabelStyle}>Friends Invited</div>
+                          <div style={miniStatValueStyle}>{wallet ? wallet.invited : "..."}</div>
                         </div>
 
                         <div style={miniStatCardStyle}>
-                          <div style={miniStatLabelStyle}>Referral Credits Left</div>
-                          <div style={miniStatValueStyle}>{availableReferralAdsCount}</div>
-                        </div>
-
-                        <div style={miniStatCardStyle}>
-                          <div style={miniStatLabelStyle}>Next Referral Expiry</div>
-                          <div style={miniStatValueStyleSmall}>
-                            {formatDisplayDate(nextReferralExpiry)}
-                          </div>
+                          <div style={miniStatLabelStyle}>Rewards Earned</div>
+                          <div style={miniStatValueStyle}>{wallet ? wallet.rewarded : "..."}</div>
                         </div>
                       </div>
+
+                      <p style={sectionDescStyle}>
+                        You earn {"\u20B9"}{wallet ? wallet.rewardPerReferral : 25} in your wallet each time a friend you invite posts their first ad. Wallet credit can be used toward the price of your ads. It is not cash and cannot be withdrawn.
+                      </p>
+
+                      {wallet && Array.isArray(wallet.history) && wallet.history.length > 0 ? (
+                        <div style={{ marginTop: "14px" }}>
+                          <div style={referralLabelStyle}>Wallet History</div>
+                          <div style={{ display: "grid", gap: "8px", marginTop: "8px" }}>
+                            {wallet.history.map((h, i) => (
+                              <div
+                                key={i}
+                                style={{ display: "flex", justifyContent: "space-between", gap: "10px", fontSize: "13px", padding: "8px 10px", borderRadius: "10px", background: "#f9fafb", border: "1px solid #e5e7eb" }}
+                              >
+                                <span>{(h.reason || h.type) + " (" + formatDisplayDate(h.createdAt) + ")"}</span>
+                                <span style={{ fontWeight: 800, color: h.type === "debit" ? "#b91c1c" : "#166534" }}>
+                                  {h.type === "debit" ? "-" : "+"}{"\u20B9"}{h.amount}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ) : null}
                     </div>
                   )}
 

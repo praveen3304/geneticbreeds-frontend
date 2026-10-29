@@ -434,13 +434,13 @@ export default function MyAds() {
     if (!adId) return;
 
     if (
-      !["membership_credit", "referral_credit", "pay_now"].includes(
+      !["membership_credit", "pay_now"].includes(
         normalizedMethod
       )
     ) {
       setInlineMessage(
         "error",
-        "Choose only: membership_credit, referral_credit, or pay_now"
+        "Choose only: membership_credit or pay_now"
       );
       return;
     }
@@ -973,11 +973,6 @@ export default function MyAds() {
                   key: "membership_credit",
                   title: "Membership Credit",
                   text: "Use one post credit from your active membership plan.",
-                },
-                {
-                  key: "referral_credit",
-                  title: "Referral Credit",
-                  text: "Use an available referral credit if eligible.",
                 },
                 {
                   key: "pay_now",

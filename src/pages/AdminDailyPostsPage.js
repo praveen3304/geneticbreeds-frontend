@@ -68,7 +68,9 @@ const downloadCsv = (groups) => {
     "Email",
     "Payment For",
     "Payment Status",
-    "Amount",
+    "Ad Price",
+    "Wallet Credit Used",
+    "Pay by UPI (check in bank)",
     "Transaction ID",
     "Request Received",
     "Paid At",
@@ -94,6 +96,8 @@ const downloadCsv = (groups) => {
           csvCell(u.email),
           csvCell(p.paymentFor),
           csvCell(p.status || p.verificationStatus),
+          csvCell(amount ? (p.currency || "INR") + " " + (Number(amount) + Number(p.walletUsed || 0)) : ""),
+          csvCell(Number(p.walletUsed || 0) > 0 ? p.walletUsed : ""),
           csvCell(amount ? (p.currency || "INR") + " " + amount : ""),
           csvText(p.txn),
           csvCell(p._id ? receivedAt(p) : ""),
@@ -880,9 +884,30 @@ export default function AdminDailyPostsPage() {
                                 <div style={valueStyle}>{payment.paymentFor || "N/A"}</div>
                               </div>
 
+                              {Number(payment.walletUsed || 0) > 0 ? (
+                                <div>
+                                  <div style={labelStyle}>Ad Price</div>
+                                  <div style={valueStyle}>
+                                    {(payment.currency || "INR") +
+                                      " " +
+                                      (Number(payment.totalAmount || payment.amount || payment.baseAmount || 0) +
+                                        Number(payment.walletUsed || 0))}
+                                  </div>
+                                </div>
+                              ) : null}
+
+                              {Number(payment.walletUsed || 0) > 0 ? (
+                                <div>
+                                  <div style={labelStyle}>Wallet Credit Used</div>
+                                  <div style={{ ...valueStyle, color: "#166534", fontWeight: 700 }}>
+                                    {(payment.currency || "INR") + " " + payment.walletUsed}
+                                  </div>
+                                </div>
+                              ) : null}
+
                               <div>
-                                <div style={labelStyle}>Platform Fee</div>
-                                <div style={valueStyle}>
+                                <div style={labelStyle}>Pay by UPI (check in bank)</div>
+                                <div style={{ ...valueStyle, fontWeight: 700 }}>
                                   {payment.totalAmount || payment.amount || payment.baseAmount
                                     ? (payment.currency || "INR") + " " + (payment.totalAmount || payment.amount || payment.baseAmount)
                                     : "N/A"}
@@ -928,7 +953,11 @@ export default function AdminDailyPostsPage() {
                             </div>
                           ) : (
                             <div style={{ color: "#6b7280", fontSize: "14px" }}>
-                              No payment recorded for this ad.
+                              {pet.publishMethod === "free_post"
+                              ? "Free post (no payment needed)"
+                              : pet.publishMethod === "wallet_pay"
+                              ? "Paid in full with wallet credit"
+                              : "No payment recorded for this ad."}
                             </div>
                           )}
                         </div>
