@@ -21,6 +21,7 @@ export default function AuthModal({ type, onClose, onSuccess }) {
     licenceNumber: "",
     breederLicenceNumber: "",
     referralCode: "",
+    emailCode: "",
   });
 
   const [error, setError] = useState("");
@@ -29,6 +30,8 @@ export default function AuthModal({ type, onClose, onSuccess }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [codeSent, setCodeSent] = useState(false);
+  const [sendingCode, setSendingCode] = useState(false);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -73,6 +76,39 @@ export default function AuthModal({ type, onClose, onSuccess }) {
     }));
   };
 
+  const sendCode = async () => {
+    setError("");
+    setSuccess("");
+
+    const email = String(form.email || "").trim();
+    if (!email) {
+      setError("Enter your email first.");
+      return;
+    }
+
+    try {
+      setSendingCode(true);
+      const res = await fetch(API_BASE_URL + "/api/auth/send-signup-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || data.message || "Could not send the code.");
+        return;
+      }
+
+      setCodeSent(true);
+      setSuccess("Verification code sent. Please check your email (and the spam folder).");
+    } catch (err) {
+      setError("Could not send the code. Please try again.");
+    } finally {
+      setSendingCode(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -92,6 +128,11 @@ export default function AuthModal({ type, onClose, onSuccess }) {
           return;
         }
 
+        if (!String(form.emailCode || "").trim()) {
+          setError("Please enter the verification code sent to your email.");
+          return;
+        }
+
         const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
           method: "POST",
           headers: {
@@ -108,6 +149,7 @@ export default function AuthModal({ type, onClose, onSuccess }) {
             licenceNumber: form.licenceNumber,
             breederLicenceNumber: form.breederLicenceNumber,
             referralCode: form.referralCode,
+            emailCode: form.emailCode,
           }),
         });
 
@@ -264,6 +306,39 @@ export default function AuthModal({ type, onClose, onSuccess }) {
                       onChange={(e) => updateField("email", e.target.value)}
                       style={inputStyle}
                     />
+                  </div>
+
+                  <div style={fieldStyle}>
+                    <label style={labelStyle}>Email Verification Code *</label>
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <input
+                        placeholder="6-digit code"
+                        inputMode="numeric"
+                        maxLength={6}
+                        value={form.emailCode}
+                        onChange={(e) =>
+                          updateField("emailCode", e.target.value.replace(/\D/g, "").slice(0, 6))
+                        }
+                        style={{ ...inputStyle, flex: 1 }}
+                      />
+                      <button
+                        type="button"
+                        onClick={sendCode}
+                        disabled={sendingCode}
+                        style={{
+                          padding: "0 14px",
+                          borderRadius: "10px",
+                          border: "none",
+                          background: "#7a0016",
+                          color: "#fff",
+                          fontWeight: 700,
+                          whiteSpace: "nowrap",
+                          cursor: sendingCode ? "not-allowed" : "pointer",
+                        }}
+                      >
+                        {sendingCode ? "Sending..." : codeSent ? "Resend code" : "Send code"}
+                      </button>
+                    </div>
                   </div>
 
                   <div style={fieldStyle}>
