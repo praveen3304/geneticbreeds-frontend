@@ -1915,8 +1915,8 @@ toast.success(
                         </div>
 
                         <div style={miniStatCardStyle}>
-                          <div style={miniStatLabelStyle}>Rewards Earned</div>
-                          <div style={miniStatValueStyle}>{wallet ? wallet.rewarded : "..."}</div>
+                          <div style={miniStatLabelStyle}>Total Earned</div>
+                          <div style={miniStatValueStyle}>{"\u20B9"}{wallet ? wallet.rewarded * (wallet.rewardPerReferral || 25) : "..."}</div>
                         </div>
                       </div>
 
