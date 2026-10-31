@@ -312,7 +312,7 @@ React.useEffect(() => {
             ? `Offer ${payNowCurrency} ${formatAmount(payNowAmount)}`
             : "Instant payment publishing",
         originalAmount: payNowOriginalAmount > 0 ? payNowOriginalAmount : null,
-        description: "Pay by UPI. Your ad goes live once your payment is verified.",
+        description: "Pay by UPI. Your ad goes live once your payment is verified and the ad is approved.",
         available: true,
         accent: "#b91c1c",
         bg: "#fff7f7",
@@ -323,7 +323,7 @@ React.useEffect(() => {
         title: "Free Post",
         subtitle: "",
         originalAmount: null,
-        description: "Your first ad is free.",
+        description: "Your first ad is free. It goes live once our team approves it.",
         available: publishOptions.freePostAvailable === true,
         unavailableMessage: "Your free post has already been used. Continue with Pay Now.",
         accent: "#1d4ed8",
@@ -540,7 +540,7 @@ React.useEffect(() => {
     );
   };
 
-  const finalizeSuccessfulPublish = (successMessage = "Pet posted successfully.") => {
+  const finalizeSuccessfulPublish = (successMessage = "Your ad has been submitted. It will go live once our team approves it. You can track it in My Ads.") => {
     localStorage.removeItem(DRAFT_KEY);
     resetFormState();
     setPublishModalOpen(false);

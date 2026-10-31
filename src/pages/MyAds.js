@@ -723,7 +723,7 @@ export default function MyAds() {
                           fontWeight: "600",
                         }}
                       >
-                        Under review. This ad will go live once your payment is verified.
+                        Under review. This ad will go live once our team has approved it.
                       </div>
                     )}
 

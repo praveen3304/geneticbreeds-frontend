@@ -126,6 +126,7 @@ const REJECT_REASONS = [
   "The amount you paid does not match the amount required.",
   "The transaction ID you entered is not valid.",
   "Your ad could not be approved because it does not meet our listing rules.",
+  "Your ad could not be approved because this breed is banned or restricted by law.",
   "Other (see the details below).",
 ];
 
@@ -201,6 +202,37 @@ export default function AdminDailyPostsPage() {
     }
   };
 
+  const callAdminAd = async (id, action, body = {}) => {
+    const res = await fetch(API_BASE_URL + "/api/admin/ads/" + id + "/" + action, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.message || data.error || "Request failed");
+    return data;
+  };
+
+  const handleApproveAd = async (pet) => {
+    const ok = window.confirm(
+      "Approve this ad?\n\n" + (pet.title || "Untitled") + "\n\nIt will go live for 30 days."
+    );
+    if (!ok) return;
+
+    try {
+      setActionLoading((prev) => ({ ...prev, [pet._id + "approve"]: true }));
+      await callAdminAd(pet._id, "approve");
+      fetchDailyPosts();
+    } catch (err) {
+      window.alert(err.message || "Approval failed");
+    } finally {
+      setActionLoading((prev) => ({ ...prev, [pet._id + "approve"]: false }));
+    }
+  };
+
   const handleHide = async (id) => {
     try {
       setActionLoading((prev) => ({ ...prev, [id + "hide"]: true }));
@@ -269,7 +301,11 @@ export default function AdminDailyPostsPage() {
 
     try {
       setActionLoading((prev) => ({ ...prev, [pet._id + "reject"]: true }));
-      await callUpi("reject", { paymentId: payment._id, reason });
+      if (pet.isPaymentOnly || isWaiting(payment)) {
+        await callUpi("reject", { paymentId: payment._id, reason });
+      } else {
+        await callAdminAd(pet._id, "reject", { reason });
+      }
       setRejectDialog(null);
       fetchDailyPosts();
     } catch (err) {
@@ -324,6 +360,7 @@ export default function AdminDailyPostsPage() {
 
   const toPayPet = (p) => ({
     _id: "pay-" + p.paymentId,
+    isPaymentOnly: true,
     title: p.planName || p.paymentFor,
     paymentDetails: { _id: p.paymentId, txn: p.utr },
   });
@@ -372,7 +409,7 @@ export default function AdminDailyPostsPage() {
               maxWidth: "460px",
             }}
           >
-            <h3 style={{ margin: "0 0 6px", color: "#111827" }}>Reject payment</h3>
+            <h3 style={{ margin: "0 0 6px", color: "#111827" }}>Reject</h3>
             <p style={{ margin: "0 0 14px", color: "#6b7280", fontSize: "13px" }}>
               {rejectDialog.title} - UTR {rejectDialog.paymentDetails?.txn}
             </p>
@@ -427,7 +464,7 @@ export default function AdminDailyPostsPage() {
                 disabled={!!actionLoading[rejectDialog._id + "reject"]}
                 style={{ ...actionBtnStyle, background: "#b91c1c", color: "#fff" }}
               >
-                {actionLoading[rejectDialog._id + "reject"] ? "Rejecting..." : "Reject payment"}
+                {actionLoading[rejectDialog._id + "reject"] ? "Rejecting..." : "Confirm reject"}
               </button>
             </div>
           </div>
@@ -1015,6 +1052,20 @@ export default function AdminDailyPostsPage() {
                           minWidth: "120px",
                         }}
                       >
+                        {!isWaiting(payment) && pet.status === "Pending" && (
+                          <button
+                            onClick={() => handleApproveAd(pet)}
+                            disabled={!!actionLoading[pet._id + "approve"]}
+                            style={{
+                              ...actionBtnStyle,
+                              background: "#dcfce7",
+                              color: "#166534",
+                            }}
+                          >
+                            {actionLoading[pet._id + "approve"] ? "Approving..." : "Approve"}
+                          </button>
+                        )}
+
                         {isWaiting(payment) && (
                           <button
                             onClick={() => handleUpiApprove(pet)}
@@ -1030,11 +1081,7 @@ export default function AdminDailyPostsPage() {
                         )}
 
                         <button
-                          onClick={() =>
-                            isWaiting(payment)
-                              ? openReject(pet)
-                              : handleAction(pet._id, "reject")
-                          }
+                          onClick={() => openReject(pet)}
                           disabled={!!actionLoading[pet._id + "reject"]}
                           style={{
                             ...actionBtnStyle,
