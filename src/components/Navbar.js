@@ -356,7 +356,7 @@ const isIndiaUser =
 
   const referralShareText = useMemo(() => {
     const code = user?.referralCode || "";
-    return `Join Genetic Breeds using my referral code: ${code} and get rewarded! You earn 25 rupees of wallet credit when your friend posts their first ad.`;
+    return `Join Genetic Breeds using my referral code: ${code} and get rewarded! Invite your friends too: for every friend who posts their first ad, you earn \u20B925 in your wallet.`;
   }, [user]);
 
   // eslint-disable-next-line no-unused-vars
@@ -1873,7 +1873,7 @@ toast.success(
                           <div style={sectionBadgeStyle}>REFERRAL</div>
                           <h3 style={sectionTitleStyle}>Referral Details</h3>
                           <p style={sectionDescStyle}>
-                            Copy or share your unique referral code. Earn wallet credit when friends you invite post their first ad.
+                            Copy or share your unique referral code. Earn &#8377;25 wallet credit for every friend you invite who posts their first ad.
                           </p>
                         </div>
                       </div>
