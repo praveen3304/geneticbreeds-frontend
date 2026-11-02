@@ -132,6 +132,7 @@ export default function Chat() {
   const [currentUser, setCurrentUser] = useState(getCurrentUser());
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState("");
+  const [galleryOpen, setGalleryOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [sellerStatus, setSellerStatus] = useState({
@@ -435,6 +436,33 @@ export default function Chat() {
     if (ad?.images?.length) return ad.images;
     return ["https://placehold.co/600x400?text=No+Image"];
   }, [ad]);
+
+  const selectedIndex = Math.max(0, images.indexOf(selectedImage));
+
+  const goImage = (delta) => {
+    if (!images.length) return;
+    const next = (selectedIndex + delta + images.length) % images.length;
+    setSelectedImage(images[next]);
+  };
+
+  const galleryArrowStyle = (side) => ({
+    position: "absolute",
+    [side]: "8px",
+    top: "50%",
+    transform: "translateY(-50%)",
+    background: "rgba(0,0,0,0.45)",
+    border: "none",
+    color: "#fff",
+    fontSize: "26px",
+    width: "40px",
+    height: "40px",
+    borderRadius: "999px",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 2,
+  });
 
   const inactiveReason = useMemo(() => getAdInactiveReason(ad), [ad]);
   const isAdInactive = Boolean(inactiveReason);
@@ -856,30 +884,201 @@ export default function Chat() {
             <div style={{ padding: "16px", flex: 1, minHeight: 0, overflowY: "auto" }}>
               {activeTab === "details" && (
                 <>
-                  <div
-                    style={{
-                      width: "100%",
-                      height: isMobile ? "50vh" : "215px",
-                      borderRadius: "16px",
-                      background: "#f3f4f6",
-                      overflow: "hidden",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginBottom: "16px",
-                    }}
-                  >
-                    <img
-                      src={selectedImage}
-                      alt={ad.title}
+<>
+                    <div
+                      onTouchStart={(e) => { e.currentTarget.dataset.sx = String(e.touches[0].clientX); }} onTouchEnd={(e) => { const dx = e.changedTouches[0].clientX - Number(e.currentTarget.dataset.sx || 0); if (images.length > 1 && Math.abs(dx) > 40) goImage(dx < 0 ? 1 : -1); }}
                       style={{
+                        position: "relative",
                         width: "100%",
-                        height: "100%",
-                        objectFit: "contain",
-                        display: "block",
+                        height: isMobile ? "50vh" : "215px",
+                        borderRadius: "16px",
+                        background: "#f3f4f6",
+                        overflow: "hidden",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        marginBottom: images.length > 1 ? "8px" : "16px",
                       }}
-                    />
-                  </div>
+                    >
+                      <img
+                        src={selectedImage}
+                        alt={ad.title}
+                        onClick={() => setGalleryOpen(true)}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "contain",
+                          display: "block",
+                          cursor: "zoom-in",
+                        }}
+                      />
+
+                      {images.length > 1 && (
+                        <>
+                          <button type="button" aria-label="Previous photo" onClick={() => goImage(-1)} style={galleryArrowStyle("left")}>
+                            {"\u2039"}
+                          </button>
+                          <button type="button" aria-label="Next photo" onClick={() => goImage(1)} style={galleryArrowStyle("right")}>
+                            {"\u203A"}
+                          </button>
+                          <span
+                            style={{
+                              position: "absolute",
+                              bottom: "8px",
+                              right: "10px",
+                              background: "rgba(0,0,0,0.55)",
+                              color: "#fff",
+                              fontSize: "12px",
+                              fontWeight: 700,
+                              padding: "3px 8px",
+                              borderRadius: "999px",
+                            }}
+                          >
+                            {selectedIndex + 1} / {images.length}
+                          </span>
+                        </>
+                      )}
+                    </div>
+
+                    {images.length > 1 && (
+                      <div style={{ display: "flex", gap: "8px", overflowX: "auto", marginBottom: "16px" }}>
+                        {images.map((img, i) => (
+                          <img
+                            key={i}
+                            src={img}
+                            alt=""
+                            onClick={() => setSelectedImage(img)}
+                            style={{
+                              width: "56px",
+                              height: "56px",
+                              objectFit: "cover",
+                              borderRadius: "8px",
+                              border: i === selectedIndex ? "2.5px solid #7a0016" : "2px solid #e5e7eb",
+                              cursor: "pointer",
+                              opacity: i === selectedIndex ? 1 : 0.7,
+                              flexShrink: 0,
+                            }}
+                          />
+                        ))}
+                      </div>
+                    )}
+
+                    {galleryOpen && (
+                      <div
+                        onClick={() => setGalleryOpen(false)}
+                        style={{
+                          position: "fixed",
+                          inset: 0,
+                          background: "rgba(0,0,0,0.95)",
+                          zIndex: 4000,
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            padding: "16px",
+                            background: "linear-gradient(to bottom, rgba(0,0,0,0.7), transparent)",
+                            zIndex: 3,
+                          }}
+                        >
+                          <div style={{ color: "#fff", fontSize: "14px", fontWeight: 700 }}>{ad.title || "Photos"}</div>
+                          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                            <span style={{ color: "rgba(255,255,255,0.7)", fontSize: "13px" }}>
+                              {selectedIndex + 1} / {images.length}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={(e) => { e.stopPropagation(); setGalleryOpen(false); }}
+                              style={{
+                                background: "rgba(255,255,255,0.15)",
+                                border: "none",
+                                color: "#fff",
+                                fontSize: "22px",
+                                width: "40px",
+                                height: "40px",
+                                borderRadius: "999px",
+                                cursor: "pointer",
+                              }}
+                            >
+                              {"\u00D7"}
+                            </button>
+                          </div>
+                        </div>
+
+                        <div
+                          onClick={(e) => e.stopPropagation()}
+                          onTouchStart={(e) => { e.currentTarget.dataset.sx = String(e.touches[0].clientX); }} onTouchEnd={(e) => { const dx = e.changedTouches[0].clientX - Number(e.currentTarget.dataset.sx || 0); if (images.length > 1 && Math.abs(dx) > 40) goImage(dx < 0 ? 1 : -1); }}
+                          style={{
+                            width: "100%",
+                            flex: 1,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            position: "relative",
+                            overflow: "hidden",
+                          }}
+                        >
+                          <img
+                            src={selectedImage}
+                            alt=""
+                            style={{ maxHeight: "75vh", maxWidth: "100vw", objectFit: "contain", userSelect: "none" }}
+                          />
+                          {images.length > 1 && (
+                            <>
+                              <button type="button" aria-label="Previous photo" onClick={() => goImage(-1)} style={galleryArrowStyle("left")}>
+                                {"\u2039"}
+                              </button>
+                              <button type="button" aria-label="Next photo" onClick={() => goImage(1)} style={galleryArrowStyle("right")}>
+                                {"\u203A"}
+                              </button>
+                            </>
+                          )}
+                        </div>
+
+                        <div
+                          onClick={(e) => e.stopPropagation()}
+                          style={{
+                            width: "100%",
+                            background: "rgba(0,0,0,0.6)",
+                            padding: "12px 16px",
+                            display: "flex",
+                            gap: "8px",
+                            overflowX: "auto",
+                            justifyContent: "center",
+                          }}
+                        >
+                          {images.map((img, i) => (
+                            <img
+                              key={i}
+                              src={img}
+                              alt=""
+                              onClick={() => setSelectedImage(img)}
+                              style={{
+                                width: "56px",
+                                height: "56px",
+                                objectFit: "cover",
+                                borderRadius: "8px",
+                                border: i === selectedIndex ? "2.5px solid #fff" : "2px solid rgba(255,255,255,0.2)",
+                                cursor: "pointer",
+                                opacity: i === selectedIndex ? 1 : 0.55,
+                                flexShrink: 0,
+                              }}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
 
                   <div
                     style={{
