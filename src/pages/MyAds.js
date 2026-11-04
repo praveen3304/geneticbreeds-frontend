@@ -285,6 +285,40 @@ export default function MyAds() {
     }
   };
 
+  const handleChangePrice = async (ad) => {
+    const input = window.prompt("Enter the new price", String(ad.price));
+    if (input === null) return;
+    const newPrice = Number(String(input).replace(/,/g, "").trim());
+    if (!Number.isFinite(newPrice) || newPrice <= 0) {
+      setInlineMessage("error", "Enter a valid price");
+      return;
+    }
+    try {
+      setActionLoadingId(ad._id);
+      const token = localStorage.getItem("gb_token");
+      const res = await fetch(API_BASE_URL + "/api/ads/" + ad._id + "/price", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+        body: JSON.stringify({ price: newPrice }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setInlineMessage("error", data.error || "Failed to update price");
+        return;
+      }
+      setInlineMessage("success", "Price updated");
+      fetchMyAds();
+    } catch (err) {
+      console.error("Change price error:", err);
+      setInlineMessage("error", "Server error");
+    } finally {
+      setActionLoadingId("");
+    }
+  };
+
   const handleMarkSold = async (adId) => {
     try {
       setActionLoadingId(adId);
@@ -791,6 +825,22 @@ export default function MyAds() {
                         </button>
                       )}
 
+                      {!["sold", "pending", "rejected"].includes(String(ad.status || "").toLowerCase()) && (
+                        <button
+                          type="button"
+                          onClick={() => handleChangePrice(ad)}
+                          disabled={isActionLoading}
+                          style={{
+                            ...buttonBaseStyle,
+                            background: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+                            color: "#fff",
+                            cursor: isActionLoading ? "not-allowed" : "pointer",
+                            boxShadow: "0 10px 24px rgba(245, 158, 11, 0.22)",
+                          }}
+                        >
+                          {isActionLoading ? "Processing..." : "Change Price"}
+                        </button>
+                      )}
                       {!["sold", "pending"].includes(String(ad.status || "").toLowerCase()) && (
                         <button
                           type="button"
