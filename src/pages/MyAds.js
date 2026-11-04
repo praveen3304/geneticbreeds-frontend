@@ -172,6 +172,12 @@ export default function MyAds() {
     selectedMethod: "membership_credit",
   });
 
+  const [priceModal, setPriceModal] = useState({
+    open: false,
+    ad: null,
+    value: "",
+    error: ""
+  });
   const fetchMyAds = async () => {
     try {
       const token = localStorage.getItem("gb_token");
@@ -285,12 +291,23 @@ export default function MyAds() {
     }
   };
 
-  const handleChangePrice = async (ad) => {
-    const input = window.prompt("Enter the new price", String(ad.price));
-    if (input === null) return;
-    const newPrice = Number(String(input).replace(/,/g, "").trim());
+  const openPriceModal = (ad) => {
+    setPriceModal({ open: true, ad, value: String(ad.price), error: "" });
+  };
+  const closePriceModal = () => {
+    if (priceModal.ad?._id && actionLoadingId === priceModal.ad._id) return;
+    setPriceModal({ open: false, ad: null, value: "", error: "" });
+  };
+  const confirmChangePrice = async () => {
+    const ad = priceModal.ad;
+    if (!ad) return;
+    const newPrice = Number(String(priceModal.value).replace(/,/g, "").trim());
     if (!Number.isFinite(newPrice) || newPrice <= 0) {
-      setInlineMessage("error", "Enter a valid price");
+      setPriceModal((p) => ({ ...p, error: "Enter a valid price" }));
+      return;
+    }
+    if (newPrice === Number(ad.price)) {
+      setPriceModal({ open: false, ad: null, value: "", error: "" });
       return;
     }
     try {
@@ -306,9 +323,10 @@ export default function MyAds() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setInlineMessage("error", data.error || "Failed to update price");
+        setPriceModal((p) => ({ ...p, error: data.error || "Failed to update price" }));
         return;
       }
+      setPriceModal({ open: false, ad: null, value: "", error: "" });
       setInlineMessage("success", "Price updated");
       fetchMyAds();
     } catch (err) {
@@ -828,7 +846,7 @@ export default function MyAds() {
                       {!["sold", "rejected"].includes(String(ad.status || "").toLowerCase()) && (
                         <button
                           type="button"
-                          onClick={() => handleChangePrice(ad)}
+                          onClick={() => openPriceModal(ad)}
                           disabled={isActionLoading}
                           style={{
                             ...buttonBaseStyle,
@@ -882,6 +900,87 @@ export default function MyAds() {
         )}
       </div>
 
+      {priceModal.open && (
+        <div style={modalOverlayStyle} onClick={closePriceModal}>
+          <div
+            style={modalCardStyle}
+            className="myads-modal"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div style={modalIconWrapWarnStyle}>{"\u20B9"}</div>
+            <div style={modalBadgeWarnStyle}>CHANGE PRICE</div>
+            <h3 style={modalTitleStyle}>Update your price</h3>
+            <p style={modalTextStyle}>
+              Set a new price for <strong>{priceModal.ad?.title || priceModal.ad?.breed}</strong>.
+              Current price: <strong>{"\u20B9"}{priceModal.ad?.price}</strong>
+            </p>
+            <div
+              style={{
+                marginTop: "18px",
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                border: priceModal.error ? "1px solid #ef4444" : "1px solid #f59e0b",
+                borderRadius: "14px",
+                padding: "12px 14px",
+                background: "#fffaf0",
+              }}
+            >
+              <span style={{ fontSize: "22px", fontWeight: 900, color: "#92400e" }}>{"\u20B9"}</span>
+              <input
+                type="text"
+                inputMode="numeric"
+                autoFocus
+                value={priceModal.value}
+                onChange={(e) =>
+                  setPriceModal((p) => ({
+                    ...p,
+                    value: e.target.value.replace(/[^0-9.,]/g, ""),
+                    error: "",
+                  }))
+                }
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") confirmChangePrice();
+                }}
+                style={{
+                  flex: 1,
+                  minWidth: 0,
+                  width: "100%",
+                  border: "none",
+                  outline: "none",
+                  background: "transparent",
+                  fontSize: "24px",
+                  fontWeight: 900,
+                  color: "#111827",
+                }}
+              />
+            </div>
+            {priceModal.error ? (
+              <div style={{ marginTop: "8px", color: "#b91c1c", fontSize: "13px", fontWeight: 700, textAlign: "center" }}>
+                {priceModal.error}
+              </div>
+            ) : null}
+            <div style={modalButtonRowStyle}>
+              <button
+                type="button"
+                onClick={closePriceModal}
+                style={modalSecondaryButtonStyle}
+                disabled={actionLoadingId === priceModal.ad?._id}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmChangePrice}
+                style={modalWarnButtonStyle}
+                disabled={actionLoadingId === priceModal.ad?._id}
+              >
+                {actionLoadingId === priceModal.ad?._id ? "Saving..." : "Save Price"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {deleteModal.open && (
         <div style={modalOverlayStyle} onClick={closeDeleteModal}>
           <div
