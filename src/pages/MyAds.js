@@ -825,7 +825,7 @@ export default function MyAds() {
                         </button>
                       )}
 
-                      {!["sold", "pending", "rejected"].includes(String(ad.status || "").toLowerCase()) && (
+                      {!["sold", "rejected"].includes(String(ad.status || "").toLowerCase()) && (
                         <button
                           type="button"
                           onClick={() => handleChangePrice(ad)}
