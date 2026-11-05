@@ -443,6 +443,8 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                   background: "#fff",
                   borderRadius: "22px",
                   overflow: "hidden",
+                  display: "flex",
+                  flexDirection: "column",
                   boxShadow: p.isFeatured
                     ? "0 18px 40px rgba(245,158,11,0.20)"
                     : "0 12px 30px rgba(15,23,42,0.08)",
@@ -776,7 +778,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                   </div>
                 </div>
 
-                <div style={{ padding: "14px 14px 16px" }}>
+                <div style={{ padding: "14px 14px 16px", flex: 1, display: "flex", flexDirection: "column" }} className="gb-align-bottom">
                   <div style={{ marginBottom: "10px" }}>
                     <div
                       style={{
@@ -871,7 +873,8 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                       alignItems: "center",
                       justifyContent: "space-between",
                       gap: "12px",
-                      marginTop: "12px",
+                      marginTop: "auto",
+                      paddingTop: "12px",
                     }}
                   >
                     {p.status === "Sold" ? (
