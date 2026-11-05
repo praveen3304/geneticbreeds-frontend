@@ -777,27 +777,48 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                 </div>
 
                 <div style={{ padding: "14px 14px 16px" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "flex-start",
-                      gap: "10px",
-                      marginBottom: "10px",
-                    }}
-                  >
+                  <div style={{ marginBottom: "10px" }}>
+                    <div
+                      style={{
+                        fontSize: "15px",
+                        fontWeight: "800",
+                        color: "#111827",
+                        lineHeight: "1.35",
+                        marginBottom: "6px",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        wordBreak: "break-word",
+                      }}
+                    >
+                      {getAdTitle(p)}
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        flexWrap: "wrap",
+                        gap: "4px 14px",
+                        marginBottom: "8px",
+                        fontSize: "12px",
+                        fontWeight: "700",
+                        color: "#64748b",
+                      }}
+                    >
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", whiteSpace: "nowrap" }}>
+                        <span>{"\u{1F4C5}"}</span>
+                        {p.createdAt ? new Date(p.createdAt).toLocaleDateString("en-IN") : "N/A"}
+                      </span>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", minWidth: 0, maxWidth: "100%" }}>
+                        <span>{"\u{1F4CD}"}</span>
+                        <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          {getAdLocation(p)}
+                        </span>
+                      </span>
+                    </div>
                     <div style={{ minWidth: 0 }}>
-                      <div
-                        style={{
-                          fontSize: "16px",
-                          fontWeight: "800",
-                          color: "#111827",
-                          lineHeight: "1.35",
-                          marginBottom: "6px",
-                        }}
-                      >
-                        {getAdTitle(p)}
-                      </div>
+                      
                       {p.breed && (
                         <div
                           style={{
@@ -841,28 +862,7 @@ export default function BrowsePets({ wishlist = [], toggleWishlist = () => {} })
                       </div>
                     </div>
 
-                    <div
-                      style={{
-                        flexShrink: 0,
-                        padding: "8px 10px",
-                        borderRadius: "14px",
-                        background: p.isFeatured
-                          ? "linear-gradient(135deg, #fff7ed, #ffedd5)"
-                          : "linear-gradient(135deg, #f8fafc, #f1f5f9)",
-                        color: p.isFeatured ? "#b45309" : "#475569",
-                        fontSize: "12px",
-                        fontWeight: "800",
-                        textAlign: "right",
-                        minWidth: "88px",
-                      }}
-                    >
-                      {p.createdAt
-                        ? new Date(p.createdAt).toLocaleDateString("en-IN")
-                        : "N/A"}
-                      <div style={{ marginTop: "6px", fontSize: "11px", fontWeight: "700", color: "#94a3b8" }}>
-                        📍 {getAdLocation(p)}
-                      </div>
-                    </div>
+                    
                   </div>
 
                   <div
