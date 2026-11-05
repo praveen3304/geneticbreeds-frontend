@@ -356,7 +356,7 @@ const isIndiaUser =
 
   const referralShareText = useMemo(() => {
     const code = user?.referralCode || "";
-    return `Join Genetic Breeds using my referral code: ${code} and get your 1st ad posted FREE as a welcome gift! Invite your friends too: for every friend who posts their first ad, you earn \u20B925 in your wallet.`;
+    return `Join GeneticBreeds, a pet marketplace where you can buy and sell dogs, cats, birds and more from verified sellers. Use my referral code ${code} and get your 1st ad posted FREE as a welcome gift! Invite your friends too: for every friend who posts their first ad, you earn \u20B925 in your wallet.`;
   }, [user]);
 
   // eslint-disable-next-line no-unused-vars
